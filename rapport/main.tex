@@ -10,28 +10,135 @@
 \usepackage[utf8]{inputenc}
 
 % Setup for fullpage use
-\usepackage{fullpage}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
 \usepackage[francais]{babel}
+\usepackage{listingsutf8}
+\usepackage{float}
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{array}
+\usepackage{fullpage}
+\usepackage{xcolor}
+\usepackage{hyperref}
 
-% More symbols
-\usepackage{amsmath}
+\usepackage{mathrsfs}
+\usepackage{amsthm}
 \usepackage{amssymb}
-\usepackage{latexsym}
 
-\title{A LaTeX Article}
-\author{Aline}
+\hypersetup{
+    colorlinks,
+    linkcolor={black!50!black},
+    citecolor={black!50!black},
+    urlcolor={black!80!black}
+}
+
+%---------------------------------------------------------
+% Personnal commands
+%---------------------------------------------------------
+
+\newcommand{\smalltitle}[1]{\bigskip\large\textbf{#1}\par\normalsize\medskip}
+%\newcommand\myworries[1]{\textcolor{red}{#1}}
+\newcommand\todo[1]{\textcolor{red}{TODO: #1}\PackageWarning{TODO:}{#1!}}
 
 
+\theoremstyle{definition}
+\newtheorem{defi}{Définition}[section]
+\newtheorem{note}{Note}[section]
+\newtheorem{propriete}{Propriété}[section]
+\newtheorem{exemple}{Exemple}[section]
+\newtheorem{corollaire}{Corollaire}[section]
+\newtheorem{rem}{Remarque}[section]
+\newtheorem{thm}{Théorème}[section]
+\newtheorem{illustration}{Illustration}[section]
+\newenvironment{demonstration}{\begin{proof}[\textnormal{\textbf{Preuve.}}]}{\end{proof}}
+\definecolor{gris}{gray}{0.45}
+\setlength{\parindent}{1cm}
+\newcommand{\textcalli}[1]{{\small{\textbf{$\negmedspace$\calligra #1}}}}
+
+%---------------------------------------------------------
+% More symbols
+%---------------------------------------------------------
+%---------------------------------------------------------
+% Begin document
+%---------------------------------------------------------
 \begin{document}
 
-\maketitle
+\begin{titlepage}
+\begin{center}
 
+{\Large Université de Mons}\\[1ex]
+{\Large Faculté des sciences}\\[2.5cm]
 
-\begin{abstract}
-\end{abstract}
+\newcommand{\HRule}{\rule{\linewidth}{0.3mm}}
+% Title
+\HRule \\[0.3cm]
+{ \LARGE \bfseries Mon beau projet\\[0.3cm]}
+\HRule \\[1.5cm]
 
+% Course
+%\begin{center}
+%\emph{Cours:} \\
+%Structures de Données II
+%\end{center}
+
+%Directeurs
+\begin{center}
+	\emph{Directeurs :}\\
+	 Thomas \textsc{Brihaye} \\
+	 Hadrien \textsc{Mélot}
+
+\end{center}
+
+%Rapporteur
+\begin{center}
+	\emph{Rapporteur:}\\
+	Véronique \textsc{Bruyère}
+\end{center}
+
+% Author
+\begin{center}
+\emph{Auteur:} \\
+Aline \textsc{Goeminne}
+\end{center}
+\vfill
+\today
+\vfill
+
+% Bottom of the page
+\begin{center}
+\begin{tabular}[t]{c c c}
+\includegraphics[height=1.5cm]{logoumons.jpg} &
+\hspace{0.3cm} &
+\includegraphics[height=1.5cm]{logofs.jpg}
+\end{tabular}
+\end{center}~\\
+
+{\large Année académique 2015-2016}
+
+\end{center}
+\end{titlepage}
+
+\tableofcontents
+\newpage
+%-------------------------------------
+%Introduction
+%-------------------------------------
 \input{intro}
+\newpage
+\input{conceptsFondamentaux}
+\newpage
+\input{jeuxAtt}
+\newpage
+\input{conclusion}
+\newpage
 
 \bibliographystyle{plain}
 \bibliography{biblio}
+
+\newpage
+
+\input{appendiceA}
+
 \end{document}
