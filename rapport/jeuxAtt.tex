@@ -2,9 +2,56 @@
 
 \section{Jeux d'atteignabilité}
 
-\subsection{Notions générales}
-	blabla
+Un jeu d'atteignabilité est un jeu sur graphe particulier. Chaque joueur possède un ensemble objectif qu'il souhaite atteindre. Le déroulement d'une partie d'un jeu d'atteignabilité se déroule comme un jeu sur graphe (cf \ref{derPar}) sauf que le but de chaque joueur est d'atteindre un élément de son ensemble objectif. On peut considérer les jeux d'atteignabilité selon deux points de vue: les jeux qualitatifs et les jeux quantitatifs. Nous développons dans les sections suivantes ces deux notions.
+
+%-----------------------------
+%-----------------------------
+%Jeux qualtitatifs
+%-----------------------------
+%-----------------------------
+
 \subsection{Jeux qualitatifs}
-	blabla
+	
+	\begin{defi}[Jeu d'atteignabilité à objectif qualitatif]
+		Un \textit{jeu d'atteignabilité à objectif qualitatif} est un jeu sur graphe $\mathcal{G} = (\Pi,(V,E),(V_{i})_{i \in \Pi}, (Goal_{i})_{i},(\Omega _{i})_{i \in \Pi})$ où :
+		\begin{enumerate}
+			\item[$\bullet$] Pour tout $i \in \Pi$, $Goal_{i\in \Pi} \subseteq V $ est l'ensemble des sommets de $V$ que $J_{i}$ essaie d'atteindre.
+			\item[$\bullet$] Pour tout $i \in \Pi$, $\Omega _{i} = \{(u_{j})_{j \in \mathbb{N}}\in V^{\omega}| \exists k \in \mathbb{N}$  tel que $u_{k}\in Goal_{i}\}$. C'est l'ensemble des jeux $\rho$ sur $\mathcal{G}$ pour lesquels $J_{i}$ gagne le jeu.
+		\end{enumerate}	
+	\end{defi}
+	
+	
+	\begin{defi}[Stratégie gagnante]
+		Soit $v \in V$, soit $\sigma _{i}$ une stratégie du joueur $i$, on dit que $\sigma _{i}$ est \textit{gagnante pour $J_{i}$} à partir de $v$ si $Outcome(v,(\sigma _{i}, \sigma _{-i})) \subseteq \Omega _{1}$.
+	\end{defi}
+	
+	\begin{defi}[Ensemble des états gagnants]
+		Soit $\mathcal{G} = (\Pi,(V,E),(V_{i})_{i \in \Pi}, (Goal_{i})_{i \in \Pi},(\Omega _{i})_{i \in \Pi})$, $W_{i} = \{ u_{j} |j\in \mathbb{N}$ et il existe une stratégie gagnante $\sigma _{i}$ pour $J_{i}$ à partir de $u_{j}\}$ est \textit{l'ensemble des états gagnants} de $J_{i}$. C'est l'ensemble des sommets de $\mathcal{G}$ à partir desquels $J_{i}$ est assuré de gagner.
+	\end{defi}
+	
+	
+	
+	Une fois le concept de jeu d'atteignabilité clairement établi, nous pouvons nous poser les questions suivantes : "Quels joueurs peuvent-ils gagner le jeu?" et "Quelle stratégie doivent adopter les joueurs pour atteindre leur objectif quelle que soit la stratégie jouée par les autres joueurs?". \\
+	
+	Intéressons nous au cas de ces jeux restreints à deux joueurs.
+	
+	\subsubsection{Cas particulier des jeux à deux joueurs}
+	Nous sommes intéressés à étudier les jeux d'atteignabilité à objectif qualitatif dans le cadre des jeux à deux joueurs. Dans ce cadre, nous notons $\Pi = \{1,2\}$ et nous avons que $\Omega _{2} = V^{\omega}\backslash \Omega _{1}$.
+	\begin{rem}
+		Ce jeu est un exemple de \textit{jeu combinatoire}.
+	\end{rem}
+	
+	\begin{propriete}
+		Soit $\mathcal{G}$ un jeu, on a : $W_{1}\cap W_{2} = \emptyset$.
+	\end{propriete}
+	\begin{demonstration}
+		\todo{}
+	\end{demonstration}
+	
+	\begin{defi}[Jeu déterminé]
+		Soit $\mathcal{G}$ un jeu, on dit que ce jeu est \textit{déterminé} ssi $W_{1} = V \backslash W_{2}$.
+	\end{defi}
+		
+		
 \subsection{Jeux quantitatifs }
 	blabla
