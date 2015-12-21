@@ -20,10 +20,15 @@ Un jeu d'atteignabilité est un jeu sur graphe particulier. Chaque joueur possè
 		\end{enumerate}	
 	\end{defi}
 	
-	
+	\label{strategieGagnante}
 	\begin{defi}[Stratégie gagnante]
 		Soit $v \in V$, soit $\sigma _{i}$ une stratégie du joueur $i$, on dit que $\sigma _{i}$ est \textit{gagnante pour $J_{i}$} à partir de $v$ si $Outcome(v,(\sigma _{i}, \sigma _{-i})) \subseteq \Omega _{1}$.
 	\end{defi}
+	
+	\begin{rem}
+		Dans le cadre de la définition \ref{strategieGagnante} , $Outcome(v,(\sigma _{i}, \sigma _{-i}))$ ne représente pas un seul jeu mais bien un ensemble de jeux. En effet, dans ce cas $\sigma _{-i}$ n'est pas fixé.
+	\end{rem}
+		
 	
 	\begin{defi}[Ensemble des états gagnants]
 		Soit $\mathcal{G} = (\Pi,(V,E),(V_{i})_{i \in \Pi}, (Goal_{i})_{i \in \Pi},(\Omega _{i})_{i \in \Pi})$, $W_{i} = \{ u_{j} |j\in \mathbb{N}$ et il existe une stratégie gagnante $\sigma _{i}$ pour $J_{i}$ à partir de $u_{j}\}$ est \textit{l'ensemble des états gagnants} de $J_{i}$. C'est l'ensemble des sommets de $\mathcal{G}$ à partir desquels $J_{i}$ est assuré de gagner.
@@ -36,7 +41,7 @@ Un jeu d'atteignabilité est un jeu sur graphe particulier. Chaque joueur possè
 	Intéressons nous au cas de ces jeux restreints à deux joueurs.
 	
 	\subsubsection{Cas particulier des jeux à deux joueurs}
-	Nous sommes intéressés à étudier les jeux d'atteignabilité à objectif qualitatif dans le cadre des jeux à deux joueurs. Dans ce cadre, nous notons $\Pi = \{1,2\}$ et nous avons que $\Omega _{2} = V^{\omega}\backslash \Omega _{1}$.
+	Nous sommes intéressés à étudier les jeux d'atteignabilité à objectif qualitatif dans le cadre des jeux à deux joueurs. Dans ce cadre, nous notons $\Pi = \{1,2\}$ et nous avons que $\Omega _{2} = V^{\omega}\backslash \Omega _{1}$. Ceci signifie que dans le cas du jeu d'atteignabilité à deux joueurs le but de $J_{2}$ est d'empêcher $J_{1}$ d'atteindre son objectif.
 	\begin{rem}
 		Ce jeu est un exemple de \textit{jeu combinatoire}.
 	\end{rem}
@@ -45,7 +50,10 @@ Un jeu d'atteignabilité est un jeu sur graphe particulier. Chaque joueur possè
 		Soit $\mathcal{G}$ un jeu, on a : $W_{1}\cap W_{2} = \emptyset$.
 	\end{propriete}
 	\begin{demonstration}
-		\todo{}
+		Supposons au contraire que $W_{1}\cap W_{2} \neq \emptyset$. Cela signifie qu'il existe $s \in W_{1}$ tel que $s \in W_{2}$.\\
+		$s \in W_{1}$ si et seulement si il existe $\sigma _{1}$ une stratégie de $J_{1}$ telle que pour toute $\sigma {2}$ stratégie de $J_{2}$ nous avons : $Outcome(s,(\sigma _{1},\sigma _{2})) \in \Omega _{1}$.\\
+		$s \in W_{2}$ si et seulement si il existe $\tilde{\sigma} _{2}$ une stratégie de $J_{2}$ telle que pour toute $\tilde{\sigma}_{1}$ stratégie de $J_{1}$ nous avons : $Outcome(s,(\tilde{\sigma}_{1},\tilde{\sigma}_{2})) \in \Omega _{2}$.\\
+		Dès lors, on obtient : $Outcome(s,(\sigma _{1},\tilde{\sigma}_{2})) \in \Omega _{1} \cap \Omega _{2}$. Or $\Omega _{1} \cap \Omega _{2} = \emptyset$, ce qui amène la contradiction.\\
 	\end{demonstration}
 	
 	\begin{defi}[Jeu déterminé]
