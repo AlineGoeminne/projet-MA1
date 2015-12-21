@@ -56,6 +56,7 @@ Un jeu d'atteignabilité est un jeu sur graphe particulier. Chaque joueur possè
 	\end{rem}
 
 %PROPRIETE	
+	\label{Wempty}
 	\begin{propriete}
 		Soit $\mathcal{G}$ un jeu, on a : $W_{1}\cap W_{2} = \emptyset$.
 	\end{propriete}
@@ -68,7 +69,7 @@ Un jeu d'atteignabilité est un jeu sur graphe particulier. Chaque joueur possè
 
 %DEFINITION: jeu déterminé	
 	\begin{defi}[Jeu déterminé]
-		Soit $\mathcal{G}$ un jeu, on dit que ce jeu est \textit{déterminé} ssi $W_{1} = V \backslash W_{2}$.
+		Soit $\mathcal{G}$ un jeu, on dit que ce jeu est \textit{déterminé} si et seulement si $W_{1} = V \backslash W_{2}$.
 	\end{defi}
 
 %DEFINITION: predecesseur + ensembles attracteurs	
@@ -87,7 +88,7 @@ Un jeu d'atteignabilité est un jeu sur graphe particulier. Chaque joueur possè
 	\end{defi}
 	
 %PROPRIETE
-	
+	\label{suiteUltConst}
 	\begin{propriete}
 		
 		La suite $(X_{k})_{k \in \mathbb{N}}$ est ultimement constante. 
@@ -99,11 +100,50 @@ Un jeu d'atteignabilité est un jeu sur graphe particulier. Chaque joueur possè
 		
 	\end{demonstration}
 	
+	
 % DEFINITION: attracteur
 	
 	\begin{defi}
 		La limite de la suite $(X_{k})_{k \in \mathbb{N}}$ est appelée \textit{attracteur de F} et sera notée $Attr(F)$.
 	\end{defi}
+	
+% PROPRIETE
+
+	\begin{propriete}
+	\begin{equation}
+		W_{1} = Attr(F) \label{line1}
+	\end{equation}
+	\begin{equation}
+		W_{2} = V \backslash Attr(F) \label{line2}
+	\end{equation}
+		
+	\end{propriete}
+	\begin{demonstration}
+		Pour prouver ~\eqref{line1} et ~\eqref{line2} nous allons procéder en plusieurs étapes.\\
+		
+		\noindent$\mathbf{Attr(F) \subseteq W_{1}}$: Soit $v \in Attr(F)$ alors par la propriétés \ref{suiteUltConst} on a : $Attr(F) = X_{N}$ pour un certain $N \in \mathbb{N}$. Montrons par récurrence sur $n$ que dans ce cas, pour tout $n \in \mathbb{N}$ tel que $X_{n} \subseteq Attr(F)$ on peut construire une stratégie $\sigma _{1}$ pour $J_{1}$ telle que $Outcome(v,(\sigma _{1},\sigma _{2})) \subseteq \Omega _{1}$.
+		\begin{enumerate}
+			\item[$\star$] Pour $n=0$: alors $v \in X_{0} = F$ et l'objectif est atteint par $J_{1}$.
+			\item[$\star$] Supposons que la propriété soit vérifiée pour tout $ 0 \leq n \leq k $ et montrons qu'elle est toujours satisfaite pour $n = k + 1 \leq N$. \\
+			Soit $v \in X_{k+1} = X_{k} \cup Pre(X_{k})$. \\
+			Si $v \in X_{k}$ alors par hypothèse de récurrence il existe $\sigma _{1}$ telle que $Outcome(v,(\sigma _{1},\sigma _{2})) \subseteq \Omega _{1}$.\\
+			Si $v \in Pre(X_{k})$, alors si $v \in V_{1}$ par définition de $Pre(X_{k})$ on sait qu'il existe $v'\in V_{k}$ tel que $(v,v')\in E$. Ainsi, on définit $\sigma _{1}(v) = v'$. Tandis que si $v \in V_{2}$, par définition de $Pre(X)$, quelle que soit la stratégie $\sigma _{2}$ adoptée par $J_{2}$  nous sommes assurés que $\sigma _{2}(v) \in X_{k}$. Dès lors le résultat $Outcome(v,(\sigma _{1},\sigma _{2})) \subseteq \Omega _{1}$ est assuré.
+		\end{enumerate}
+		Dès lors l'assertion est bien vérifiée.\\
+		
+		\noindent$\mathbf{V \backslash Attr(F) \subseteq W_{2}}$: Soit $v \in V \backslash Attr(F)$. Une stratégie gagnante pour $J_{2}$ est une stratégie telle que à chaque tour de jeu le sommet $s$ considéré soit dans l'ensemble $V\backslash Attr(F)$. En effet, sinon, au vu de la preuve précédent il existerait à partir du sommet $s$ une stratégie gagnante pour $J_{1}$ et $J_{1}$ n'aurait donc qu'à utiliser cette stratégie pour s'assurer la victoire. Donc, si $v \in V_{1}$ par définition de 	$V \backslash Attr(F)$ on est assuré que pour tout $v'\in V $ tel que $(v,v')\in E$ $v' \in V \backslash Attr(F)$. De plus, si $ v \in V_{2}$ par définition de $V \backslash Attr(F)$ il existe $v' \in V$ tel que $(v,v')\in E$ et $v' \in V \backslash Attr(F)$. La stratégie $\sigma _{2}$ adoptée par $J_{2}$ sera donc $\sigma _{2}(v)= v'$.Procéder de la sorte nous assure $Outcome(v,(\sigma _{1},\sigma _{2})) \subseteq \Omega _{2}$. Ce que nous voulions démontrer.\\
+		
+		\noindent $\mathbf{W_{1} \subseteq Attr(F)}$: Supposons au contraire : $W_{1} \not\subseteq Attr(F)$. Cela signifie qu'il existe $v \in W_{1}$ tel que $v \notin Attr(F)$. D'où $v \in V\backslash Attr(F)$ et comme $V \backslash Attr(F) \subseteq W_{2}$, on a $v \in W_{2}$. Or par la propriété \ref{Wempty}, $W_{1} \cap W_{2} = \emptyset $ et ici $v \in W_{1}$ et $v \in W_{2}$. Ce qui amène la contradiction.\\
+		
+		\noindent $\mathbf{W_{2} \subseteq V\backslash Attr(F)}$ : La preuve est similaire à celle de $W_{1} \subseteq Attr(F)$.\\
+		
+		Ces quatre inclusions d'ensemble démontrent donc ~\eqref{line1} et ~\eqref{line2}.
+	\end{demonstration}
+	\begin{rem}
+		Cette propriété nous montre que les jeux d'atteignabilité à objectif qualitatif et à deux joueurs sont déterminés.
+	\end{rem}
+	
+%EXEMPLE
 		
 		
 \subsection{Jeux quantitatifs }
