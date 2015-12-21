@@ -29,7 +29,7 @@ Cette section sera essentiellement inspirée de l'article de Brihaye et al. \cit
 	\begin{enumerate}
 		\item[$\bullet$] On note $J_{i}$  le joueur $i$.
 		
-		\item[$\bullet$] Pour $i\in \Pi$, on note : $-i\equiv \Pi\backslash i $.
+		\item[$\bullet$] Pour $i\in \Pi$, on note : $-i\equiv \Pi\backslash \{ i\} $.
 	\end{enumerate}
 \end{notations}
 
@@ -70,7 +70,7 @@ Etant donné une histoire $ h = h_{0} h_{1} h_{2} h_{3} ... h_{k}$,  on définit
 %--------------------------------------
 
 \begin{defi}[Stratégie]
-	Une \textit{stratégie} d'un joueur $i \in \Pi$ dans $\mathscr{A}$ est une fonction $\sigma:Hist_{i} \rightarrow V$ telle que à chaque histoire $ h = h_{0} h_{1} h_{2} h_{3} ... h_{k}$ pour laquelle $h_{k} \in V_{i}$ est associée un sommet $v \in V$. De plus, on a: $(Last(h),\sigma(h))\in V$.
+	Une \textit{stratégie} d'un joueur $i \in \Pi$ dans $\mathscr{A}$ est une fonction \mbox{$\sigma:Hist_{i} \rightarrow V$} telle que à chaque histoire $ h = h_{0} h_{1} h_{2} h_{3} ... h_{k}$ pour laquelle $h_{k} \in V_{i}$ est associée un sommet $v \in V$. De plus, on a: $(Last(h),\sigma(h))\in V$.
 \end{defi}
 
 \begin{defi}[Jeu consistant]	
