@@ -75,7 +75,7 @@ Un jeu d'atteignabilité est un jeu sur graphe particulier. Chaque joueur possè
 %DEFINITION: predecesseur + ensembles attracteurs	
 	\begin{defi}
 		 Soit $X \subseteq V$.\\ 
-		Posons $Pre(X) = \{ v \in V_{1}| \exists v'((v,v')\in E) \wedge (v' \in X)\} \cup \{ v \in V_{2}|\forall v' ((v,v')\in E) \Rightarrow (v' \in X)\}$
+		Posons $Pre(X) = \{ v \in V_{1}| \exists v'((v,v')\in E) \wedge (v' \in X)\} \cup \{ v \in V_{2}|\forall v' ((v,v')\in E) \Rightarrow (v' \in X)\}$.
 		Définissons $(X_{k})_{k \in \mathbb{N}}$ la suite de sous-ensembles de $V$ suivante: \\
 		
 			$$\left\lbrace
@@ -144,6 +144,13 @@ Un jeu d'atteignabilité est un jeu sur graphe particulier. Chaque joueur possè
 	\end{rem}
 	
 %EXEMPLE
+
+\noindent\textbf{Exemple}:\\
+Soit $\mathcal{G} = ((V,E),V_{1},V_{2},\Omega _{1}, \Omega _{2},F)$ le jeu d'atteignabilité représenté par le graphe ci-dessous. Pour lequel $V = \{ v_{0},v_{1},v_{2},v_{3},v_{4},v_{5},v_{6},v_{7},v_{8} \}$, $E$ est l'ensemble des arcs représentés sur le graphe, $V_{1}$ est représenté par les sommets de forme ronde, $V_{2}$ est représenté par les sommets de forme carrée et $F$ est l'ensemble des sommets grisés.\\
+Appliquons sur l'exemple ci-dessous, le principe de l'attracteur.
+\begin{center}
+\input{exAtt1}
+\end{center}
 		
 		
 \subsection{Jeux quantitatifs }

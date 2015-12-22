@@ -28,6 +28,9 @@
 \usepackage{amssymb}
 \usepackage{amsmath}
 
+\usepackage{tikz}
+
+
 \hypersetup{
     colorlinks,
     linkcolor={black!50!black},
@@ -62,6 +65,13 @@
 \definecolor{gris}{gray}{0.45}
 \setlength{\parindent}{1cm}
 \newcommand{\textcalli}[1]{{\small{\textbf{$\negmedspace$\calligra #1}}}}
+
+\tikzset{nRG/.style={draw,circle,fill=gris,minimum height=0.7cm}}
+\tikzset{nR/.style={draw,circle,minimum height=0.7cm}}
+\tikzset{nC/.style={draw,rectangle,minimum height=0.7cm,minimum width=0.7cm}}
+\tikzset{nCG/.style={draw,rectangle,fill=gris,minimum height=0.7cm,minimum width=0.7cm}}
+
+\tikzset{fleche/.style={->,>=latex}}
 
 %---------------------------------------------------------
 % More symbols
