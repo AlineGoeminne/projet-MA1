@@ -29,7 +29,9 @@
 \usepackage{amsmath}
 
 \usepackage{tikz}
-
+\usepackage{placeins}
+\usepackage{algorithm}
+\usepackage{algorithmic}
 
 \hypersetup{
     colorlinks,
@@ -62,7 +64,7 @@
 \newtheorem*{notation}{Notation}
 \theoremstyle{definition}
 \newtheorem*{notations}{Notations}
-\definecolor{gris}{gray}{0.45}
+\definecolor{gris}{gray}{0.60}
 \setlength{\parindent}{1cm}
 \newcommand{\textcalli}[1]{{\small{\textbf{$\negmedspace$\calligra #1}}}}
 
@@ -73,6 +75,11 @@
 
 \tikzset{fleche/.style={->,>=latex}}
 
+\renewcommand{\algorithmicif}{\textbf{si}}
+\renewcommand{\algorithmicthen}{\textbf{alors}}
+\renewcommand{\algorithmicrequire}{\textbf{Entrée(s):}}
+\renewcommand{\algorithmicendif}{\textbf{fin}}
+\newcommand{\POUR}[1]{\textbf{pour} #1 \textbf{faire}}
 %---------------------------------------------------------
 % More symbols
 %---------------------------------------------------------

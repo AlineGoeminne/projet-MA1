@@ -1,0 +1,194 @@
+\subsection{Jeux qualitatifs}
+
+%DEFINITION: jeu d'atteignabilité à objectif qualitatif
+	
+	\begin{defi}[Jeu d'atteignabilité à objectif qualitatif]
+		Un \textit{jeu d'atteignabilité à objectif qualitatif} est un jeu sur graphe $\mathcal{G} = (\Pi,(V,E),(V_{i})_{i \in \Pi}, (Goal_{i})_{i},(\Omega _{i})_{i \in \Pi})$ où :
+		\begin{enumerate}
+			\item[$\bullet$] Pour tout $i \in \Pi$, $Goal_{i\in \Pi} \subseteq V $ est l'ensemble des sommets de $V$ que $J_{i}$ essaie d'atteindre.
+			\item[$\bullet$] Pour tout $i \in \Pi$, $\Omega _{i} = \{(u_{j})_{j \in \mathbb{N}}\in V^{\omega}| \exists k \in \mathbb{N}$  tel que $u_{k}\in Goal_{i}\}$. C'est l'ensemble des jeux $\rho$ sur $\mathcal{G}$ pour lesquels $J_{i}$ gagne le jeu.
+		\end{enumerate}	
+	\end{defi}
+	
+% DEFINITION: stratégie gagnante
+	\label{strategieGagnante}
+	\begin{defi}[Stratégie gagnante]
+		Soit $v \in V$, soit $\sigma _{i}$ une stratégie du joueur $i$, on dit que $\sigma _{i}$ est \textit{gagnante pour $J_{i}$} à partir de $v$ si $Outcome(v,(\sigma _{i}, \sigma _{-i})) \subseteq \Omega _{1}$.
+	\end{defi}
+	
+	\begin{rem}
+		Dans le cadre de la définition \ref{strategieGagnante} , $Outcome(v,(\sigma _{i}, \sigma _{-i}))$ ne représente pas un seul jeu mais bien un ensemble de jeux. En effet, dans ce cas $\sigma _{-i}$ n'est pas fixé.
+	\end{rem}
+	
+% DEFINITION: ensemble des états gagnants		
+	
+	\begin{defi}[Ensemble des états gagnants]
+		Soit $\mathcal{G} = (\Pi,(V,E),(V_{i})_{i \in \Pi}, (Goal_{i})_{i \in \Pi},(\Omega _{i})_{i \in \Pi})$,\\
+		\mbox{$W_{i} = \{ u_{j} |j\in \mathbb{N}$ et il existe une stratégie gagnante $\sigma _{i}$ pour $J_{i}$ à partir de $u_{j}\}$} est \textit{l'ensemble des états gagnants} de $J_{i}$. C'est l'ensemble des sommets de $\mathcal{G}$ à partir desquels $J_{i}$ est assuré de gagner.
+	\end{defi}
+	
+	
+	
+	Une fois le concept de jeu d'atteignabilité clairement établi, nous pouvons nous poser les questions suivantes : "Quels joueurs peuvent-ils gagner le jeu?" et "Quelle stratégie doivent adopter les joueurs pour atteindre leur objectif quelle que soit la stratégie jouée par les autres joueurs?". \\
+	
+	Intéressons nous au cas de ces jeux restreints à deux joueurs.
+%-------------------------------------
+%Cas des jeux à deux joueurs
+%-------------------------------------
+	
+	\subsubsection{Cas particulier des jeux à deux joueurs}
+	Nous sommes intéressés à étudier les jeux d'atteignabilité à objectif qualitatif dans le cadre des jeux à deux joueurs. Dans ce cadre, nous notons $\Pi = \{1,2\}$ et nous avons que $\Omega _{2} = V^{\omega}\backslash \Omega _{1}$. Ceci signifie que dans le cas du jeu d'atteignabilité à deux joueurs le but de $J_{2}$ est d'empêcher $J_{1}$ d'atteindre son objectif. Nous allons expliciter une méthode permettant de déterminer à partir de quels sommets $J_{1}$ (respectivement $J_{2}$) est assuré de gagner le jeu (respectivement d'empêcher $J_{1}$ d'atteindre son objectif).Dans ce cas nous posons $F$ l'ensemble des sommets objectifs de $J_{1}$.
+	
+	\begin{rem}
+		Ce jeu est un exemple de \textit{jeu combinatoire}.
+	\end{rem}
+
+%PROPRIETE	
+	\label{Wempty}
+	\begin{propriete}
+		Soit $\mathcal{G}$ un jeu, on a : $W_{1}\cap W_{2} = \emptyset$.
+	\end{propriete}
+	\begin{demonstration}
+		Supposons au contraire que $W_{1}\cap W_{2} \neq \emptyset$. Cela signifie qu'il existe $s \in W_{1}$ tel que $s \in W_{2}$.\\
+		$s \in W_{1}$ si et seulement si il existe $\sigma _{1}$ une stratégie de $J_{1}$ telle que pour toute $\sigma {2}$ stratégie de $J_{2}$ nous avons : $Outcome(s,(\sigma _{1},\sigma _{2})) \in \Omega _{1}$.\\
+		$s \in W_{2}$ si et seulement si il existe $\tilde{\sigma} _{2}$ une stratégie de $J_{2}$ telle que pour toute $\tilde{\sigma}_{1}$ stratégie de $J_{1}$ nous avons : $Outcome(s,(\tilde{\sigma}_{1},\tilde{\sigma}_{2})) \in \Omega _{2}$.\\
+		Dès lors, on obtient : $Outcome(s,(\sigma _{1},\tilde{\sigma}_{2})) \in \Omega _{1} \cap \Omega _{2}$. Or $\Omega _{1} \cap \Omega _{2} = \emptyset$, ce qui amène la contradiction.\\
+	\end{demonstration}
+
+%DEFINITION: jeu déterminé	
+	\begin{defi}[Jeu déterminé]
+		Soit $\mathcal{G}$ un jeu, on dit que ce jeu est \textit{déterminé} si et seulement si $W_{1} = V \backslash W_{2}$.
+	\end{defi}
+
+%DEFINITION: predecesseur + ensembles attracteurs	
+	\begin{defi}
+		\label{def:predecesseur}
+		 Soit $X \subseteq V$.\\ 
+		Posons $Pre(X) = \{ v \in V_{1}| \exists v'((v,v')\in E) \wedge (v' \in X)\} \cup \{ v \in V_{2}|\forall v' ((v,v')\in E) \Rightarrow (v' \in X)\}$.
+		Définissons $(X_{k})_{k \in \mathbb{N}}$ la suite de sous-ensembles de $V$ suivante: \\
+		
+			$$\left\lbrace
+			  \begin{array}{c}
+			   X_{0} = F \\
+			   X_{k+1} = X_{k} \cup Pre(X_{k})
+		       \end{array}
+			\right. $$
+		
+	\end{defi}
+	
+%PROPRIETE
+	\label{suiteUltConst}
+	\begin{propriete}
+		
+		La suite $(X_{k})_{k \in \mathbb{N}}$ est ultimement constante. 
+	\end{propriete}
+	\begin{demonstration}
+		Premièrement, nous avons clairement que  $\forall k \in \mathbb{N}, X_{k} \subseteq X_{k+1}$.\\
+		Deuxièmement, nous avons : $\forall k \in \mathbb{N}, |X_{k}| \leq |V| $.\\
+		Dès lors, vu que la suite $(X_{k})_{k \in \mathbb{N}}$ est une suite croissante dont la cardinalité des ensembles est bornée par celle de $V$, elle est ultimement constante.\\
+		
+	\end{demonstration}
+	
+	
+% DEFINITION: attracteur
+	
+	\begin{defi}
+		La limite de la suite $(X_{k})_{k \in \mathbb{N}}$ est appelée \textit{attracteur de F} et sera notée $Attr(F)$.
+	\end{defi}
+	
+% PROPRIETE
+
+	\begin{propriete}
+	\begin{equation}
+		W_{1} = Attr(F) \label{line1}
+	\end{equation}
+	\begin{equation}
+		W_{2} = V \backslash Attr(F) \label{line2}
+	\end{equation}
+		
+	\end{propriete}
+	\begin{demonstration}
+		Pour prouver ~\eqref{line1} et ~\eqref{line2} nous allons procéder en plusieurs étapes.\\
+		
+		\noindent$\mathbf{Attr(F) \subseteq W_{1}}$: Soit $v \in Attr(F)$ alors par la propriétés \ref{suiteUltConst} on a : $Attr(F) = X_{N}$ pour un certain $N \in \mathbb{N}$. Montrons par récurrence sur $n$ que dans ce cas, pour tout $n \in \mathbb{N}$ tel que $X_{n} \subseteq Attr(F)$ on peut construire une stratégie $\sigma _{1}$ pour $J_{1}$ telle que $Outcome(v,(\sigma _{1},\sigma _{2})) \subseteq \Omega _{1}$.
+		\begin{enumerate}
+			\item[$\star$] Pour $n=0$: alors $v \in X_{0} = F$ et l'objectif est atteint par $J_{1}$.
+			\item[$\star$] Supposons que la propriété soit vérifiée pour tout $ 0 \leq n \leq k $ et montrons qu'elle est toujours satisfaite pour $n = k + 1 \leq N$. \\
+			Soit $v \in X_{k+1} = X_{k} \cup Pre(X_{k})$. \\
+			Si $v \in X_{k}$ alors par hypothèse de récurrence il existe $\sigma _{1}$ telle que $Outcome(v,(\sigma _{1},\sigma _{2})) \subseteq \Omega _{1}$.\\
+			Si $v \in Pre(X_{k})$, alors si $v \in V_{1}$ par définition de $Pre(X_{k})$ on sait qu'il existe $v'\in V_{k}$ tel que $(v,v')\in E$. Ainsi, on définit $\sigma _{1}(v) = v'$. Tandis que si $v \in V_{2}$, par définition de $Pre(X)$, quelle que soit la stratégie $\sigma _{2}$ adoptée par $J_{2}$  nous sommes assurés que $\sigma _{2}(v) \in X_{k}$. Dès lors le résultat $Outcome(v,(\sigma _{1},\sigma _{2})) \subseteq \Omega _{1}$ est assuré.
+		\end{enumerate}
+		Dès lors l'assertion est bien vérifiée.\\
+		
+		\noindent$\mathbf{V \backslash Attr(F) \subseteq W_{2}}$: Soit $v \in V \backslash Attr(F)$. Une stratégie gagnante pour $J_{2}$ est une stratégie telle que à chaque tour de jeu le sommet $s$ considéré soit dans l'ensemble $V\backslash Attr(F)$. En effet, sinon, au vu de la preuve précédent il existerait à partir du sommet $s$ une stratégie gagnante pour $J_{1}$ et $J_{1}$ n'aurait donc qu'à utiliser cette stratégie pour s'assurer la victoire. Donc, si $v \in V_{1}$ par définition de 	$V \backslash Attr(F)$ on est assuré que pour tout $v'\in V $ tel que $(v,v')\in E$ $v' \in V \backslash Attr(F)$. De plus, si $ v \in V_{2}$ par définition de $V \backslash Attr(F)$ il existe $v' \in V$ tel que $(v,v')\in E$ et $v' \in V \backslash Attr(F)$. La stratégie $\sigma _{2}$ adoptée par $J_{2}$ sera donc $\sigma _{2}(v)= v'$.Procéder de la sorte nous assure $Outcome(v,(\sigma _{1},\sigma _{2})) \subseteq \Omega _{2}$. Ce que nous voulions démontrer.\\
+		
+		\noindent $\mathbf{W_{1} \subseteq Attr(F)}$: Supposons au contraire : $W_{1} \not\subseteq Attr(F)$. Cela signifie qu'il existe $v \in W_{1}$ tel que $v \notin Attr(F)$. D'où $v \in V\backslash Attr(F)$ et comme $V \backslash Attr(F) \subseteq W_{2}$, on a $v \in W_{2}$. Or par la propriété \ref{Wempty}, $W_{1} \cap W_{2} = \emptyset $ et ici $v \in W_{1}$ et $v \in W_{2}$. Ce qui amène la contradiction.\\
+		
+		\noindent $\mathbf{W_{2} \subseteq V\backslash Attr(F)}$ : La preuve est similaire à celle de $W_{1} \subseteq Attr(F)$.\\
+		
+		Ces quatre inclusions d'ensemble démontrent donc ~\eqref{line1} et ~\eqref{line2}.
+	\end{demonstration}
+	\begin{rem}
+		Cette propriété nous montre que les jeux d'atteignabilité à objectif qualitatif et à deux joueurs sont déterminés.
+	\end{rem}
+	
+%EXEMPLE
+
+\begin{exemple}
+Soit $\mathcal{G} = ((V,E),V_{1},V_{2},\Omega _{1}, \Omega _{2},F)$ le jeu d'atteignabilité représenté par le graphe ci-dessous. Pour lequel $V = \{ v_{0},v_{1},v_{2},v_{3},v_{4},v_{5},v_{6},v_{7},v_{8} \}$, $E$ est l'ensemble des arcs représentés sur le graphe, $V_{1}$ est représenté par les sommets de forme ronde, $V_{2}$ est représenté par les sommets de forme carrée et $F$ est l'ensemble des sommets grisés.\\
+Appliquons sur l'exemple ci-dessous, le principe de l'attracteur.
+
+\input{exAtt1}
+\FloatBarrier
+\end{exemple}
+
+\noindent\textbf{Implémentation}:\\
+
+Au vu de la définition de l'attracteur d'un ensemble, l'implémentation de la résolution d'un jeu d'atteignabilité à deux joueurs avec objectif qualitatif en découle aisément. \\
+
+Soit $\mathcal{G} = ((V,E),V_{1},V_{2},\Omega _{1}, \Omega _{2},F)$, nous supposons que $V$ comprend $n$ sommets numérotés de $1$ à $n$ et que le graphe $G = (V,E)$ est encodé sur base de sa \textit{matrice d'adjacence} :matAdj. Ie: soit $M$ une matrice $ n \times n $ telle que $ \forall 1 \leq i \leq n, \forall 1\leq j \leq n , M[i,j] = 1 \Leftrightarrow (v_{i},v_{j})\in E $ et $M[i,j] = 0$ sinon.\\
+
+Un premier algorithme calcule à partir d'un sous ensemble $X \subseteq V$ de $V$ l'ensemble $Pre(X)$ comme définit en \ref{def:predecesseur}. Le principe de cet algorithme est le suivant: pour tout sommet $v\in V_{1}$ on teste s'il existe un arc sortant de $v$ vers un sommet de $X$. Si c'est le cas, alors $v\in Pre(X)$. On traite ensuite tous les sommets $v \in V_{2}$. Pour qu'un tel sommet $v$ appartienne à $Pre(X)$ il faut que tous les arcs sortant de $v$ atteignent un sommet de $X$.
+
+\begin{algorithm}
+	\caption{PreX}
+	\begin{algorithmic}
+		\REQUIRE Un sous ensemble $X$ de sommets de $V$.
+		\STATE preX $\leftarrow$ un nouvel ensemble
+		
+		\FOR {Chaque $v_{i} \in V_{1}$}	
+			\STATE ind $\leftarrow$ 0
+			\STATE existeArc $\leftarrow$ faux
+			\WHILE{$\neg existeArc$}
+				\IF {($matAdj[i,ind] = 1$) et ($v_{ind}\in X$)}
+					\STATE existeArc $\leftarrow$ vrai
+				\ELSE
+					\STATE ind $\leftarrow$ ind + 1
+				\ENDIF
+			\ENDWHILE
+			\IF {(existeArc = vrai)}
+				\STATE ajouter $v_{i}$ à $preX$
+			\ENDIF
+		\ENDFOR
+		
+		\FOR {Chaque $v_{i}\in V_{2}$}
+			\STATE ind $\leftarrow$ 0
+			\STATE tousArcs $\leftarrow$ vrai
+			\WHILE{tousArcs}
+				\IF {($matAdj[i,ind] = 1$) et ($v_{ind}\not\in X$)}
+					\STATE tousArcs $\leftarrow$ faux
+				\ELSE
+					\STATE ind $\leftarrow$ ind + 1
+				\ENDIF
+			\ENDWHILE
+			\IF {(tousArcs = vrai)}
+				\STATE ajouter $v_{I}$ à $preX$
+			\ENDIF
+		\ENDFOR
+		
+		\RETURN preX
+			
+\end{algorithmic}
+		
+\end{algorithm}
+

@@ -1,26 +1,191 @@
-\begin{tikzpicture}
-	\node[nR] (v5)at(2,4){$v_{5}$};
-	\node[nC] (v4) at (4,4){$v_{4}$};
-	\node[nC] (v2) at (6,4){$v_{2}$};
-	\node[nR] (v1) at (8,4){$v_{1}$};
-	\node[nRG] (v0) at (8,2){$v_{0}$};
-	\node[nR] (v3) at (6,2){$v_{3}$};
-	\node[nC] (v6) at (2,2){$v_{6}$};
-	\node[nR] (v7) at (3.5,0){$v_{7}$};
-	\node[nR] (v8) at (0.5,0){$v_{8}$};
+%!TEX root=main.tex
+
+\begin{figure}[h! l]
+	\centering
+
+	\begin{tikzpicture}
+		
+		\node[nR] (v5)at(2,4){$v_{5}$};
+		\node[nC] (v4) at (4,4){$v_{4}$};
+		\node[nC] (v2) at (6,4){$v_{2}$};
+		\node[nR] (v1) at (8,4){$v_{1}$};
+		\node[nRG] (v0) at (8,2){$v_{0}$};
+		\node[nR] (v3) at (6,2){$v_{3}$};
+		\node[nC] (v6) at (2,2){$v_{6}$};
+		\node[nR] (v7) at (3.5,0){$v_{7}$};
+		\node[nR] (v8) at (0.5,0){$v_{8}$};
 	
-	\draw[fleche] (v5)--(v4);
-	\draw[fleche] (v4)--(v2);
-	\draw[fleche] (v2)--(v1);
-	\draw[fleche] (v1)--(v0);
-	\draw[->,>=latex] (v0.south) to [out=-95,in=-45](v3.south);
-	\draw[fleche] (v3)--(v0);
-	\draw[fleche] (v3)--(v2);
-	\draw[fleche] (v4)--(v3);
-	\draw[fleche] (v5)--(v4);
-	\draw[fleche] (v6)--(v8);
-	\draw[fleche] (v5)--(v6);
-	\draw[fleche] (v8)--(v7);
-	\draw[fleche] (v7)--(v6);
+		\draw[fleche] (v5)--(v4);
+		\draw[fleche] (v4)--(v2);
+		\draw[fleche] (v2)--(v1);
+		\draw[fleche] (v1)--(v0);
+		\draw[->,>=latex] (v0.south) to [out=-95,in=-45](v3.south);
+		\draw[fleche] (v3)--(v0);
+		\draw[fleche] (v3)--(v2);
+		\draw[fleche] (v4)--(v3);
+		\draw[fleche] (v5)--(v4);
+		\draw[fleche] (v6)--(v8);
+		\draw[fleche] (v5)--(v6);
+		\draw[fleche] (v8)--(v7);
+		\draw[fleche] (v7)--(v6);
+
+	\end{tikzpicture}
 	
-\end{tikzpicture}
+	
+	\caption{$X_{0} = \{ v_{0} \}$ -Situation initiale,le seul état grisé est l'état objectif.}
+
+\end{figure}
+
+\begin{figure}[h! r]
+	\centering
+
+	\begin{tikzpicture}
+		
+		\node[nR] (v5)at(2,4){$v_{5}$};
+		\node[nC] (v4) at (4,4){$v_{4}$};
+		\node[nC] (v2) at (6,4){$v_{2}$};
+		\node[nRG] (v1) at (8,4){$v_{1}$};
+		\node[nRG] (v0) at (8,2){$v_{0}$};
+		\node[nRG] (v3) at (6,2){$v_{3}$};
+		\node[nC] (v6) at (2,2){$v_{6}$};
+		\node[nR] (v7) at (3.5,0){$v_{7}$};
+		\node[nR] (v8) at (0.5,0){$v_{8}$};
+	
+		\draw[fleche] (v5)--(v4);
+		\draw[fleche] (v4)--(v2);
+		\draw[fleche] (v2)--(v1);
+		\draw[fleche] (v1)--(v0);
+		\draw[->,>=latex] (v0.south) to [out=-95,in=-45](v3.south);
+		\draw[fleche] (v3)--(v0);
+		\draw[fleche] (v3)--(v2);
+		\draw[fleche] (v4)--(v3);
+		\draw[fleche] (v5)--(v4);
+		\draw[fleche] (v6)--(v8);
+		\draw[fleche] (v5)--(v6);
+		\draw[fleche] (v8)--(v7);
+		\draw[fleche] (v7)--(v6);
+
+	\end{tikzpicture}
+	
+	
+	\caption{$X_{1} = \{ v_{0},v_{1},v_{3}\}$ -- Première étape, $v_{1},v_{3} \in Pre(X_{0})$ car $v_{1},v_{3} \in V_{1}$ et il existe un arc entre $v_{1}$ et $v_{0}$ et entre $v_{3}$ et $v_{0}$.}
+
+\end{figure}
+
+
+\begin{figure}[h!]
+	\centering
+
+	\begin{tikzpicture}
+		
+		\node[nR] (v5)at(2,4){$v_{5}$};
+		\node[nC] (v4) at (4,4){$v_{4}$};
+		\node[nCG] (v2) at (6,4){$v_{2}$};
+		\node[nRG] (v1) at (8,4){$v_{1}$};
+		\node[nRG] (v0) at (8,2){$v_{0}$};
+		\node[nRG] (v3) at (6,2){$v_{3}$};
+		\node[nC] (v6) at (2,2){$v_{6}$};
+		\node[nR] (v7) at (3.5,0){$v_{7}$};
+		\node[nR] (v8) at (0.5,0){$v_{8}$};
+	
+		\draw[fleche] (v5)--(v4);
+		\draw[fleche] (v4)--(v2);
+		\draw[fleche] (v2)--(v1);
+		\draw[fleche] (v1)--(v0);
+		\draw[->,>=latex] (v0.south) to [out=-95,in=-45](v3.south);
+		\draw[fleche] (v3)--(v0);
+		\draw[fleche] (v3)--(v2);
+		\draw[fleche] (v4)--(v3);
+		\draw[fleche] (v5)--(v4);
+		\draw[fleche] (v6)--(v8);
+		\draw[fleche] (v5)--(v6);
+		\draw[fleche] (v8)--(v7);
+		\draw[fleche] (v7)--(v6);
+
+	\end{tikzpicture}
+	
+	
+	\caption{$X_{2} = \{ v_{0},v_{1},v_{2},v_{3} \}$ -- Deuxième étape, $v_{2} \in Pre(X_{1})$ car $v_{2} \in V_{2}$ et tous les arcs sortant de $v_{2}$ atteignent un état de $X_{1}$.}
+
+\end{figure}
+
+\begin{figure}[h!]
+	\centering
+
+	\begin{tikzpicture}
+		
+		\node[nR] (v5)at(2,4){$v_{5}$};
+		\node[nCG] (v4) at (4,4){$v_{4}$};
+		\node[nCG] (v2) at (6,4){$v_{2}$};
+		\node[nRG] (v1) at (8,4){$v_{1}$};
+		\node[nRG] (v0) at (8,2){$v_{0}$};
+		\node[nRG] (v3) at (6,2){$v_{3}$};
+		\node[nC] (v6) at (2,2){$v_{6}$};
+		\node[nR] (v7) at (3.5,0){$v_{7}$};
+		\node[nR] (v8) at (0.5,0){$v_{8}$};
+	
+		\draw[fleche] (v5)--(v4);
+		\draw[fleche] (v4)--(v2);
+		\draw[fleche] (v2)--(v1);
+		\draw[fleche] (v1)--(v0);
+		\draw[->,>=latex] (v0.south) to [out=-95,in=-45](v3.south);
+		\draw[fleche] (v3)--(v0);
+		\draw[fleche] (v3)--(v2);
+		\draw[fleche] (v4)--(v3);
+		\draw[fleche] (v5)--(v4);
+		\draw[fleche] (v6)--(v8);
+		\draw[fleche] (v5)--(v6);
+		\draw[fleche] (v8)--(v7);
+		\draw[fleche] (v7)--(v6);
+
+	\end{tikzpicture}
+	
+	
+	\caption{$X_{3} = \{ v_{0},v_{1},v_{2},v_{3},v_{4}\} $ -- Troisième étape, $v_{4} \in Pre(X_{2})$ car $v_{4} \in V_{2}$ et tous les arcs sortant de $v_{2}$ atteignent un état de $X_{2}$ ( $v_{2}$ et $v_{3}$).}
+
+\end{figure}
+
+
+\begin{figure}[h!]
+	\centering
+
+	\begin{tikzpicture}
+		
+		\node[nRG] (v5)at(2,4){$v_{5}$};
+		\node[nCG] (v4) at (4,4){$v_{4}$};
+		\node[nCG] (v2) at (6,4){$v_{2}$};
+		\node[nRG] (v1) at (8,4){$v_{1}$};
+		\node[nRG] (v0) at (8,2){$v_{0}$};
+		\node[nRG] (v3) at (6,2){$v_{3}$};
+		\node[nC] (v6) at (2,2){$v_{6}$};
+		\node[nR] (v7) at (3.5,0){$v_{7}$};
+		\node[nR] (v8) at (0.5,0){$v_{8}$};
+	
+		\draw[fleche] (v5)--(v4);
+		\draw[fleche] (v4)--(v2);
+		\draw[fleche] (v2)--(v1);
+		\draw[fleche] (v1)--(v0);
+		\draw[->,>=latex] (v0.south) to [out=-95,in=-45](v3.south);
+		\draw[fleche] (v3)--(v0);
+		\draw[fleche] (v3)--(v2);
+		\draw[fleche] (v4)--(v3);
+		\draw[fleche] (v5)--(v4);
+		\draw[fleche] (v6)--(v8);
+		\draw[fleche] (v5)--(v6);
+		\draw[fleche] (v8)--(v7);
+		\draw[fleche] (v7)--(v6);
+
+	\end{tikzpicture}
+	
+	
+	\caption{$X_{4}= Attr(F) = \{ v_{0},v_{1},v_{2},v_{3},v_{4}, v_{5} \} $ -- Dernière étape, $v_{5} \in Pre(X_{3})$ car $v_{4} \in V_{1}$ et il existe un arc sortant de $v_{5}$ vers $v_{4} \in Pre(X_{3})$.}
+
+\end{figure}
+
+
+
+
+
+
+
+
