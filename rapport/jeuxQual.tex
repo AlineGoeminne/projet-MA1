@@ -80,9 +80,9 @@
 	\end{defi}
 	
 %PROPRIETE
-	\label{suiteUltConst}
+	
 	\begin{propriete}
-		
+		\label{prop:suiteUltConst}
 		La suite $(X_{k})_{k \in \mathbb{N}}$ est ultimement constante. 
 	\end{propriete}
 	\begin{demonstration}
@@ -102,6 +102,7 @@
 % PROPRIETE
 
 	\begin{propriete}
+		\label{prop:attracteur}
 	\begin{equation}
 		W_{1} = Attr(F) \label{line1}
 	\end{equation}
@@ -113,7 +114,7 @@
 	\begin{demonstration}
 		Pour prouver ~\eqref{line1} et ~\eqref{line2} nous allons procéder en plusieurs étapes.\\
 		
-		\noindent$\mathbf{Attr(F) \subseteq W_{1}}$: Soit $v \in Attr(F)$ alors par la propriétés \ref{suiteUltConst} on a : $Attr(F) = X_{N}$ pour un certain $N \in \mathbb{N}$. Montrons par récurrence sur $n$ que dans ce cas, pour tout $n \in \mathbb{N}$ tel que $X_{n} \subseteq Attr(F)$ on peut construire une stratégie $\sigma _{1}$ pour $J_{1}$ telle que $Outcome(v,(\sigma _{1},\sigma _{2})) \subseteq \Omega _{1}$.
+		\noindent$\mathbf{Attr(F) \subseteq W_{1}}$: Soit $v \in Attr(F)$ alors par la propriétés \ref{prop:suiteUltConst} on a : $Attr(F) = X_{N}$ pour un certain $N \in \mathbb{N}$. Montrons par récurrence sur $n$ que dans ce cas, pour tout $n \in \mathbb{N}$ tel que $X_{n} \subseteq Attr(F)$ on peut construire une stratégie $\sigma _{1}$ pour $J_{1}$ telle que $Outcome(v,(\sigma _{1},\sigma _{2})) \subseteq \Omega _{1}$.
 		\begin{enumerate}
 			\item[$\star$] Pour $n=0$: alors $v \in X_{0} = F$ et l'objectif est atteint par $J_{1}$.
 			\item[$\star$] Supposons que la propriété soit vérifiée pour tout $ 0 \leq n \leq k $ et montrons qu'elle est toujours satisfaite pour $n = k + 1 \leq N$. \\
@@ -157,9 +158,11 @@ Un premier algorithme calcule à partir d'un sous ensemble $X \subseteq V$ de $V
 	\caption{PreX}
 	\begin{algorithmic}
 		\REQUIRE Un sous ensemble $X$ de sommets de $V$.
-		\STATE preX $\leftarrow$ un nouvel ensemble
+		\ENSURE Pre(X)
 		
-		\FOR {Chaque $v_{i} \in V_{1}$}	
+		\STATE preX $\leftarrow$ un ensemble vide
+		
+		\FORALL { $v_{i} \in V_{1}$}	
 			\STATE ind $\leftarrow$ 0
 			\STATE existeArc $\leftarrow$ faux
 			\WHILE{$\neg existeArc$}
@@ -174,7 +177,7 @@ Un premier algorithme calcule à partir d'un sous ensemble $X \subseteq V$ de $V
 			\ENDIF
 		\ENDFOR
 		
-		\FOR {Chaque $v_{i}\in V_{2}$}
+		\FORALL { $v_{i}\in V_{2}$}
 			\STATE ind $\leftarrow$ 0
 			\STATE tousArcs $\leftarrow$ vrai
 			\WHILE{tousArcs}
@@ -194,4 +197,32 @@ Un premier algorithme calcule à partir d'un sous ensemble $X \subseteq V$ de $V
 \end{algorithmic}
 		
 \end{algorithm}
+
+Un second algorithme permet de calculer les états gagnants de $J_{1}$ en utilisant les résultats \ref{prop:suiteUltConst} et \ref{prop:attracteur}. En effet, on y construit itérativement la suite $(X_{k})_{k \in \mathbb{N}}$ jusqu'à ce qu'elle devienne ultimement constante (ie: jusqu'à ce que la cardinalité des ensembles $X_{k}$ ne varie plus).
+
+\begin{algorithm}
+	\caption{Attr(F)}
+	\begin{algorithmic}
+		\REQUIRE $F$ l'ensemble des états objectifs de $J_{1}$
+		\ENSURE $Attr(F)$ l'ensemble des états gagnants de $J_{1}$
+		
+		\STATE $X_{k}$ $\leftarrow$ un ensemble vide
+		\STATE tailleDiff $\leftarrow$ vrai
+		
+		\WHILE {(tailleDiff = vrai)}
+			\STATE ancCard $\leftarrow$ $|X_{k}|$
+			\STATE $preX_{k}$ $\leftarrow PreX(X_{k})$
+			\STATE Ajouter à $X_{k}$tous les éléments de $preX_{k}$
+			\STATE nouvCard $\leftarrow$ $|X_{k}|$
+			
+			\IF {ancCard = nouvCard}
+				\STATE tailleDiff $\leftarrow$ faux
+			\ENDIF
+		\ENDWHILE
+		
+		\RETURN $X_{k}$
+\end{algorithmic}
+\end{algorithm}
+
+\FloatBarrier
 
