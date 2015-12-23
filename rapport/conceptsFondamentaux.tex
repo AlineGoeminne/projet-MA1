@@ -7,9 +7,9 @@ Cette section sera essentiellement inspirée de l'article de Brihaye et al. \cit
 
 \subsection{Jeux sur graphe}
 
-%---------------------------------------
+
 % Définition d'arène
-%---------------------------------------
+
 
 \begin{defi}[Arène]
 	Soit $\Pi$ un ensemble (fini) de joueurs. On appelle \textit{arène} le tuple suivant :\\
@@ -20,13 +20,25 @@ Cette section sera essentiellement inspirée de l'article de Brihaye et al. \cit
 	\end{enumerate}
 \end{defi}
 
+%Définition de jeu sur graphe
+
+\begin{defi}[Jeu sur graphe]
+	Un \textit{jeu sur graphe}, noté $\mathcal{G}$ est la donnée d'une arène $\mathcal{A}$ et d'un \textit{objectif} pour chaque joueur.
+\end{defi}
+
+\begin{rem}
+	Dans le cadre de ce document, les objectifs qui nous intéressent sont les \textit{objectifs d'atteignabilité}. Cette notion est abordée plus amplement dans la section \ref{sect:jeuxAtt}.
+\end{rem}
+
 \begin{rem}[Sommet initial]\label{sommetInit}
-	Dans certain type de jeux sur graphe, on considère que le jeu commence à partir d'un \textit{sommet initial} donné. On le note communément $v_{0}$.
+	Dans certains types de jeux sur graphe, on considère que le jeu commence à partir d'un \textit{sommet initial} donné. On le note communément $v_{0}$. Soit $\mathcal{G}$ un tel jeu, on note alors $(\mathcal{G},v_{0})$ le jeu ayant pour sommet initial $v_{0}$.
 \end{rem}
 
 \begin{notations}
 	Tout au long de ce rapport nous utilisons les conventions suivantes :
 	\begin{enumerate}
+		\item[$\bullet$] Soit $\mathcal{G}$ un jeu sur graphe, on note $(\mathcal{G},v_{0})$ le jeu ayant $v_{0}$ comme sommet initial .
+		
 		\item[$\bullet$] On note $J_{i}$  le joueur $i$.
 		
 		\item[$\bullet$] Pour $i\in \Pi$, on note : $-i\equiv \Pi\backslash \{ i\} $.
@@ -86,7 +98,7 @@ Etant donné une histoire $ h = h_{0} h_{1} h_{2} h_{3} ... h_{k}$,  on définit
 	\begin{enumerate}
 		\item[$\bullet$] Un \textit{profil de stratégies} $(\sigma _{i})_{i \in \Pi}$ est un tuple tel que pour tout $i$ $\sigma _{i}$ désigne la stratégie du 	joueur $i$. 
 				
-		\item[$\bullet$] Soit  $(\sigma _{i})_{i \in \Pi}$ un profil de stratégies, pour un certain joueur $j\in \Pi $on note $(\sigma _{i})_{i \in \Pi} = ( \sigma _{j},\sigma _{-j})$ .
+		\item[$\bullet$] Soit  $(\sigma _{i})_{i \in \Pi}$ un profil de stratégies, pour un certain joueur $j\in \Pi $ on note $(\sigma _{i})_{i \in \Pi} = ( \sigma _{j},\sigma _{-j})$ .
 		
 		\item[$\bullet$] A un profil de stratégie $(\sigma _{i})_{i \in \Pi}$ et à un sommet initial $v_{0}$ est associé un unique jeu $\rho$ qui est consistant avec toutes les stratégies $\sigma _{i}$. Ce jeu est appelé \textit{outcome} de $\sigma _{i}$ et est noté $Outcome(v_{0},(\sigma _{i})_{i\in \Pi})$.
 		
@@ -99,6 +111,6 @@ Etant donné une histoire $ h = h_{0} h_{1} h_{2} h_{3} ... h_{k}$,  on définit
 %----------------------------------------
 %Stratégie sans mémoire et avec mémoire
 %----------------------------------------
-\noindent\textbf{Stratégie avec mémoire vs. stratégie sans mémoire}
-
+\noindent\textbf{Stratégie avec mémoire vs. stratégie sans mémoire}\\
+\todo{}
 
