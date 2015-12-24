@@ -2,7 +2,14 @@
 
 \subsection{Jeux quantitatifs }
 
+Contrairement aux jeux à objectif qualitatif pour lesquels l'objectif d'un joueur est d'assurer qu'une certaine propriété soit vérifiée, pour le cas des \textit{jeux à objectif quantitatif} une certaine valeur quantifiée est associée à chaque jeu. Le but d'un joueur sera donc de \textit{maximiser} ou de \textit{minimiser} cette valeur afin que sa satisfaction soit maximale.\\
+
+Nous introduisons cette section par un exemple, ensuite nous aborderons les notions essentielles aux jeux quantitatifs en distinguant les \textit{jeux multi-joueurs} et les \textit{jeux à deux joueurs}.\\
+Les définitions et les notions sont inspirées de l'article de Brihaye at al \cite{DBLP:conf/lfcs/BrihayePS13}.\\
 
 \noindent\textbf {Exemple introductif} \\
+\indent Antoine et Thomas désirent se rendre à l'école à pied. Le chemin étant long, Antoine propose à Thomas de jouer à un jeu. A chaque carrefour et à tour de rôle un des deux garçons choisit la route à emprunter. A chaque mètre parcouru Thomas devra donner un bonbon à Antoine. L'objectif de Thomas est donc clairement d'atteindre le plus rapidement possible l'école afin de minimiser son coût, tandis que l'objectif d'Antoine est d'emprunter le plus long chemin pour obtenir le plus de bonbons possible.\\
 
-Antoine et Thomas désirent se rendre à l'école à pied. Le chemin étant long, Antoine propose à Thomas de jouer à un jeu. A chaque carrefour et à tour de rôle un des deux garçons choisit la route à emprunter. A chaque mètre parcouru Thomas devra donner un bonbon à Antoine. L'objectif de Thomas est donc clairement d'atteindre le plus rapidement possible l'école afin de minimiser son coût, tandis que l'objectif d'Antoine est d'emprunter le plus long chemin pour obtenir le plus de bonbons possible.
+Au vu de cet exemple, il est clair que le modèle des jeux qualitatifs n'est pas suffisant pour modéliser cette situation. En effet, il ne permet pas de caractériser le fait que plus Antoine obtiendra de bonbons plus il sera satisfait et inversement pour Thomas. Pour ce faire, nous devons introduire les concepts de \textit{fonction de gain} (ou \textit{fonction de coût} en fonction du point de vue duquel on se place) ainsi qu'un nouveau concept de solution pour ces jeux appelés \textit{cost games} : les \textit{équilibres de Nash}.\\
+
+
