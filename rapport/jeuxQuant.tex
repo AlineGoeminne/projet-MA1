@@ -4,7 +4,7 @@
 
 Contrairement aux jeux à objectif qualitatif pour lesquels l'objectif d'un joueur est d'assurer qu'une certaine propriété soit vérifiée, pour le cas des \textit{jeux à objectif quantitatif} une certaine valeur quantifiée est associée à chaque jeu. Le but d'un joueur sera donc de \textit{maximiser} ou de \textit{minimiser} cette valeur afin que sa satisfaction soit maximale.\\
 
-Nous introduisons cette section par un exemple, ensuite nous aborderons les notions essentielles aux jeux quantitatifs en distinguant les \textit{jeux multi-joueurs} et les \textit{jeux à deux joueurs}.\\
+Nous introduisons cette section par un exemple, ensuite nous aborderons les notions essentielles aux jeux quantitatifs en distinguant les \textit{jeux multijoueurs} et les \textit{jeux à deux joueurs}.\\
 Les définitions et les notions sont inspirées de l'article de Brihaye at al \cite{DBLP:conf/lfcs/BrihayePS13}.\\
 
 \noindent\textbf {Exemple introductif} \\
@@ -26,3 +26,12 @@ Au vu de cet exemple, il est clair que le modèle des jeux qualitatifs n'est pas
 \begin{rem}
 	Pour chaque $\rho \in Plays$, $Cost_{i}(\rho)$ représente le montant que $J_{i}$ doit payer quand le jeu $\rho$ a été joué.
 \end{rem}
+
+%DEFINITION: equilibre de Nash
+
+\begin{defi}
+	
+	Soit $(\mathcal{G}, v_{0})$ un \textit{jeu mutltijoueur avec coût et initialisé}, un profil de stratégie $(\sigma _{i})_{i \in \Pi}$ est un \textit{équilibre de Nash} dans $(\mathcal{G}, v_{0})$ si, pour chaque joueur $j \in \Pi$ et pour chaque stratégie $\tilde{\sigma}_{j}$ du joueur $j$, on a :
+	\begin{center}$ Cost_{j}(\rho) \leq Cost_{j}(\tilde{\rho})$ \end{center}
+	Où $\rho = Outcome(v_{0},(\sigma _{i})_{i \in \Pi})$ et $\tilde{\rho} = Outcome(v_{0}, (\sigma _{j} ,\sigma _{-j}))$.
+\end{defi}	
