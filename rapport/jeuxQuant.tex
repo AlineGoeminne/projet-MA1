@@ -10,6 +10,19 @@ Les définitions et les notions sont inspirées de l'article de Brihaye at al \c
 \noindent\textbf {Exemple introductif} \\
 \indent Antoine et Thomas désirent se rendre à l'école à pied. Le chemin étant long, Antoine propose à Thomas de jouer à un jeu. A chaque carrefour et à tour de rôle un des deux garçons choisit la route à emprunter. A chaque mètre parcouru Thomas devra donner un bonbon à Antoine. L'objectif de Thomas est donc clairement d'atteindre le plus rapidement possible l'école afin de minimiser son coût, tandis que l'objectif d'Antoine est d'emprunter le plus long chemin pour obtenir le plus de bonbons possible.\\
 
-Au vu de cet exemple, il est clair que le modèle des jeux qualitatifs n'est pas suffisant pour modéliser cette situation. En effet, il ne permet pas de caractériser le fait que plus Antoine obtiendra de bonbons plus il sera satisfait et inversement pour Thomas. Pour ce faire, nous devons introduire les concepts de \textit{fonction de gain} (ou \textit{fonction de coût} en fonction du point de vue duquel on se place) ainsi qu'un nouveau concept de solution pour ces jeux appelés \textit{cost games} : les \textit{équilibres de Nash}.\\
+Au vu de cet exemple, il est clair que le modèle des jeux qualitatifs n'est pas suffisant pour modéliser cette situation. En effet, il ne permet pas de caractériser le fait que plus Antoine obtiendra de bonbons plus il sera satisfait et inversement pour Thomas. Pour ce faire, nous devons introduire les concepts de \textit{fonction de gain} (ou \textit{fonction de coût} en fonction du point de vue duquel on se place) ainsi qu'un nouveau concept de solution pour ces jeux appelés \textit{jeu avec coût (cost games)} : les \textit{équilibres de Nash}. Nous supposons que dans de tels jeux les joueurs sont \textit{rationnels} c'est-à-dire qu'ils jouent de telle sorte à maximiser leur gain ou minimiser leur coût.\\
 
 
+% DEFINITION: mutliplayer cost game
+
+\begin{defi}
+	Un \textit{jeu multijoueur avec coût} est un tuple $\mathcal{G} = (\Pi ,V ,(V_{i})_{i \in \Pi} ,E ,(Cost_{i})_{i \in \Pi})$ où
+	\begin{enumerate}
+		\item[$\bullet$] $\mathcal{A} = (\Pi ,V ,(V_{i})_{i \in \Pi} ,E )$ est l'arène d'un jeu sur graphe.
+		\item[$\bullet$] $Cost_{i}: Plays \rightarrow \mathbb{R} \cup \{ +\infty , -\infty \} $ est la \textit{fonction de coût} de $J_{i}$. 
+	\end{enumerate}
+\end{defi}
+
+\begin{rem}
+	Pour chaque $\rho \in Plays$, $Cost_{i}(\rho)$ représente le montant que $J_{i}$ doit payer quand le jeu $\rho$ a été joué.
+\end{rem}
