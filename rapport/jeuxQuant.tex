@@ -15,7 +15,7 @@ Au vu de cet exemple, il est clair que le modèle des jeux qualitatifs n'est pas
 
 % DEFINITION: mutliplayer cost game
 
-\begin{defi}
+\begin{defi}[Jeu multijoueur avec coût]
 	Un \textit{jeu multijoueur avec coût} est un tuple $\mathcal{G} = (\Pi ,V ,(V_{i})_{i \in \Pi} ,E ,(Cost_{i})_{i \in \Pi})$ où
 	\begin{enumerate}
 		\item[$\bullet$] $\mathcal{A} = (\Pi ,V ,(V_{i})_{i \in \Pi} ,E )$ est l'arène d'un jeu sur graphe.
@@ -27,11 +27,38 @@ Au vu de cet exemple, il est clair que le modèle des jeux qualitatifs n'est pas
 	Pour chaque $\rho \in Plays$, $Cost_{i}(\rho)$ représente le montant que $J_{i}$ doit payer quand le jeu $\rho$ a été joué.
 \end{rem}
 
+
+%DEFINITION: poids d'un arc
+
+\begin{defi}[Poids d'un arc]
+	A chaque arc du graphe $G = (V,E)$ on peut y associer un \textit{poids} (ie: une valeur chiffrée). On associe donc à $G$ une \textit{fonction de poids}  $w : E \rightarrow \mathbb{R}$. On dit alors que $G$ est un graphe \textit{pondéré}.
+\end{defi}
+
+%EXEMPLE: graphe pondéré
+
+\input{graphePond}
+
 %DEFINITION: équilibre de Nash
 
-\begin{defi}
+\begin{defi}[Equilibre de Nash]
 	
-	Soit $(\mathcal{G}, v_{0})$ un \textit{jeu mutltijoueur avec coût et initialisé}, un profil de stratégie $(\sigma _{i})_{i \in \Pi}$ est un \textit{équilibre de Nash} dans $(\mathcal{G}, v_{0})$ si, pour chaque joueur $j \in \Pi$ et pour chaque stratégie $\tilde{\sigma}_{j}$ du joueur $j$, on a :
+	Soit $(\mathcal{G}, v_{0})$ un \textit{jeu multijoueur avec coût et initialisé}, un profil de stratégie $(\sigma _{i})_{i \in \Pi}$ est un \textit{équilibre de Nash} dans $(\mathcal{G}, v_{0})$ si, pour chaque joueur $j \in \Pi$ et pour chaque stratégie $\tilde{\sigma}_{j}$ du joueur $j$, on a :
 	\begin{center}$ Cost_{j}(\rho) \leq Cost_{j}(\tilde{\rho})$ \end{center}
-	Où $\rho = Outcome(v_{0},(\sigma _{i})_{i \in \Pi})$ et $\tilde{\rho} = Outcome(v_{0}, (\tilde{\sigma} _{j} ,\sigma _{-j}))$.
+	où $\rho = Outcome(v_{0},(\sigma _{i})_{i \in \Pi})$ et $\tilde{\rho} = Outcome(v_{0}, (\tilde{\sigma} _{j} ,\sigma _{-j}))$.
 \end{defi}	
+
+\begin{rem}
+	\todo{Signification d'être un EN}
+\end{rem}
+
+%DEFINITION: déviation profitable
+
+\begin{defi}
+ \todo{}
+\end{defi}
+
+%EXEMPLE D'EN
+
+\begin{exemple}
+	\todo{exemple d'EN} 
+\end{exemple}
