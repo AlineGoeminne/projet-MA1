@@ -27,11 +27,11 @@ Au vu de cet exemple, il est clair que le modèle des jeux qualitatifs n'est pas
 	Pour chaque $\rho \in Plays$, $Cost_{i}(\rho)$ représente le montant que $J_{i}$ doit payer quand le jeu $\rho$ a été joué.
 \end{rem}
 
-%DEFINITION: equilibre de Nash
+%DEFINITION: équilibre de Nash
 
 \begin{defi}
 	
 	Soit $(\mathcal{G}, v_{0})$ un \textit{jeu mutltijoueur avec coût et initialisé}, un profil de stratégie $(\sigma _{i})_{i \in \Pi}$ est un \textit{équilibre de Nash} dans $(\mathcal{G}, v_{0})$ si, pour chaque joueur $j \in \Pi$ et pour chaque stratégie $\tilde{\sigma}_{j}$ du joueur $j$, on a :
 	\begin{center}$ Cost_{j}(\rho) \leq Cost_{j}(\tilde{\rho})$ \end{center}
-	Où $\rho = Outcome(v_{0},(\sigma _{i})_{i \in \Pi})$ et $\tilde{\rho} = Outcome(v_{0}, (\sigma _{j} ,\sigma _{-j}))$.
+	Où $\rho = Outcome(v_{0},(\sigma _{i})_{i \in \Pi})$ et $\tilde{\rho} = Outcome(v_{0}, (\tilde{\sigma} _{j} ,\sigma _{-j}))$.
 \end{defi}	
