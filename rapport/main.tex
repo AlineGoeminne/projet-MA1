@@ -43,46 +43,16 @@
 %---------------------------------------------------------
 % Personnal commands
 %---------------------------------------------------------
-
-\newcommand{\smalltitle}[1]{\bigskip\large\textbf{#1}\par\normalsize\medskip}
-%\newcommand\myworries[1]{\textcolor{red}{#1}}
 \newcommand\todo[1]{\textcolor{red}{TODO: #1}\PackageWarning{TODO:}{#1!}}
 
-
-\theoremstyle{definition}
-\newtheorem{defi}{Définition}[section]
-\newtheorem{note}{Note}[section]
-\newtheorem{propriete}{Propriété}[section]
-\newtheorem{exemple}{Exemple}[section]
-\newtheorem{corollaire}{Corollaire}[section]
-\theoremstyle{remark}
-\newtheorem{rem}{Remarque}[section]
-\newtheorem{thm}{Théorème}[section]
-\newtheorem{illustration}{Illustration}[section]
-\newenvironment{demonstration}{\begin{proof}[\textnormal{\textbf{Preuve.}}]}{\end{proof}}
-\theoremstyle{definition}
-\newtheorem*{notation}{Notation}
-\theoremstyle{definition}
-\newtheorem*{notations}{Notations}
 \definecolor{gris}{gray}{0.60}
 
 \setlength{\parindent}{1cm}
 \newcommand{\textcalli}[1]{{\small{\textbf{$\negmedspace$\calligra #1}}}}
 
-\tikzset{nRG/.style={draw,circle,fill=gris,minimum height=0.7cm}}
-\tikzset{nR/.style={draw,circle,minimum height=0.7cm}}
-\tikzset{nC/.style={draw,rectangle,minimum height=0.7cm,minimum width=0.7cm}}
-\tikzset{nCG/.style={draw,rectangle,fill=gris,minimum height=0.7cm,minimum width=0.7cm}}
-\tikzset{nCD/.style={draw,rectangle,dashed,minimum height=0.7cm,minimum width=0.7cm}}
-
-
-\tikzset{fleche/.style={->,>=latex}}
-
-\renewcommand{\algorithmicif}{\textbf{si}}
-\renewcommand{\algorithmicthen}{\textbf{alors}}
-\renewcommand{\algorithmicrequire}{\textbf{Entrée(s):}}
-\renewcommand{\algorithmicendif}{\textbf{fin}}
-\newcommand{\POUR}[1]{\textbf{pour} #1 \textbf{faire}}
+\input{commandesTikzset}
+\input{commandesDefProp}
+\input{commandesAlgo}
 %---------------------------------------------------------
 % More symbols
 %---------------------------------------------------------
