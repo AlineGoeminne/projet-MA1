@@ -27,10 +27,31 @@ Au vu de cet exemple, il est clair que le modèle des jeux qualitatifs n'est pas
 	Pour chaque $\rho \in Plays$, $Cost_{i}(\rho)$ représente le montant que $J_{i}$ doit payer quand le jeu $\rho$ a été joué.
 \end{rem}
 
+%EXEMPLE: fonctions de coût.
+\begin{exemple}[Fonctions de coût]
+  Dans le cadre de ce projet, nous nous intéressons aux jeux sur graphe tels que l'objectif des joueurs est un objectif quantitatif. De plus, nous souhaitons que l'objectif des joueurs soit atteint le plus rapidement possible. Les fonctions de coût qui nous intéressent sont donc les suivantes: \\
+	
+	Pour tout  $\rho = \rho _{0} \rho _{1} \rho _{2} \ldots $ où $\rho \in Plays$ on définit:
+	\begin{enumerate}
+	\item $Cost_{i}(\rho) = $ $\begin{cases} 
+									\min \{ i | \rho _{i} \in Goal_{i} \} & \text{si } \exists i \text{ tq } \rho _{i} \in Goal_{i} \\
+									+\infty \text{ sinon}
+									\end{cases}$
+	\item $Cost_{i}(\rho) = $ $\begin{cases}
+									\sum_{i = 0}^{n-1} w(\rho_{i},\rho_{i+1}) & \text{ si } n \text{est le plus petit indice tq } \rho_{n}\in 					  Goal_{i}\\
+									+\infty & \text{ sinon}
+									\end{cases}$ \\
+									où $w$ est une \textit{fonction de poids} (cf. définition \ref{def:fonctionPoids}).
+	\end{enumerate}
+\end{exemple}
 
+\begin{rem}
+	L'exemple 1 est un cas particulier de l'exemple 2 avec $w(\rho_{i},\rho_{i+1}) = 1$ pour tout $i$.
+\end{rem}
 %DEFINITION: poids d'un arc
 
-\begin{defi}[Poids d'un arc]
+\begin{defi}[Fonction de poids]
+	\label{def:fonctionPoids}
 	A chaque arc du graphe $G = (V,E)$ on peut y associer un \textit{poids} (ie: une valeur chiffrée). On associe donc à $G$ une \textit{fonction de poids}  $w : E \rightarrow \mathbb{R}$. On dit alors que $G$ est un graphe \textit{pondéré}.
 \end{defi}
 
