@@ -1,15 +1,16 @@
 %!TEX root=main.tex
 \begin{exemple}[Jeu avec un graphe pondéré]
+	\label{ex:graphePond}
 	
-Soit un jeu $\mathcal{G} = ( \Pi, V, (V_{1},V_{2}), E, (Goal_{1},Goal_{2}))$ tel que $\Pi = {1,2}$, $V_{1} = \{ v_{0}, v_{1}, v_{3} \}$, $V_{2} = \{ v_{2}\}$, $Goal_{1} = \{ v_{2}\}$,$Goal_{2} = \{ v_{0} \}$, $w(v_{i},v_{j}) = 1$ pour tout $0 \leq i,j \leq 3 , i \neq j$. Cet exemple est illustré par la figure \ref{ex:graphePond1}.
+Soit un jeu $\mathcal{G} = ( \Pi, V, (V_{1},V_{2}), E, (Goal_{1},Goal_{2}))$ tel que $\Pi = {1,2}$, $V_{1} = \{ v_{0}, v_{1}, v_{3} \}$, $V_{2} = \{ v_{2}\}$, $Goal_{1} = \{ v_{3}\}$, $Goal_{2} = \{ v_{0} \}$, $w(v_{i},v_{j}) = 1$ pour tout $0 \leq i,j \leq 3 , i \neq j$. Cet exemple est illustré par la figure \ref{ex:graphePond1}.
 
 \begin{figure}[ht!]
 	\centering
 
 	\begin{tikzpicture}
 		
-		\node[nR] (v3) at (4,-2){$v_{3}$};
-		\node[nCB] (v2) at (4,0){$v_{2}$};
+		\node[nRB] (v3) at (4,-2){$v_{3}$};
+		\node[nC] (v2) at (4,0){$v_{2}$};
 		\node[nR] (v1) at (2,0){$v_{1}$};
 		\node[nRG] (v0) at (0,0){$v_{0}$};
 	

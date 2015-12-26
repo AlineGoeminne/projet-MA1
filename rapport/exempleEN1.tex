@@ -1,0 +1,41 @@
+%!TEX root=main.tex
+
+\begin{exemple}
+	Considérons le jeu décrit dans l'exemple \ref{ex:graphePond} muni pour $J_{1}$ et $J_{2}$ de la fonction de coût (2) de l'exemple \ref{ex:fonctionsCout} (p.\pageref{ex:fonctionsCout}) et donnons un exemple d'équilibre de Nash de ce jeu.\\
+	
+	 \begin{minipage}[c]{0.30\linewidth}Soit $\sigma _{1}(v) =$ $\begin{cases}
+						 v_{1} & \text{ si } v = v_{0}\\
+						 v_{2} & \text{ si } v = v_{1}\\
+						 v_{0} & \text{ si } v = v_{3}
+						\end{cases}$ \end{minipage} \hfill
+	\begin{minipage}[c]{0.30\linewidth}\center{et}\end{minipage} \hfill \begin{minipage}[c]{0.30\linewidth}	\center{$\sigma _{2}(v) = v_{3}$ si $v = v_{2}$} \end{minipage} \newline
+		
+\noindent	(rem: ces deux stratégies sont des stratégies sans mémoire), $(\sigma _{1}, \sigma _{2})$ est un équilibre de Nash de $(\mathcal{G}, v_{0})$. De plus, soit $\rho = Outcome(v_{0},(\sigma _{1},\sigma _{2}))$ nous avons : $Cost_{1}(\rho) = 3$ et $Cost_{2}(\rho) = 0$.\\
+\begin{demonstration}	
+	Les seules déviations à considérer sont celles quand $J_{1}$ est en $v_{1}$ car il a le choix de se rendre en $v_{0}$ ou en $v_{2}$.\\ Considérons $\tilde{\sigma _{1}}(v) = $ $\begin{cases}
+						 v_{1} & \text{ si } v = v_{0}\\
+						 v_{0} & \text{ si } v = v_{1}\\
+						 v_{0} & \text{ si } v = v_{3}
+						\end{cases}$ .
+Dans ce cas, soit $\tilde{\rho} = Outcome(v_{0},(\tilde{\sigma _{1}},\sigma _{2}))$, nous avons : \mbox{$Cost_{1}(\tilde{\rho}) = + \infty$}. Ce n'est donc pas une déviation profitable.\\
+Considérons maintenant la famille $(\sigma _{1}^{n})_{n \in \mathbb{N}}$ de stratégie de $J_{1}$ qui décrit le fait que $J_{1}$ fait passer $n$ fois le "jeton" par l'état $v_{1}$ avant de le faire glisser vers l'état $v_{2}$. \\
+
+$\sigma _{1}^{n}(h) = $ $\begin{cases}
+					 v_{1} & \text{ si } h = h'v_{0}\\
+					 v_{0} & \text{ si } h = h'v_{3}\\
+					 v_{2} & \text{ si } h = h'v_{1} \text{ et } \exists h_{1},\ldots,h_{n} \in h' \text{ tq } h_{1},\ldots,h_{n} = v_{1} \\
+					v_{0} & \text{ sinon}
+					
+					\end{cases}$ .
+					
+\noindent Nous avons alors: soit $ p = Outcome(v_{0},(\sigma _{1}^{n},\sigma _{2}))$, $Cost_{1}(p) = 2n+1$. Et pour tout $n > 1$, on a que $3=Cost_{1}(\rho) < Cost_{1}(p) = 2n +1$. $\sigma _{1}^{n}$ n'est donc pas une déviation profitable pour $J_{1}$ et ce pour tout $n \in  \mathbb{N}$.\\
+
+Comme $\sigma _{2}$ est la seule stratégie possible pour $J_{2}$, nous pouvons déduire qu'aucun des deux joueurs n'a de déviation profitable. Donc $(\sigma _{1}, \sigma _{2})$ est un équilibre de Nash de $(\mathcal{G},v_{0})$.
+
+\end{demonstration}
+
+\todo{ définir : h = h'v}
+					
+    
+\end{exemple}
+
