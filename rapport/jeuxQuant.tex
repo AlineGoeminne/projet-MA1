@@ -26,10 +26,9 @@ Au vu de cet exemple, il est clair que le modèle des jeux qualitatifs n'est pas
 	\end{enumerate}
 \end{defi}
 
-\begin{rem}
-	Pour chaque $\rho \in Plays$, $Cost_{i}(\rho)$ représente le montant que $J_{i}$ doit payer quand le jeu $\rho$ a été joué.
+
+	Pour chaque $\rho \in Plays$, $Cost_{i}(\rho)$ représente le montant que $J_{i}$ perd quand le jeu $\rho$ est joué.
 	Le but de chaque joueur est donc de \textbf{minimiser} sa fonction de coût.
-\end{rem}
 
 %EXEMPLE: fonctions de coût.
 \begin{exemple}[Fonctions de coût]
@@ -40,11 +39,11 @@ Au vu de cet exemple, il est clair que le modèle des jeux qualitatifs n'est pas
 	\begin{enumerate}
 	\item $Cost_{i}(\rho) = $ $\begin{cases} 
 									\min \{ i | \rho _{i} \in Goal_{i} \} & \text{si } \exists i \text{ tq } \rho _{i} \in Goal_{i} \\
-									+\infty \text{ sinon}
+									+\infty & \text{ sinon}
 									\end{cases}$
 	\item $Cost_{i}(\rho) = $ $\begin{cases}
 									\sum_{i = 0}^{n-1} w(\rho_{i},\rho_{i+1}) & \text{ si } n \text{est le plus petit indice tq } \rho_{n}\in 					  Goal_{i}\\
-									+\infty & \text{ sinon}
+									+\infty & \text{sinon}
 									\end{cases}$ \\
 									où $w$ est une \textit{fonction de poids} (cf. définition \ref{def:fonctionPoids}).
 	\end{enumerate}
@@ -99,14 +98,43 @@ Au vu de cet exemple, il est clair que le modèle des jeux qualitatifs n'est pas
 
 \subsubsection{Jeux Min-Max avec coût}
 
-\begin{defi}[Jeu Min-Max avec coût]
+% DEFINITION: jeu Min-Max avec coût
+
+\begin{defi}[Jeu Min-Max avec coût] $\text{ }$\\
 	
 	Un \textit{jeu Min-Max avec coût} est un tuple $\mathcal{G} = (V, V_{Min}, V_{Max}, E, Cost_{Min}, Gain_{Max})$, où
 	\begin{enumerate}
-		\item[$\bullet$] $G = (V,E)$ est un graphe orienté fini dont $V$ est l'ensemble des sommets et $E \subseteq V \times V$ est l'ensemble des arêtes.
+		\item[$\bullet$] $G = (V,E)$ est un graphe orienté fini dont $V$ est l'ensemble des sommets et $E \subseteq V\times V$ est l'ensemble des arêtes.
 		\item[$\bullet$] $(V_{Min},V_{Max})$ est une partition de $V$ telle que $V_{Min}$(respectivement $V_{Max}$) est l'ensemble des sommets contrôlés par le joueur \textit{Min} (respectivement \textit{Max}).
 		\item[$\bullet$] $Cost_{Min}: Plays \rightarrow \mathbb{R} \cup \{+ \infty, -\infty \}$ est la \textit{fonction de coût} du joueur \textit{Min}.
 		\item[$\bullet$] $Gain_{Max}: Plays \rightarrow \mathbb{R} \cup \{ + \infty, -\infty \}$ est la \textit{fonction de gain} du joueur \textit{Max}.
 	\end{enumerate}
 		
 \end{defi}
+
+\begin{rem}
+	Dans cette définition, on sous-entend que $\Pi = \{ Min, Max \}$.
+\end{rem}
+
+Pour chaque $\rho \in Plays$, $Cost_{Min}(\rho)$ représente le montant que \textit{Min} perd quand le jeu $\rho$ est joué et $Gain_{Max}(\rho)$ représente le gain que \textit{Max} gagne quand le jeu $\rho$ est joué.
+Le but de \textit{Min} (resp. \textit{Max}) est donc de \textbf{minimiser} (resp. \textbf{maximiser}) sa fonction de coût (resp. fonction de gain). Ce qui explique le choix des noms des joueurs.\\
+
+%DEFINITION: jeu Min-Max à somme nulle
+
+\begin{defi}[Jeu à somme nulle]
+	Un jeu Min-Max avec coût est dit \textit{à somme nulle} si $Gain_{Max} = Cost_{Min}$.
+\end{defi}
+
+% DEFINITION: Valeur supérieure et valeur inférieure
+
+\begin{defi}[Valeur inférieure/supérieure]
+	
+	Soit $\mathcal{G}$ un jeu Min-Max avec coût, on définit pour chaque sommet $v \in V$: 
+	\begin{enumerate}
+		\item[$\bullet$]\textit{Valeur supérieure:} $\overline{Val}(v) = \inf\limits_{\sigma _{1} \in \Sigma _{Min}} \sup\limits_{\sigma _{2} \in \Sigma_{Max}} Cost_{Min}(\rho)$ où $\rho = Outcome(v,(\sigma _{1},\sigma _{2}))$
+		
+		\item[$\bullet$]\textit{Valeur inférieure:} $\underline{Val}(v) = \sup\limits_{\sigma _{2} \in \Sigma_{Max}}  \inf\limits_{\sigma _{1} \in \Sigma _{Min}} Gain_{Max}(\rho)$  où $\rho = Outcome(v,(\sigma _{1},\sigma _{2}))$
+	\end{enumerate}
+\end{defi}
+
+
