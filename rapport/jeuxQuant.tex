@@ -12,7 +12,10 @@ Les définitions et les notions sont inspirées de l'article de Brihaye at al \c
 
 Au vu de cet exemple, il est clair que le modèle des jeux qualitatifs n'est pas suffisant pour modéliser cette situation. En effet, il ne permet pas de caractériser le fait que plus Antoine obtiendra de bonbons plus il sera satisfait et inversement pour Thomas. Pour ce faire, nous devons introduire les concepts de \textit{fonction de gain} (ou \textit{fonction de coût} en fonction du point de vue duquel on se place) ainsi qu'un nouveau concept de solution pour ces jeux appelés \textit{jeu avec coût (cost games)} : les \textit{équilibres de Nash}. Nous supposons que dans de tels jeux les joueurs sont \textit{rationnels} c'est-à-dire qu'ils jouent de telle sorte à maximiser leur gain ou minimiser leur coût.\\
 
-
+%----------------------------
+%Jeu multijoueur avec coût
+%----------------------------
+\subsubsection{Jeux multijoueurs avec coût}
 % DEFINITION: mutliplayer cost game
 
 \begin{defi}[Jeu multijoueur avec coût]
@@ -25,6 +28,7 @@ Au vu de cet exemple, il est clair que le modèle des jeux qualitatifs n'est pas
 
 \begin{rem}
 	Pour chaque $\rho \in Plays$, $Cost_{i}(\rho)$ représente le montant que $J_{i}$ doit payer quand le jeu $\rho$ a été joué.
+	Le but de chaque joueur est donc de \textbf{minimiser} sa fonction de coût.
 \end{rem}
 
 %EXEMPLE: fonctions de coût.
@@ -53,7 +57,7 @@ Au vu de cet exemple, il est clair que le modèle des jeux qualitatifs n'est pas
 
 \begin{defi}[Fonction de poids]
 	\label{def:fonctionPoids}
-	A chaque arc du graphe $G = (V,E)$ on peut y associer un \textit{poids} (ie: une valeur chiffrée). On associe donc à $G$ une \textit{fonction de poids}  $w : E \rightarrow \mathbb{R}$. On dit alors que $G$ est un graphe \textit{pondéré}.
+	A chaque arc d'un graphe $G = (V,E)$ on peut y associer un \textit{poids} (ie: une valeur chiffrée). On associe donc à $G$ une \textit{fonction de poids}  $w : E \rightarrow \mathbb{R}$. On dit alors que $G$ est un graphe \textit{pondéré}.
 \end{defi}
 
 %EXEMPLE: graphe pondéré
@@ -87,3 +91,22 @@ Au vu de cet exemple, il est clair que le modèle des jeux qualitatifs n'est pas
 %EXEMPLE D'EN
 
 \input{exempleEN1}
+
+
+%----------------------------------------
+% Jeu avec coût MIN-MAX
+%---------------------------------------
+
+\subsubsection{Jeux Min-Max avec coût}
+
+\begin{defi}[Jeu Min-Max avec coût]
+	
+	Un \textit{jeu Min-Max avec coût} est un tuple $\mathcal{G} = (V, V_{Min}, V_{Max}, E, Cost_{Min}, Gain_{Max})$, où
+	\begin{enumerate}
+		\item[$\bullet$] $G = (V,E)$ est un graphe orienté fini dont $V$ est l'ensemble des sommets et $E \subseteq V \times V$ est l'ensemble des arêtes.
+		\item[$\bullet$] $(V_{Min},V_{Max})$ est une partition de $V$ telle que $V_{Min}$(respectivement $V_{Max}$) est l'ensemble des sommets contrôlés par le joueur \textit{Min} (respectivement \textit{Max}).
+		\item[$\bullet$] $Cost_{Min}: Plays \rightarrow \mathbb{R} \cup \{+ \infty, -\infty \}$ est la \textit{fonction de coût} du joueur \textit{Min}.
+		\item[$\bullet$] $Gain_{Max}: Plays \rightarrow \mathbb{R} \cup \{ + \infty, -\infty \}$ est la \textit{fonction de gain} du joueur \textit{Max}.
+	\end{enumerate}
+		
+\end{defi}
