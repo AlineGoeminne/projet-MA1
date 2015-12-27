@@ -1,0 +1,132 @@
+%!TEX root=main.tex
+
+
+\section{Annexe A}
+\label{algo:dijkstra}
+Cette section se base sur le livre de référence de Cormen \emph{et al.} ~\cite{Cormen:2009:IA:580470} (pages 658--662).\\
+
+Soit $G = (V,E)$ un graphe orienté et pondéré,à partir d'un sommet $s$ donné (appelé \textit{source}) l'algorithme de Dijkstra permet de calculer les plus courts chemins à partir de $s$ vers les autres sommets du graphe. Cet algorithme s'applique sur des graphes orientés pondérés tels que la fonction de poids $w$ associée au graphe vérifie la propriété suivante: pour tout $(u,v)\in E$ on a que $w(u,v) \geq 0$.\\
+
+%Idée de l'algorithme
+
+\noindent \textbf{Idées de l'algorithme:}\\
+\begin{enumerate}
+	
+	\item[$\bullet$] A tout sommet $s'$ de $V$ on associe une \textit{valeur} $d$ qui représente l'estimation du plus court chemin de $s$ à $s'$. Cette valeur est mise à jour en court d'exécution de l'algorithme afin qu'à la fin de celle-ci $d$ soit exactement le poids du plus court chemin de $s$ à $s'$. On initialise l'algorithme de Dijkstra en mettant la valeur $+\infty$ à tous les sommets et $0$ à $s$. En effet, le plus court chemin pour aller de $s$ à $s$ est de rester en $s$.
+	
+	\item[$\bullet$] On utilise une \textit{file de priorité} $Q$ (structure de données permettant de stocker des éléments en fonction de la valeur d'une clef) qui permet de stocker les sommets classés par leur valeur $d$. Sur cette file de priorité on peut effectuer les opérations suivantes: insertion d'un élément, extraction d'un élément ayant la clef de la plus petit valeur,test de la présence ou non d'élément dans $Q$, augmentation ou diminution de la valeur de la clef associée à un sommet. A l'initialisation de l'algorithme $Q = V$.
+	
+	\item[$\bullet$] Afin de pouvoir retrouver un plus court chemin de $s$ à un autre sommet $s'$ chaque sommet stocke le \textit{prédécesseur} qui a permis de constituer ce plus court chemin.
+	
+	\item[$\bullet$] On maintient $S \subseteq V$ un ensemble de sommets qui vérifient la propriété suivante: pour tout sommet $s'\in V$ le plus court chemin de $s$ à $s'$ a déjà été calculé. A l'initialisation de l'algorithme $V = \emptyset$.
+	
+	\item[$\bullet$]De manière répétée: \begin{enumerate}
+										\item On sélectionne un sommet $u \in V \backslash S$ associé à l'approximation minimum du plus court chemin de $s$ à $u$.
+										\item On ajoute $u$ à $S$.
+										\item On \textit{relaxe} tous les arcs sortant de $u$.
+									\end{enumerate}
+	\item[$\bullet$] La \textit{relaxation} des arcs sortant de $u$ consiste à vérifier pour tout $u'$ tq $(u,u')\in E$ qu'il n'existe pas un plus court chemin de $s$ vers $u'$ que celui potentiellement déjà calculé et tel que ce nouveau chemin est de la forme $s ... uu'$. Si on trouve un tel nouveau chemin, alors on procède à la mise à jour du prédécesseur de $u'$ ( qui devient en fait $u$).
+\end{enumerate}
+$\text{}$\\
+
+%Pseudo-code
+
+\noindent \textbf{Pseudo-code}
+
+Maintenant que les grandes idées de l'algorithme ont été expliquées, retranscrivons le pseudo-code. Pour des questions de complexité, l'ensemble des arcs du graphe sont représentés sous la forme d'un \textit{tableau d'adjacence} \footnote{Un tableau d'adjacence,Adj, est définit comme tel: à chaque case d'un tableau est associé un sommet de $V$ et à chacun de ces sommets est associé la liste de ses successeurs. $Adj[u]$ permet de récupérer la liste des successeurs du sommet $u$. } et le file de priorité est implémentée par un \textit{tas (heap min)}. L'algorithme ~\ref{algo:dijk} représente le pseudo-code de l'algorithme proprement dit, comme explicité dans le livre de référence de Cormen \emph{et al.} ~\cite{Cormen:2009:IA:580470}. Les algorithmes \ref{algo:initSU},\ref{algo:initTas},\ref{algo:relaxer} décrivent les algorithmes qui sont appelés au sein de l'algorithme ~\ref{algo:dijk}.
+
+\begin{algorithm}
+	\caption{\textsc {Dijkstra(G,w,s)}}
+	 \label{algo:dijk}
+	\begin{algorithmic}[1]
+		\REQUIRE $G = (V,E)$ un graphe orienté pondéré où $E$ est représenté par le tableau d'adjacence, $w: E \rightarrow \mathbb{R}^{+}$ une fonction de poids,$s$ le sommet source.
+		\ENSURE / \textbf{\textsc{Effet(s) de bord :}} Calcule un plus court chemin de $s$ vers les autres sommets du graphe.
+		
+		\STATE \textsc{Initialiser-Source-Unique}($G,s$)
+		\STATE $S \leftarrow \emptyset$
+		\STATE $Q \leftarrow $\textsc{Initialiser-Tas}($G$)
+		\WHILE {$Q \neq \emptyset$}
+			\STATE $u \leftarrow$ \textsc{Extraction-Min}($Q$)
+			\STATE $S \leftarrow S \cup \{ u \} $
+			
+			\FORALL{$v \in Adj[u]$}
+				\STATE \textsc{Relaxer}(u,v,w)
+			\ENDFOR
+		\ENDWHILE
+	
+			
+\end{algorithmic}
+		
+\end{algorithm}
+\todo{Regarder comment on implémente un tas, pour l'initialisation}
+
+% ALGO: Initialiser-Source-Unique
+
+\begin{algorithm}
+	\caption{\textsc {Initialiser-Source-Unique}($G,s)$}
+	 \label{algo:initSU}
+	\begin{algorithmic}[1]
+		\REQUIRE $G$ un graphe orienté pondéré
+		\ENSURE / \textbf{\textsc{Effet(s) de bord :}} initialise les valeurs de tous les sommets.
+		
+		\FORALL{$v \in G.V$}
+			\STATE $v.d \leftarrow +\infty$
+			\STATE $v.pred \leftarrow NULL$
+		\ENDFOR
+		
+		\STATE $s.d = 0$
+	
+			
+\end{algorithmic}
+		
+\end{algorithm}
+
+%ALGO: Initialiser-Tas
+
+\begin{algorithm}
+	\caption{\textsc {Initialiser-Tas}$(G)$}
+	 \label{algo:initTas}
+	\begin{algorithmic}[1]
+		\REQUIRE $G$ un graphe orienté pondéré
+		\ENSURE Un tas $Q$ qui comprend tous les sommets de $V$ classés par leur valeur $d$.
+		
+		\STATE $Q \leftarrow$ nouveau tas 
+		\FORALL{$v \in G.V$}
+			\STATE $Q.$\textsc{Insérer(v)}
+		\ENDFOR
+		
+		\STATE $s.d = 0$
+		\RETURN $Q$
+	
+			
+\end{algorithmic}
+		
+\end{algorithm}
+
+%ALGO:Relaxer
+
+\begin{algorithm}
+	\caption{\textsc {Relaxer}$(u,v,w)$}
+	 \label{algo:relaxer}
+	\begin{algorithmic}[1]
+		\REQUIRE deux sommets $u$ et $v$, une fonction de poids $w : E \rightarrow \mathbb{R}^{+}$.
+		\ENSURE / \textbf{\textsc{Effet(s) de bord :}} Met potentiellement à jour la  valeur de $v$ et son prédécesseur.
+		
+		\STATE nouvVal $\leftarrow$ $w(u,v) + u.d$
+		\IF{nouvVal $< v.d$}
+			\STATE \textsc{DécrémenterClef}($Q,Clef(v),nouvVal$)
+			\STATE $v.p \leftarrow u$
+		\ENDIF
+	
+			
+\end{algorithmic}
+		
+\end{algorithm}
+
+La complexité de l'algorithme de Dijkstra dépend de la manière dont est implémentée la file de priorité. Si on implémente celle-ci de telle sorte que chaque opération \textsc{Extraction-Min}($Q$) est en $\mathcal{O}(\log V)$ ainsi que chaque \textsc{DécrémenterClef}($Q,Clef(v),nouvVal$) alors l'agorithme est en $\mathcal{O}((V + E) \log V)$.\\
+Les preuves d'exactitude et de complexité de l'agorithme Dijkstra ne sont pas abordées ici mais se trouve dans le livre de référence de Cormen \emph{et al.} ~\cite{Cormen:2009:IA:580470}.
+
+
+
+\clearpage
+
