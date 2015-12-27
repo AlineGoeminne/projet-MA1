@@ -42,7 +42,7 @@ Au vu de cet exemple, il est clair que le modèle des jeux qualitatifs n'est pas
 									+\infty & \text{ sinon}
 									\end{cases}$
 	\item $Cost_{i}(\rho) = $ $\begin{cases}
-									\sum_{i = 0}^{n-1} w(\rho_{i},\rho_{i+1}) & \text{ si } n \text{est le plus petit indice tq } \rho_{n}\in 					  Goal_{i}\\
+									\sum_{i = 0}^{n-1} w(\rho_{i},\rho_{i+1}) & \text{ si } n \text{ est le plus petit indice tq } \rho_{n}\in 					  Goal_{i}\\
 									+\infty & \text{sinon}
 									\end{cases}$ \\
 									où $w$ est une \textit{fonction de poids} (cf. définition \ref{def:fonctionPoids}).
@@ -101,11 +101,9 @@ Au vu de cet exemple, il est clair que le modèle des jeux qualitatifs n'est pas
 % DEFINITION: jeu Min-Max avec coût
 
 \begin{defi}[Jeu Min-Max avec coût] $\text{ }$\\
-	
-	Un \textit{jeu Min-Max avec coût} est un tuple $\mathcal{G} = (V, V_{Min}, V_{Max}, E, Cost_{Min}, Gain_{Max})$, où
+	Soit une arène $\mathcal{A} = (V, (V_{Min}, V_{Max}), E) $
+	Un \textit{jeu Min-Max avec coût} est un tuple $\mathcal{G} = (\mathcal{A}, Cost_{Min}, Gain_{Max})$, où
 	\begin{enumerate}
-		\item[$\bullet$] $G = (V,E)$ est un graphe orienté fini dont $V$ est l'ensemble des sommets et $E \subseteq V\times V$ est l'ensemble des arêtes.
-		\item[$\bullet$] $(V_{Min},V_{Max})$ est une partition de $V$ telle que $V_{Min}$(respectivement $V_{Max}$) est l'ensemble des sommets contrôlés par le joueur \textit{Min} (respectivement \textit{Max}).
 		\item[$\bullet$] $Cost_{Min}: Plays \rightarrow \mathbb{R} \cup \{+ \infty, -\infty \}$ est la \textit{fonction de coût} du joueur \textit{Min}.
 		\item[$\bullet$] $Gain_{Max}: Plays \rightarrow \mathbb{R} \cup \{ + \infty, -\infty \}$ est la \textit{fonction de gain} du joueur \textit{Max}.
 	\end{enumerate}
@@ -136,5 +134,46 @@ Le but de \textit{Min} (resp. \textit{Max}) est donc de \textbf{minimiser} (resp
 		\item[$\bullet$]\textit{Valeur inférieure:} $\underline{Val}(v) = \sup\limits_{\sigma _{2} \in \Sigma_{Max}}  \inf\limits_{\sigma _{1} \in \Sigma _{Min}} Gain_{Max}(\rho)$  où $\rho = Outcome(v,(\sigma _{1},\sigma _{2}))$
 	\end{enumerate}
 \end{defi}
+\begin{rem}
+	La \textit{valeur supérieure}  $\overline{Val}(v)$ est la plus grande valeur que $J_{Min}$ peut perdre et la \textit{valeur inférieure} $\underline{Val}(v) $ est la plus grande valeur que $J_{Max}$ peut gagner.
+\end{rem}
 
+%PROPRIETE 
+\begin{propriete}
+	Pour tout $v \in V$, on a : $\underline{Val}(v) \leq \overline{Val}(v)$
+\end{propriete}
 
+%DEFINITION: jeu déterminé et valeur d'un jeu
+
+\begin{defi}[Jeu déterminé et valeur d'un jeu]
+		Soit $\mathcal{G}$ un jeu Min-Max avec coût, on dit que $\mathcal{G}$ est \textit{déterminé} si pour tout $v \in V$, $\overline{Val}(v) = \underline{Val}(v)$. On dit alors que le jeu $\mathcal{G}$ a une \textit{valeur} et pour tout $v \in V$ on note $Val(v) = \overline{Val}(v) = \underline{Val}(v)$.
+\end{defi}
+
+%DEFINITION: Stratégie optimale
+
+\begin{defi}[Stratégie $\epsilon$-optimale]
+	Soit $\epsilon > 0$,
+	\begin{enumerate}
+	\item[$\bullet$] $\sigma _{1} \in \Sigma _{Max}$ est une \textit{stratégie $\epsilon$-optimale} ssi $\forall v \in V $ $ \forall \sigma _{2}\in \Sigma_{Min}$ $ Gain_{Max}(\rho) \geq \underline{Val}(v) + \epsilon  $\\ où $\rho = Outcome(v, (\sigma _{1},\sigma _{2}))$.
+	\item[$\bullet$] $\sigma _{2} \in \Sigma _{Min}$ est une \textit{stratégie $\epsilon$-optimale} ssi $\forall v \in V $ $ \forall \sigma _{1}\in \Sigma_{Max}$ $Cost_{Min}(\rho) \leq \overline{Val}(v) + \epsilon $\\ où $\rho = Outcome(v, (\sigma _{1},\sigma _{2}))$.
+	\item[$\bullet$] Si $\epsilon = 0$, on dit que la stratégie $\sigma _{i}$ est \textit{optimale}
+	\end{enumerate}
+\end{defi}
+
+%DEFINITION: reachability-price game
+
+\begin{defi}[Reachability-price game]
+	Soit $\mathcal{A} = (V, (V_{Min}, V_{Max}), E) $,soit $w: E \rightarrow \mathbb{R}$ une fonction de poids,
+	un \textit{"reachability-price game"} est un jeu Min-Max avec coût $\mathcal{G} = (\mathcal{A},RP_{Min},RP_{Max})$\\ avec un objectif donné $Goal \subseteq V$, où pour tout $\rho \in Plays$ tq $\rho = \rho _{0}\rho _{1}...$:\\
+	
+	$RP_{Min}(\rho)=RP_{Max}(\rho) =$ $\begin{cases}
+									\sum_{i = 0}^{n-1} w(\rho_{i},\rho_{i+1}) & \text{ si } n \text{ est le plus petit indice tq } \rho_{n}\in 					  Goal\\
+									+\infty & \text{sinon}
+									\end{cases}$ \\
+									
+  \noindent Ce jeu est un jeu à somme nulle.
+\end{defi}
+
+% EXEMPLE : reachability-price game + jeu déterminé + valeur + stratégie optimale
+
+\input{reachPriceGame1}
