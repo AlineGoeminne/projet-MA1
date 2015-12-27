@@ -177,3 +177,7 @@ Le but de \textit{Min} (resp. \textit{Max}) est donc de \textbf{minimiser} (resp
 % EXEMPLE : reachability-price game + jeu déterminé + valeur + stratégie optimale
 
 \input{reachPriceGame1}
+
+\noindent \textbf{Implémentation}\\
+
+Comme dans le cas des jeux d'atteignabilité à objectif qualitatif nous nous interrogeons quant à la façon d'implémenter un algorithme pour résoudre les \textit \og reachability-price games \fg. L'idée est la suivante: le joueur \textit{Min} a pour but d'emprunter un \textbf{plus court chemin} possible allant d'un noeud initial $v_{0}$ vers un noeud $v \in Goal$. On trouve dans la littérature différents algorithmes qui résolvent les problèmes de plus court chemin dans les graphes orientés.Toutefois, il n'y a pas de deuxième joueur qui joue de manière \textbf{antagoniste} face au joueur \textit{Min} qui entre en compte dans ces algorithmes. C'est pourquoi nous avons tenté une adaptation de l'algorithme de \textit{Dijkstra} que nous rappelons dans l'annexe A (p.\pageref{algo:dijkstra}).
