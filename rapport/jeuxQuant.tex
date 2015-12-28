@@ -5,7 +5,7 @@
 Contrairement aux jeux à objectif qualitatif pour lesquels l'objectif d'un joueur est d'assurer qu'une certaine propriété soit vérifiée, pour le cas des \textit{jeux à objectif quantitatif} une certaine valeur quantifiée est associée à chaque jeu. Le but d'un joueur sera donc de \textit{maximiser} ou de \textit{minimiser} cette valeur afin que sa satisfaction soit maximale.\\
 
 Nous introduisons cette section par un exemple, ensuite nous aborderons les notions essentielles aux jeux quantitatifs en distinguant les \textit{jeux multijoueurs} et les \textit{jeux à deux joueurs}.\\
-Les définitions et les notions sont inspirées de l'article de Brihaye at al \cite{DBLP:conf/lfcs/BrihayePS13}.\\
+Les définitions et les notions sont inspirées de l'article de Brihaye \emph{at al.} \cite{DBLP:conf/lfcs/BrihayePS13}.\\
 
 \noindent\textbf {Exemple introductif} \\
 \indent Antoine et Thomas désirent se rendre à l'école à pied. Le chemin étant long, Antoine propose à Thomas de jouer à un jeu. A chaque carrefour et à tour de rôle un des deux garçons choisit la route à emprunter. A chaque mètre parcouru Thomas devra donner un bonbon à Antoine. L'objectif de Thomas est donc clairement d'atteindre le plus rapidement possible l'école afin de minimiser son coût, tandis que l'objectif d'Antoine est d'emprunter le plus long chemin pour obtenir le plus de bonbons possible.\\
@@ -15,169 +15,11 @@ Au vu de cet exemple, il est clair que le modèle des jeux qualitatifs n'est pas
 %----------------------------
 %Jeu multijoueur avec coût
 %----------------------------
-\subsubsection{Jeux multijoueurs avec coût}
-% DEFINITION: mutliplayer cost game
-
-\begin{defi}[Jeu multijoueur avec coût]
-	Un \textit{jeu multijoueur avec coût} est un tuple $\mathcal{G} = (\Pi ,V ,(V_{i})_{i \in \Pi} ,E ,(Cost_{i})_{i \in \Pi})$ où
-	\begin{enumerate}
-		\item[$\bullet$] $\mathcal{A} = (\Pi ,V ,(V_{i})_{i \in \Pi} ,E )$ est l'arène d'un jeu sur graphe.
-		\item[$\bullet$] $Cost_{i}: Plays \rightarrow \mathbb{R} \cup \{ +\infty , -\infty \} $ est la \textit{fonction de coût} de $J_{i}$. 
-	\end{enumerate}
-\end{defi}
-
-
-	Pour chaque $\rho \in Plays$, $Cost_{i}(\rho)$ représente le montant que $J_{i}$ perd quand le jeu $\rho$ est joué.
-	Le but de chaque joueur est donc de \textbf{minimiser} sa fonction de coût.
-
-%EXEMPLE: fonctions de coût.
-\begin{exemple}[Fonctions de coût]
-	\label{ex:fonctionsCout}
-  Dans le cadre de ce projet, nous nous intéressons aux jeux sur graphe tels que l'objectif des joueurs est un objectif quantitatif. De plus, nous souhaitons que l'objectif des joueurs soit atteint le plus rapidement possible. Les fonctions de coût qui nous intéressent sont donc les suivantes: \\
-	
-	Pour tout  $\rho = \rho _{0} \rho _{1} \rho _{2} \ldots $ où $\rho \in Plays$ on définit:
-	\begin{enumerate}
-	\item $Cost_{i}(\rho) = $ $\begin{cases} 
-									\min \{ i | \rho _{i} \in Goal_{i} \} & \text{si } \exists i \text{ tq } \rho _{i} \in Goal_{i} \\
-									+\infty & \text{ sinon}
-									\end{cases}$
-	\item $Cost_{i}(\rho) = $ $\begin{cases}
-									\sum_{i = 0}^{n-1} w(\rho_{i},\rho_{i+1}) & \text{ si } n \text{ est le plus petit indice tq } \rho_{n}\in 					  Goal_{i}\\
-									+\infty & \text{sinon}
-									\end{cases}$ \\
-									où $w$ est une \textit{fonction de poids} (cf. définition \ref{def:fonctionPoids}).
-	\end{enumerate}
-\end{exemple}
-
-\begin{rem}
-	L'exemple 1 est un cas particulier de l'exemple 2 avec $w(\rho_{i},\rho_{i+1}) = 1$ pour tout $i$.
-\end{rem}
-%DEFINITION: poids d'un arc
-
-\begin{defi}[Fonction de poids]
-	\label{def:fonctionPoids}
-	A chaque arc d'un graphe $G = (V,E)$ on peut y associer un \textit{poids} (ie: une valeur chiffrée). On associe donc à $G$ une \textit{fonction de poids}  $w : E \rightarrow \mathbb{R}$. On dit alors que $G$ est un graphe \textit{pondéré}.
-\end{defi}
-
-%EXEMPLE: graphe pondéré
-
-\input{graphePond}
-
-%DEFINITION: équilibre de Nash
-
-\begin{defi}[Equilibre de Nash]
-	
-	Soit $(\mathcal{G}, v_{0})$ un \textit{jeu multijoueur avec coût et initialisé}, un profil de stratégie $(\sigma _{i})_{i \in \Pi}$ est un \textit{équilibre de Nash} dans $(\mathcal{G}, v_{0})$ si, pour chaque joueur $j \in \Pi$ et pour chaque stratégie $\tilde{\sigma}_{j}$ du joueur $j$, on a :
-	\begin{center}$ Cost_{j}(\rho) \leq Cost_{j}(\tilde{\rho})$ \end{center}
-	où $\rho = Outcome(v_{0},(\sigma _{i})_{i \in \Pi})$ et $\tilde{\rho} = Outcome(v_{0}, (\tilde{\sigma} _{j} ,\sigma _{-j}))$.
-\end{defi}	
-
-
-%DEFINITION: déviation profitable
-
-\begin{defi}[Déviation profitable]
-	
-	Soit $(\mathcal{G}, v_{0})$ un \textit{jeu multijoueur avec coût et initialisé}, soit $(\sigma _{i})_{i \in \Pi}$ un profil de stratégie, $\tilde{\sigma _{j}}$ est une \textit{déviation profitable} pour le joueur $j$ relativement à $(\sigma _{i})_{i \in \Pi}$ si:
-	\begin{center} $ Cost_{j}(\rho) > Cost_{j}(\tilde{\rho})$ \end{center}
-	où $\rho = Outcome(v_{0},(\sigma _{i})_{i \in \Pi})$ et $\tilde{\rho} = Outcome(v_{0}, (\tilde{\sigma} _{j} ,\sigma _{-j}))$. 
-\end{defi}
-
-%REMARQUE: signification de la def d'EN
-\begin{rem}
-	$(\sigma _{i})_{i\in \Pi}$ est un équilibre de Nash si tout joueur $j \in \Pi$ n'a aucun intérêt à dévier de sa stratégie $\sigma _{j}$ si les autres joueurs suivent $\sigma _{-j}$. C'est-à-dire qu'aucun joueur n'a de déviation profitable. 
-\end{rem}
-
-%EXEMPLE D'EN
-
-\input{exempleEN1}
-
+\input{MultiplayerCostGame}
 
 %----------------------------------------
 % Jeu avec coût MIN-MAX
 %---------------------------------------
+\input{MinMax}
 
-\subsubsection{Jeux Min-Max avec coût}
-
-% DEFINITION: jeu Min-Max avec coût
-
-\begin{defi}[Jeu Min-Max avec coût] $\text{ }$\\
-	Soit une arène $\mathcal{A} = (V, (V_{Min}, V_{Max}), E) $
-	Un \textit{jeu Min-Max avec coût} est un tuple $\mathcal{G} = (\mathcal{A}, Cost_{Min}, Gain_{Max})$, où
-	\begin{enumerate}
-		\item[$\bullet$] $Cost_{Min}: Plays \rightarrow \mathbb{R} \cup \{+ \infty, -\infty \}$ est la \textit{fonction de coût} du joueur \textit{Min}.
-		\item[$\bullet$] $Gain_{Max}: Plays \rightarrow \mathbb{R} \cup \{ + \infty, -\infty \}$ est la \textit{fonction de gain} du joueur \textit{Max}.
-	\end{enumerate}
-		
-\end{defi}
-
-\begin{rem}
-	Dans cette définition, on sous-entend que $\Pi = \{ Min, Max \}$.
-\end{rem}
-
-Pour chaque $\rho \in Plays$, $Cost_{Min}(\rho)$ représente le montant que \textit{Min} perd quand le jeu $\rho$ est joué et $Gain_{Max}(\rho)$ représente le gain que \textit{Max} gagne quand le jeu $\rho$ est joué.
-Le but de \textit{Min} (resp. \textit{Max}) est donc de \textbf{minimiser} (resp. \textbf{maximiser}) sa fonction de coût (resp. fonction de gain). Ce qui explique le choix des noms des joueurs.\\
-
-%DEFINITION: jeu Min-Max à somme nulle
-
-\begin{defi}[Jeu à somme nulle]
-	Un jeu Min-Max avec coût est dit \textit{à somme nulle} si $Gain_{Max} = Cost_{Min}$.
-\end{defi}
-
-% DEFINITION: Valeur supérieure et valeur inférieure
-
-\begin{defi}[Valeur inférieure/supérieure]
-	
-	Soit $\mathcal{G}$ un jeu Min-Max avec coût, on définit pour chaque sommet $v \in V$: 
-	\begin{enumerate}
-		\item[$\bullet$]\textit{Valeur supérieure:} $\overline{Val}(v) = \inf\limits_{\sigma _{1} \in \Sigma _{Min}} \sup\limits_{\sigma _{2} \in \Sigma_{Max}} Cost_{Min}(\rho)$ où $\rho = Outcome(v,(\sigma _{1},\sigma _{2}))$
-		
-		\item[$\bullet$]\textit{Valeur inférieure:} $\underline{Val}(v) = \sup\limits_{\sigma _{2} \in \Sigma_{Max}}  \inf\limits_{\sigma _{1} \in \Sigma _{Min}} Gain_{Max}(\rho)$  où $\rho = Outcome(v,(\sigma _{1},\sigma _{2}))$
-	\end{enumerate}
-\end{defi}
-\begin{rem}
-	La \textit{valeur supérieure}  $\overline{Val}(v)$ est la plus grande valeur que $J_{Min}$ peut perdre et la \textit{valeur inférieure} $\underline{Val}(v) $ est la plus grande valeur que $J_{Max}$ peut gagner.
-\end{rem}
-
-%PROPRIETE 
-\begin{propriete}
-	Pour tout $v \in V$, on a : $\underline{Val}(v) \leq \overline{Val}(v)$
-\end{propriete}
-
-%DEFINITION: jeu déterminé et valeur d'un jeu
-
-\begin{defi}[Jeu déterminé et valeur d'un jeu]
-		Soit $\mathcal{G}$ un jeu Min-Max avec coût, on dit que $\mathcal{G}$ est \textit{déterminé} si pour tout $v \in V$, $\overline{Val}(v) = \underline{Val}(v)$. On dit alors que le jeu $\mathcal{G}$ a une \textit{valeur} et pour tout $v \in V$ on note $Val(v) = \overline{Val}(v) = \underline{Val}(v)$.
-\end{defi}
-
-%DEFINITION: Stratégie optimale
-
-\begin{defi}[Stratégie $\epsilon$-optimale]
-	Soit $\epsilon > 0$,
-	\begin{enumerate}
-	\item[$\bullet$] $\sigma _{1} \in \Sigma _{Max}$ est une \textit{stratégie $\epsilon$-optimale} ssi $\forall v \in V $ $ \forall \sigma _{2}\in \Sigma_{Min}$ $ Gain_{Max}(\rho) \geq \underline{Val}(v) + \epsilon  $\\ où $\rho = Outcome(v, (\sigma _{1},\sigma _{2}))$.
-	\item[$\bullet$] $\sigma _{2} \in \Sigma _{Min}$ est une \textit{stratégie $\epsilon$-optimale} ssi $\forall v \in V $ $ \forall \sigma _{1}\in \Sigma_{Max}$ $Cost_{Min}(\rho) \leq \overline{Val}(v) + \epsilon $\\ où $\rho = Outcome(v, (\sigma _{1},\sigma _{2}))$.
-	\item[$\bullet$] Si $\epsilon = 0$, on dit que la stratégie $\sigma _{i}$ est \textit{optimale}
-	\end{enumerate}
-\end{defi}
-
-%DEFINITION: reachability-price game
-
-\begin{defi}[Reachability-price game]
-	Soit $\mathcal{A} = (V, (V_{Min}, V_{Max}), E) $,soit $w: E \rightarrow \mathbb{R}$ une fonction de poids,
-	un \textit{"reachability-price game"} est un jeu Min-Max avec coût $\mathcal{G} = (\mathcal{A},RP_{Min},RP_{Max})$\\ avec un objectif donné $Goal \subseteq V$, où pour tout $\rho \in Plays$ tq $\rho = \rho _{0}\rho _{1}...$:\\
-	
-	$RP_{Min}(\rho)=RP_{Max}(\rho) =$ $\begin{cases}
-									\sum_{i = 0}^{n-1} w(\rho_{i},\rho_{i+1}) & \text{ si } n \text{ est le plus petit indice tq } \rho_{n}\in 					  Goal\\
-									+\infty & \text{sinon}
-									\end{cases}$ \\
-									
-  \noindent Ce jeu est un jeu à somme nulle.
-\end{defi}
-
-% EXEMPLE : reachability-price game + jeu déterminé + valeur + stratégie optimale
-
-\input{reachPriceGame1}
-
-\noindent \textbf{Implémentation}\\
-
-Comme dans le cas des jeux d'atteignabilité à objectif qualitatif nous nous interrogeons quant à la façon d'implémenter un algorithme pour résoudre les \textit \og reachability-price games \fg. L'idée est la suivante: le joueur \textit{Min} a pour but d'emprunter un \textbf{plus court chemin} possible allant d'un noeud initial $v_{0}$ vers un noeud $v \in Goal$. On trouve dans la littérature différents algorithmes qui résolvent les problèmes de plus court chemin dans les graphes orientés.Toutefois, il n'y a pas de deuxième joueur qui joue de manière \textbf{antagoniste} face au joueur \textit{Min} qui entre en compte dans ces algorithmes. C'est pourquoi nous avons tenté une adaptation de l'algorithme de \textit{Dijkstra} que nous rappelons dans l'annexe A (p.\pageref{algo:dijkstra}).
+\input{ProblemesPoses}
