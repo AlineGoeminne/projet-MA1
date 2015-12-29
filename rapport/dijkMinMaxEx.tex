@@ -2,6 +2,381 @@
 
 \begin{exemple}
 
-	Soient $\mathcal{A} = (V, (V_{Min}, V_{Max}), E) $,$w: E \rightarrow \mathbb{R}$ une fonction de poids et $\mathcal{G} = (\mathcal{A},RP_{Min},RP_{Max})$ le \og \textit{reachability-price game} associé, l'arène et la fonction de poids sont représentés sur le %graphe ~\ref{} et $V_{Min}$ (resp. $V_{Max}$) est représenté par les sommets ronds (resp. les sommets carrés).
-\todo{trouver un exemple significatif}	
+	Soient $\mathcal{A} = (V, (V_{Min}, V_{Max}), E) $,$w: E \rightarrow \mathbb{R}$ une fonction de poids et $\mathcal{G} = (\mathcal{A},RP_{Min},RP_{Max})$ le \og \textit{reachability-price game} associé, l'arène et la fonction de poids sont représentés sur le graphe de la figure~\ref{ex:reachPrice1} et $V_{Min}$ (resp. $V_{Max}$) est représenté par les sommets ronds (resp. les sommets carrés). $Goal ={v_{0}}$. Pour les figures , les états grisés représentent les états entièrement traités (ie. les états dans $T$) et à l'intérieure de ceux-ci se trouve la valeur associée à l'état. De plus la table~\ref{tab:filePrior} (p.~\pageref{tab:filePrior}) reprend pour chaque étape et chaque noeud le contenu de la file de priorité $S$.
+	
+	\begin{figure}[ht!]
+		\centering
+
+		\begin{tikzpicture}
+
+			\node[nC] (v7) at (0,0){$v_{7}$};
+			\node[nR] (v6) at (2,0){$v_{6}$};
+			\node[nC] (v5) at (4,0){$v_{5}$};
+			\node[nR] (v4) at (6,0){$v_{4}$};
+			\node[nC] (v2) at (8,0){$v_{2}$};
+			\node[nC] (v0) at (10,0){$v_{0}$};
+			\node[nR]  (v1) at (8,2){$v_{1}$};
+			\node[nR] (v3) at (8,-2){$v_{3}$};
+
+			\draw[->,>=latex] (v7) to [bend right] node[midway,above]{$1$} (v6);
+			\draw[->,>=latex] (v6) to [bend right] node[midway,above]{$1$} (v7);
+			\draw[->,>=latex] (v5) to node[midway,above]{$1$} (v6);
+			\draw[->,>=latex] (v5) to node[midway,above]{$1$} (v4);
+
+
+			\draw[->,>=latex] (v4) to node[midway,above]{$5$} (v2);
+			\draw[->,>=latex] (v4) to node[midway,left]{$1$} (v3);
+
+			\draw[->,>=latex] (v3) to node[midway,below]{$5$} (v0);
+			\draw[->,>=latex] (v3) to node[midway,left]{$1$} (v2);
+
+			\draw[->,>=latex] (v2) to node[midway,above]{$1$} (v0);
+			\draw[->,>=latex] (v2) to node[midway,left]{$1$} (v1);
+
+			\draw[->,>=latex] (v1) to node[midway,right]{$1$} (v0);
+
+			\draw[->,>=latex] (v0) to [loop right] node[midway,right]{$1$} (v0);
+
+
+
+
+
+		\end{tikzpicture}
+
+
+		\caption{Arène du \og reachability-price game \fg }
+		\label{ex:reachPrice1}
+
+
+	\end{figure}
+
+%ETAPE 1	
+	\begin{figure}[ht!]
+		\centering
+
+		\begin{tikzpicture}
+
+			\node[nC] (v7) at (0,0){$+\infty$};
+			\node[nR] (v6) at (2,0){$+\infty$};
+			\node[nC] (v5) at (4,0){$+\infty$};
+			\node[nR] (v4) at (6,0){$+\infty$};
+			\node[nC] (v2) at (8,0){$1$};
+			\node[nCG] (v0) at (10,0){$0$};
+			\node[nR]  (v1) at (8,2){$1$};
+			\node[nR] (v3) at (8,-2){$5$};
+
+			\draw[->,>=latex] (v7) to [bend right] node[midway,above]{$1$} (v6);
+			\draw[->,>=latex] (v6) to [bend right] node[midway,above]{$1$} (v7);
+			\draw[->,>=latex] (v5) to node[midway,above]{$1$} (v6);
+			\draw[->,>=latex] (v5) to node[midway,above]{$1$} (v4);
+			
+
+			\draw[->,>=latex] (v4) to node[midway,above]{$5$} (v2);
+			\draw[->,>=latex] (v4) to node[midway,left]{$1$} (v3);
+			
+			\draw[->,>=latex] (v3) to node[midway,below]{$5$} (v0);
+			\draw[->,>=latex] (v3) to node[midway,left]{$1$} (v2);
+			
+			\draw[->,>=latex] (v2) to node[midway,above]{$1$} (v0);
+			\draw[->,>=latex] (v2) to node[midway,left]{$1$} (v1);
+			
+			\draw[->,>=latex] (v1) to node[midway,right]{$1$} (v0);
+			
+			\draw[->,>=latex] (v0) to [loop right] node[midway,right]{$1$} (v0);
+
+
+		\end{tikzpicture}
+
+
+		\caption{Première étape -- Traitement du noeud $v_{0}$. On relaxe :($v_{1},v_{0}$) et ($v_{2},v_{0}$). On grise $v_{0}$.}
+		\label{ex:reachPrice2}
+
+
+	\end{figure}
+	
+%ETAPE 2	
+		\begin{figure}[ht!]
+			\centering
+
+			\begin{tikzpicture}
+
+				\node[nC] (v7) at (0,0){$+\infty$};
+				\node[nR] (v6) at (2,0){$+\infty$};
+				\node[nC] (v5) at (4,0){$+\infty$};
+				\node[nR] (v4) at (6,0){$+\infty$};
+				\node[nC] (v2) at (8,0){$+\infty$};
+				\node[nCG] (v0) at (10,0){$0$};
+				\node[nR]  (v1) at (8,2){$1$};
+				\node[nR] (v3) at (8,-2){$5$};
+
+				\draw[->,>=latex] (v7) to [bend right] node[midway,above]{$1$} (v6);
+				\draw[->,>=latex] (v6) to [bend right] node[midway,above]{$1$} (v7);
+				\draw[->,>=latex] (v5) to node[midway,above]{$1$} (v6);
+				\draw[->,>=latex] (v5) to node[midway,above]{$1$} (v4);
+
+
+				\draw[->,>=latex] (v4) to node[midway,above]{$5$} (v2);
+				\draw[->,>=latex] (v4) to node[midway,left]{$1$} (v3);
+
+				\draw[->,>=latex] (v3) to node[midway,below]{$5$} (v0);
+				\draw[->,>=latex] (v3) to node[midway,left]{$1$} (v2);
+
+				\draw[->,>=latex] (v2) to node[midway,above]{$1$} (v0);
+				\draw[->,>=latex] (v2) to node[midway,left]{$1$} (v1);
+
+				\draw[->,>=latex] (v1) to node[midway,right]{$1$} (v0);
+
+				\draw[->,>=latex] (v0) to [loop right] node[midway,right]{$1$} (v0);
+
+
+			\end{tikzpicture}
+
+
+			\caption{Deuxième étape -- Traitement du noeud $v_{2}$. $nbrSucc = 2$, on n'a donc pas encore testé tous les chemins possibles à partir de ce noeud. Décrémentation de $nbrSucc$ et retrait de la plus petit valeur de $S$. }
+			\label{ex:reachPrice3}
+
+
+		\end{figure}
+%ETAPE 3	
+		\begin{figure}[ht!]
+		\centering
+
+		\begin{tikzpicture}
+
+			\node[nC] (v7) at (0,0){$+\infty$};
+			\node[nR] (v6) at (2,0){$+\infty$};
+			\node[nC] (v5) at (4,0){$5$};
+			\node[nR] (v4) at (6,0){$+\infty$};
+			\node[nC] (v2) at (8,0){$2$};
+			\node[nCG] (v0) at (10,0){$0$};
+			\node[nRG]  (v1) at (8,2){$1$};
+			\node[nR] (v3) at (8,-2){$+\infty$};
+
+			\draw[->,>=latex] (v7) to [bend right] node[midway,above]{$1$} (v6);
+			\draw[->,>=latex] (v6) to [bend right] node[midway,above]{$1$} (v7);
+			\draw[->,>=latex] (v5) to node[midway,above]{$1$} (v6);
+			\draw[->,>=latex] (v5) to node[midway,above]{$1$} (v4);
+
+			\draw[->,>=latex] (v4) to node[midway,above]{$5$} (v2);
+			\draw[->,>=latex] (v4) to node[midway,left]{$1$} (v3);
+
+			\draw[->,>=latex] (v3) to node[midway,below]{$5$} (v0);
+			\draw[->,>=latex] (v3) to node[midway,left]{$1$} (v2);
+
+     		\draw[->,>=latex] (v2) to node[midway,above]{$1$} (v0);
+			\draw[->,>=latex] (v2) to node[midway,left]{$1$} (v1);
+
+			\draw[->,>=latex] (v1) to node[midway,right]{$1$} (v0);
+
+			\draw[->,>=latex] (v0) to [loop right] node[midway,right]{$1$} (v0);
+
+
+		\end{tikzpicture}
+
+
+		\caption{Troisième étape -- Traitement du noeud $v_{1}$. On relaxe $(v_{2},v_{1})$. On grise $v_{1}$. }
+		\label{ex:reachPrice4}
+
+
+				\end{figure}
+				
+%ETAPE 4	
+	\begin{figure}[ht!]
+	\centering
+	\begin{tikzpicture}
+
+	\node[nC] (v7) at (0,0){$+\infty$};
+	\node[nR] (v6) at (2,0){$+\infty$};
+	\node[nC] (v5) at (4,0){$+\infty$};
+	\node[nR] (v4) at (6,0){$7$};
+	\node[nCG] (v2) at (8,0){$2$};
+	\node[nCG] (v0) at (10,0){$0$};
+	\node[nRG]  (v1) at (8,2){$1$};
+	\node[nR] (v3) at (8,-2){$3$};
+
+	\draw[->,>=latex] (v7) to [bend right] node[midway,above]{$1$} (v6);
+	\draw[->,>=latex] (v6) to [bend right] node[midway,above]{$1$} (v7);
+	\draw[->,>=latex] (v5) to node[midway,above]{$1$} (v6);
+	\draw[->,>=latex] (v5) to node[midway,above]{$1$} (v4);
+
+	\draw[->,>=latex] (v4) to node[midway,above]{$5$} (v2);
+	\draw[->,>=latex] (v4) to node[midway,left]{$1$} (v3);
+
+	\draw[->,>=latex] (v3) to node[midway,below]{$5$} (v0);
+	\draw[->,>=latex] (v3) to node[midway,left]{$1$} (v2);
+
+	\draw[->,>=latex] (v2) to node[midway,above]{$1$} (v0);
+	\draw[->,>=latex] (v2) to node[midway,left]{$1$} (v1);
+
+	\draw[->,>=latex] (v1) to node[midway,right]{$1$} (v0);
+
+	\draw[->,>=latex] (v0) to [loop right] node[midway,right]{$1$} (v0);
+
+
+	\end{tikzpicture}
+
+	\caption{Quatrième étape -- Traitement du noeud $v_{2}$.$nbrSucc = 1$. On relaxe $(v_{4},v_{2})$ et $(v_{3},v_{2})$. On grise $v_{2}$. }
+	\label{ex:reachPrice5}
+
+
+	\end{figure}
+	
+	
+%ETAPE 5	
+		\begin{figure}[ht!]
+		\centering
+		\begin{tikzpicture}
+
+		\node[nC] (v7) at (0,0){$+\infty$};
+		\node[nR] (v6) at (2,0){$+\infty$};
+		\node[nC] (v5) at (4,0){$+\infty$};
+		\node[nR] (v4) at (6,0){$4$};
+		\node[nCG] (v2) at (8,0){$2$};
+		\node[nCG] (v0) at (10,0){$0$};
+		\node[nRG]  (v1) at (8,2){$1$};
+		\node[nRG] (v3) at (8,-2){$3$};
+
+		\draw[->,>=latex] (v7) to [bend right] node[midway,above]{$1$} (v6);
+		\draw[->,>=latex] (v6) to [bend right] node[midway,above]{$1$} (v7);
+		\draw[->,>=latex] (v5) to node[midway,above]{$1$} (v6);
+		\draw[->,>=latex] (v5) to node[midway,above]{$1$} (v4);
+
+		\draw[->,>=latex] (v4) to node[midway,above]{$5$} (v2);
+		\draw[->,>=latex] (v4) to node[midway,left]{$1$} (v3);
+
+		\draw[->,>=latex] (v3) to node[midway,below]{$5$} (v0);
+		\draw[->,>=latex] (v3) to node[midway,left]{$1$} (v2);
+
+		\draw[->,>=latex] (v2) to node[midway,above]{$1$} (v0);
+		\draw[->,>=latex] (v2) to node[midway,left]{$1$} (v1);
+
+		\draw[->,>=latex] (v1) to node[midway,right]{$1$} (v0);
+
+		\draw[->,>=latex] (v0) to [loop right] node[midway,right]{$1$} (v0);
+
+
+		\end{tikzpicture}
+
+		\caption{Cinquième étape -- Traitement du noeud $v_{3}$. On relaxe $(v_{4},v_{3})$. On grise $v_{3}$. }
+		\label{ex:reachPrice6}
+
+
+		\end{figure}
+		
+%ETAPE 6	
+\begin{figure}[ht!]
+	\centering
+	\begin{tikzpicture}
+	\node[nC] (v7) at (0,0){$+\infty$};
+	\node[nR] (v6) at (2,0){$+\infty$};
+	\node[nC] (v5) at (4,0){$5$};
+	\node[nRG] (v4) at (6,0){$4$};
+	\node[nCG] (v2) at (8,0){$2$};
+	\node[nCG] (v0) at (10,0){$0$};
+	\node[nRG]  (v1) at (8,2){$1$};
+	\node[nRG] (v3) at (8,-2){$3$};
+
+	\draw[->,>=latex] (v7) to [bend right] node[midway,above]{$1$} (v6);
+	\draw[->,>=latex] (v6) to [bend right] node[midway,above]{$1$} (v7);
+	\draw[->,>=latex] (v5) to node[midway,above]{$1$} (v6);
+	\draw[->,>=latex] (v5) to node[midway,above]{$1$} (v4);
+
+	\draw[->,>=latex] (v4) to node[midway,above]{$5$} (v2);
+	\draw[->,>=latex] (v4) to node[midway,left]{$1$} (v3);
+
+	\draw[->,>=latex] (v3) to node[midway,below]{$5$} (v0);
+	\draw[->,>=latex] (v3) to node[midway,left]{$1$} (v2);
+
+	\draw[->,>=latex] (v2) to node[midway,above]{$1$} (v0);
+	\draw[->,>=latex] (v2) to node[midway,left]{$1$} (v1);
+
+	\draw[->,>=latex] (v1) to node[midway,right]{$1$} (v0);
+
+	\draw[->,>=latex] (v0) to [loop right] node[midway,right]{$1$} (v0);
+
+
+	\end{tikzpicture}
+
+	\caption{Sixième étape -- Traitement du noeud $v_{4}$. On relaxe $(v_{5},v_{4})$. On grise $v_{4}$. }
+	\label{ex:reachPrice7}
+
+
+\end{figure}
+
+%ETAPE 7	
+\begin{figure}[ht!]
+	\centering
+	\begin{tikzpicture}
+	\node[nC] (v7) at (0,0){$+\infty$};
+	\node[nR] (v6) at (2,0){$+\infty$};
+	\node[nC] (v5) at (4,0){$+\infty$};
+	\node[nRG] (v4) at (6,0){$4$};
+	\node[nCG] (v2) at (8,0){$2$};
+	\node[nCG] (v0) at (10,0){$0$};
+	\node[nRG]  (v1) at (8,2){$1$};
+	\node[nRG] (v3) at (8,-2){$3$};
+
+	\draw[->,>=latex] (v7) to [bend right] node[midway,above]{$1$} (v6);
+	\draw[->,>=latex] (v6) to [bend right] node[midway,above]{$1$} (v7);
+	\draw[->,>=latex] (v5) to node[midway,above]{$1$} (v6);
+	\draw[->,>=latex] (v5) to node[midway,above]{$1$} (v4);
+
+	\draw[->,>=latex] (v4) to node[midway,above]{$5$} (v2);
+	\draw[->,>=latex] (v4) to node[midway,left]{$1$} (v3);
+
+	\draw[->,>=latex] (v3) to node[midway,below]{$5$} (v0);
+	\draw[->,>=latex] (v3) to node[midway,left]{$1$} (v2);
+
+	\draw[->,>=latex] (v2) to node[midway,above]{$1$} (v0);
+	\draw[->,>=latex] (v2) to node[midway,left]{$1$} (v1);
+
+	\draw[->,>=latex] (v1) to node[midway,right]{$1$} (v0);
+
+	\draw[->,>=latex] (v0) to [loop right] node[midway,right]{$1$} (v0);
+
+
+	\end{tikzpicture}
+
+	\caption{Dernière étape -- Traitement du noeud $v_{4}$. $nbrSucc =2$.On retire la plus petite valeur de $S$. }
+	\label{ex:reachPrice8}
+
+
+\end{figure}
+
+	
+%Tableau des files de priorités$
+
+\begin{table}[]
+\begin{tabular}{l|l|l|l|l|l|l|l|l|}
+\cline{2-5}
+                               & Sommets &    &    &      \\ \hline
+\multicolumn{1}{|l|}{}         & $v_{0}$ &$v_{1}$  & $v_{2}$ &$v_{3}$  \\ \hline
+\multicolumn{1}{|l|}{Etape 1:} & $(0,null),(1,v_{0})$   &$(+\infty,null),(1,v_{0})$     &$(+\infty,null),(1,v_{0})$    &$(+\infty,null),(5,v_{0})$    \\ \hline
+\multicolumn{1}{|l|}{Etape 2:} &$(0,null),(1,v_{0})$         &$(+\infty,null),(1,v_{0})$    &$(+\infty,null)$    &$(+\infty,null),(5,v_{0})$     \\ \hline
+\multicolumn{1}{|l|}{Etape 3:} &$(0,null),(1,v_{0})$         &$(+\infty,null),(1,v_{0})$    &$(+\infty,null),(2,v_{1})$    &$(+\infty,null),(5,v_{0})$  \\ \hline
+\multicolumn{1}{|l|}{Etape 4:} &$(0,null),(1,v_{0})$         &$(+\infty,null),(1,v_{0})$    &$(+\infty,null),(2,v_{1})$    &$(+\infty,null),(5,v_{0}),(3,v_{2})$   \\ \hline
+\multicolumn{1}{|l|}{Etape 5:}   &$(0,null),(1,v_{0})$         &$(+\infty,null),(1,v_{0})$    &$(+\infty,null),(2,v_{1})$    &$(+\infty,null),(5,v_{0}),(3,v_{2})$    \\ \hline 
+\multicolumn{1}{|l|}{Etape 6:}   &$(0,null),(1,v_{0})$         &$(+\infty,null),(1,v_{0})$    &$(+\infty,null),(2,v_{1})$    &$(+\infty,null),(5,v_{0}),(3,v_{2})$     \\ \hline
+\multicolumn{1}{|l|}{Etape 7:}   &$(0,null),(1,v_{0})$         &$(+\infty,null),(1,v_{0})$    &$(+\infty,null),(2,v_{1})$    &$(+\infty,null),(5,v_{0}),(3,v_{2})$   \\ \hline
+
+\multicolumn{1}{|l|}{}  		&  &    &    &      \\ \hline
+\multicolumn{1}{|l|}{}         & $v_{4}$ &$v_{5}$  & $v_{6}$ &$v_{7}$  \\ \hline
+\multicolumn{1}{|l|}{Etape 1:} & $(+\infty,null)$   &$(+\infty,null)$     &$(+\infty,null)$    &$(+\infty,null)$    \\ \hline
+\multicolumn{1}{|l|}{Etape 2:} &$(+\infty,null)$    &$(+\infty,null)$    &$(+\infty,null)$    &$(+\infty,null)$    \\ \hline
+\multicolumn{1}{|l|}{Etape 3:} &$(+\infty,null)$    &$(+\infty,null)$    &$(+\infty,null)$    &$(+\infty,null)$    \\ \hline
+\multicolumn{1}{|l|}{Etape 4:} &$(+\infty,null),(7,v_{2})$    &$(+\infty,null)$    &$(+\infty,null)$    &$(+\infty,null)$    \\ \hline
+\multicolumn{1}{|l|}{Etape 5:} &$(+\infty,null),(7,v_{2}),(4,v_{3})$    &$(+\infty,null)$    &$(+\infty,null)$    &$(+\infty,null)$    \\ \hline
+\multicolumn{1}{|l|}{Etape 6:} &$(+\infty,null),(7,v_{2}),(4,v_{3})$     &$(+\infty,null),(5,v_{4})$    &$(+\infty,null)$    &$(+\infty,null)$    \\ \hline
+\multicolumn{1}{|l|}{Etape 7:} &$(+\infty,null),(7,v_{2}),(4,v_{3})$     &$(+\infty,null)$    &$(+\infty,null)$    &$(+\infty,null)$    \\ \hline
+
+\end{tabular}
+\caption{Sommets associés à leur file de priorité $S$ pour chaque étape de l'algorithme}
+\label{tab:filePrior}
+
+
+
+\end{table}
+	
 \end{exemple}	 
+
+\clearpage
