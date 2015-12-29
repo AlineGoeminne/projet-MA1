@@ -2,4 +2,78 @@
 
 \subsubsection{Problèmes posés}
 
-\todo{}
+Dans cette section, nous allons expliciter les différents problèmes et questions que nous nous posons et que nous aimerions résoudre.\\
+
+
+Tout d'abord considérons le jeu $(\mathcal{G},v_{1})$ où $\mathcal{G} = ( \{ 1,2 \}, V, (V_{1}, V_{2}),E, (Cost _{1},Cost _{2}))$ où: \begin{enumerate}
+\item[$\bullet$] Pour tout  $\rho = \rho _{0} \rho _{1} \rho _{2} \ldots $ où $\rho \in Plays$ $Cost_{i}(\rho) = $ $\begin{cases} 
+								\min \{ i | \rho _{i} \in Goal_{i} \} & \text{si } \exists i \text{ tq } \rho _{i} \in Goal_{i} \\
+								+\infty & \text{ sinon}
+								\end{cases}$,
+\item[$\bullet$] $Goal_{1} = \{ v_{3} \}$ et $Goal_{2} = \{ v_{0} \}$,
+\item[$\bullet$]  $V_{1}$ (resp. $V_{2}$) est représenté par les noeuds ronds (resp. carrés) du graphe de la figure~\ref{ex:patologique}.
+
+\end{enumerate}
+
+
+\begin{figure}[ht!]
+	\centering
+
+	\begin{tikzpicture}
+		
+		\node[nRG] (v3) at (2,-2){$v_{3}$};
+		\node[nC] (v2) at (2,0){$v_{2}$};
+		\node[nR] (v1) at (0,0){$v_{1}$};
+		\node[nRD] (v0) at (0,-2){$v_{0}$};
+	
+		\draw[->,>=latex] (v0) to [bend right] (v1);
+		\draw[->,>=latex] (v1) to [bend right] (v0);
+		
+		\draw[->,>=latex] (v1) to [bend right] (v2);
+		\draw[->,>=latex] (v2) to [bend right] (v1);
+		
+		\draw[->,>=latex] (v3) to [bend right] (v2);
+		\draw[->,>=latex] (v2) to [bend right] (v3);
+		
+		
+	\end{tikzpicture}
+	
+	\caption{Jeu d'atteignabilité avec coût}
+	\label{ex:patologique}
+	
+
+\end{figure}
+
+Soit $\sigma _{1}(v) =$ $\begin{cases}
+						v_{2} & \text{si } v = v_{1} \\
+						v_{1 } & \text{si } v = v_{0} \\
+						v_{2} & \text{si } v = v_{3} 
+						\end{cases}$
+						
+						
+						
+\noindent et soit $\sigma _{2}(v) = v_{1}$ alors $(\sigma _{1},\sigma _{2})$ est une équilibre de Nash du jeu $(\mathcal{G},v_{1})$ dont l'outcome est $(v_{1}v_{2})^{\omega}$. Nous remarquons qu'avec cet équilibre de Nash aucun des deux joueurs n'atteint son objectif. Nous pouvons également observer que si les deux joueurs coopéraient ils pourraient tous deux minimiser leur coût. En effet, si les deux joueurs suivaient un profil de stratégie ayant comme outcome $\rho = v_{1}v_{0}v_{1}(v_{2}v_{3})^{\omega} $ nous aurions $Cost_{1}(\rho) = 4$ et $Cost_{2}(\rho) = 1$.
+
+Nous nous posons alors les questions suivantes:
+
+\begin{qst}
+	
+	Soit $G = (V,E)$ un graphe orienté fortement connexe \footnote{} qui représente l'arène d'un jeu d'atteignabilité multijoueur avec coût : $(\mathcal{G},v_{0})$ (pour un certain $v_{0} \in V$).
+Existe-t'il un équilibre de Nash tel que chaque joueur atteigne son objectif?
+
+\end{qst}
+
+A partir d'un jeu $(\mathcal{G},v_{0})$ où $\mathcal{G} =( \{ 1, 2 \}, V, (V_{1},V_{2}), (Cost_{1},Cost{2}),(Goal_{1},Goal_{2}))$ est un jeu d'atteignabilité à deux joueurs avec coût nous pouvons y associer deux jeux à somme nullesdu type \og reachability-price game \fg:
+\begin{enumerate}
+	\item $\mathcal{G}_{1} = (V,(V_{Min},V_{Max}),E,RP_{Min},RP_{Max},Goal)$ où $V_{Min} = V_{1}$, $V_{Max} = V_{2}$ et $Goal = Goal_{1}$ (ie. le jeu dans lequel $J_{1}$ tente d'atteindre au plus vite son objectif et où $J_{2}$ veut l'en empêcher),
+	\item $\mathcal{G}_{2} = (V,(V_{Min},V_{Max}),E,RP_{Min},RP_{Max},Goal)$ où $V_{Min} = V_{2}$, $V_{Max} = V_{1}$ et $Goal = Goal_{2}$ (ie. le jeu dans lequel $J_{2}$ tente d'atteindre au plus vite son objectif et où $J_{1}$ veut l'en empêcher).
+\end{enumerate}
+	
+
+\begin{qst}
+	Soit $(\mathcal{G},v_{0})$ où $\mathcal{G} = (V,(V_{Min},V_{Max}),E,RP_{Min},RP_{Max},Goal)$ est un \og reachability-price game \fg et soit $\rho \in Plays$ un jeu sur $(\mathcal{G},v_{0})$, existe-t'il une procédure algorithmique pour déterminer si ce jeu $\rho$ correspond à l'outcome d'un équilibre de Nash $(\sigma _{1},\sigma _{2})$ pour de certaines stratégies $\sigma _{1}\in \Sigma _{Min}$ et $\sigma _{2}\in \Sigma _{Max}$ ?
+	
+\end{qst}
+	
+
+ 						
