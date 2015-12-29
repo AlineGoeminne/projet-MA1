@@ -38,7 +38,7 @@ Le but de \textit{Min} (resp. \textit{Max}) est donc de \textbf{minimiser} (resp
 	\begin{center} 
 		On dit que le joueur \textit{Min} \textit{garantit le paiement} $d \in \mathbb{R}$\\		
 		ssi	\\
-		$\exists \sigma _{1}\in \Sigma _{Min}$ tq $\forall \sigma _{2} \in \Sigma _{Max}$ $ Cout_{Min}(\sigma _{1},\sigma _{2}) \leq d$\\
+		$\exists \sigma _{1}\in \Sigma _{Min}$ tq $\forall \sigma _{2} \in \Sigma _{Max}$ $ Cost_{Min}(\sigma _{1},\sigma _{2}) \leq d$\\
 		\end{center}
 
 \end{defi}
@@ -56,7 +56,7 @@ Le but de \textit{Min} (resp. \textit{Max}) est donc de \textbf{minimiser} (resp
 	\end{enumerate}
 \end{defi}
 \begin{rem}
-	La \textit{valeur supérieure}  $\overline{Val}(v)$ est la plus grande valeur que $J_{Min}$ peut perdre et la \textit{valeur inférieure} $\underline{Val}(v) $ est la plus grande valeur que $J_{Max}$ peut gagner.
+	La \textit{valeur supérieure}  $\overline{Val}(v)$ est la plus petite valeur dont $J_{Min}$ garantit le paiement et la \textit{valeur inférieure} $\underline{Val}(v) $ est la plus grande valeur dont $J_{Max}$ garantit le paiement.
 \end{rem}
 
 %PROPRIETE 
@@ -87,12 +87,12 @@ Le but de \textit{Min} (resp. \textit{Max}) est donc de \textbf{minimiser} (resp
 	Soit $\mathcal{A} = (V, (V_{Min}, V_{Max}), E) $,soit $w: E \rightarrow \mathbb{R}$ une fonction de poids,
 	un \textit{"reachability-price game"} est un jeu Min-Max avec coût $\mathcal{G} = (\mathcal{A},RP_{Min},RP_{Max})$\\ avec un objectif donné $Goal \subseteq V$, où pour tout $\rho \in Plays$ tq $\rho = \rho _{0}\rho _{1}...$:\\
 	
-	$RP_{Min}(\rho)=RP_{Max}(\rho) =$ $\begin{cases}
+	$g := RP_{Min}(\rho)=RP_{Max}(\rho) =$ $\begin{cases}
 									\sum_{i = 0}^{n-1} w(\rho_{i},\rho_{i+1}) & \text{ si } n \text{ est le plus petit indice tq } \rho_{n}\in 					  Goal\\
 									+\infty & \text{sinon}
 									\end{cases}$ \\
 									
-  \noindent Ce jeu est un jeu à somme nulle.
+  \noindent Ce jeu est un jeu à somme nulle et nous le notons : $\mathcal{G} = (\mathcal{A}, g , Goal)$.
 \end{defi}
 
 % EXEMPLE : reachability-price game + jeu déterminé + valeur + stratégie optimale
