@@ -5,7 +5,8 @@
 % DEFINITION: mutliplayer cost game
 
 \begin{defi}[Jeu multijoueur avec coût]
-	Un \textit{jeu multijoueur avec coût} est un tuple $\mathcal{G} = (\Pi ,V ,(V_{i})_{i \in \Pi} ,E ,(Cost_{i})_{i \in \Pi})$ où
+	Soit $\mathcal{A} = (\Pi, V, (V_{i})_{i \in \Pi},E)$ une arène,
+	un \textit{jeu multijoueur avec coût} est un tuple $\mathcal{G} = (\mathcal{A},(Cost_{i})_{i \in \Pi})$ où
 	\begin{enumerate}
 		\item[$\bullet$] $\mathcal{A} = (\Pi ,V ,(V_{i})_{i \in \Pi} ,E )$ est l'arène d'un jeu sur graphe.
 		\item[$\bullet$] $Cost_{i}: Plays \rightarrow \mathbb{R} \cup \{ +\infty , -\infty \} $ est la \textit{fonction de coût} de $J_{i}$. 
@@ -27,7 +28,7 @@
 									\min \{ i | \rho _{i} \in Goal_{i} \} & \text{si } \exists i \text{ tq } \rho _{i} \in Goal_{i} \\
 									+\infty & \text{ sinon}
 									\end{cases}$
-	\item $Cost_{i}(\rho) = $ $\begin{cases}
+	\item $\varphi _{i}(\rho) = $ $\begin{cases}
 									\sum_{i = 0}^{n-1} w(\rho_{i},\rho_{i+1}) & \text{ si } n \text{ est le plus petit indice tq } \rho_{n}\in 					  Goal_{i}\\
 									+\infty & \text{sinon}
 									\end{cases}$ \\
@@ -45,9 +46,24 @@
 	A chaque arc d'un graphe $G = (V,E)$ on peut y associer un \textit{poids} (ie: une valeur chiffrée). On associe donc à $G$ une \textit{fonction de poids}  $w : E \rightarrow \mathbb{R}$. On dit alors que $G$ est un graphe \textit{pondéré}.
 \end{defi}
 
+
+%DEFINITION: jeu d'atteignabilité multijoueur à objectif quantitatif
+
+\begin{defi}[Jeu d'atteignabilité multijoueur à objectif quantitatif]
+	
+	Un \textit{jeu d'atteignabilité multijoueur à objectif quantitatif} est un jeu multijoueur avec coût $\mathcal{G} = (\Pi ,V ,(V_{i})_{i \in \Pi} ,E ,(Cost_{i})_{i \in \Pi})$ tel que pour tout joueur $i \in Pi$ $Cost_{i} = \varphi _{i}$ pour un certain $Goal _{i} \subseteq V$.
+	On note ces jeux $\mathcal{G} = (\mathcal{A},(\varphi _{i})_{i\in \Pi},(Goal_{i})_{i \in \Pi})$.
+\end{defi}
+	
+
+
+
 %EXEMPLE: graphe pondéré
 
+
+
 \input{graphePond}
+
 
 %DEFINITION: équilibre de Nash
 
