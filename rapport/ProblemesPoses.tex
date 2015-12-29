@@ -58,12 +58,12 @@ Nous nous posons alors les questions suivantes:
 
 \begin{qst}
 	
-	Soit $G = (V,E)$ un graphe orienté fortement connexe \footnote{} qui représente l'arène d'un jeu d'atteignabilité multijoueur avec coût : $(\mathcal{G},v_{0})$ (pour un certain $v_{0} \in V$).
+	Soit $G = (V,E)$ un graphe orienté fortement connexe \footnote{En théorie des graphes, un graphe $G = (V,E)$ est dit fortement connexe si pour tout $u$ et $v$ dans $V$, il existe un chemin de $u$ à $v$} qui représente l'arène d'un jeu d'atteignabilité multijoueur avec coût : $(\mathcal{G},v_{0})$ (pour un certain $v_{0} \in V$).
 Existe-t'il un équilibre de Nash tel que chaque joueur atteigne son objectif?
 
 \end{qst}
 
-A partir d'un jeu $(\mathcal{G},v_{0})$ où $\mathcal{G} =( \{ 1, 2 \}, V, (V_{1},V_{2}), (Cost_{1},Cost{2}),(Goal_{1},Goal_{2}))$ est un jeu d'atteignabilité à deux joueurs avec coût nous pouvons y associer deux jeux à somme nullesdu type \og reachability-price game \fg:
+A partir d'un jeu $(\mathcal{G},v_{0})$ où $\mathcal{G} =( \{ 1, 2 \}, V, (V_{1},V_{2}), (Cost_{1},Cost_{2}),(Goal_{1},Goal_{2}))$ est un jeu d'atteignabilité à deux joueurs avec coût nous pouvons y associer deux jeux à somme nullesdu type \og reachability-price game \fg:
 \begin{enumerate}
 	\item $\mathcal{G}_{1} = (V,(V_{Min},V_{Max}),E,RP_{Min},RP_{Max},Goal)$ où $V_{Min} = V_{1}$, $V_{Max} = V_{2}$ et $Goal = Goal_{1}$ (ie. le jeu dans lequel $J_{1}$ tente d'atteindre au plus vite son objectif et où $J_{2}$ veut l'en empêcher),
 	\item $\mathcal{G}_{2} = (V,(V_{Min},V_{Max}),E,RP_{Min},RP_{Max},Goal)$ où $V_{Min} = V_{2}$, $V_{Max} = V_{1}$ et $Goal = Goal_{2}$ (ie. le jeu dans lequel $J_{2}$ tente d'atteindre au plus vite son objectif et où $J_{1}$ veut l'en empêcher).
