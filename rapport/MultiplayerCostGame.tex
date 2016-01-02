@@ -43,15 +43,25 @@
 
 \begin{defi}[Fonction de poids]
 	\label{def:fonctionPoids}
-	A chaque arc d'un graphe $G = (V,E)$ on peut y associer un \textit{poids} (ie: une valeur chiffrée). On associe donc à $G$ une \textit{fonction de poids}  $w : E \rightarrow \mathbb{R}$. On dit alors que $G$ est un graphe \textit{pondéré}.
+	A chaque arc d'un graphe $G = (V,E)$ on peut y associer un \textit{poids} (i.e. une valeur chiffrée). On associe donc à $G$ une \textit{fonction de poids}  $w : E \rightarrow \mathbb{R}$. On dit alors que $G$ est un graphe \textit{pondéré}.
 \end{defi}
+
+\begin{exemple}
+	Si chaque $v \in V$ représente une ville sur une carte, alors on peut imaginer une fonction de poids représentant une des valeurs suivantes:
+	\begin{enumerate}
+		\item [$\bullet$] le nombre de kilomètres entre deux villes,
+		\item [$\bullet$] le temps pour aller d'une ville à l'autre,
+		\item [$\bullet$] la consommation d'essence pour aller d'une ville à l'autre.
+	\end{enumerate}
+\end{exemple}
+		
 
 
 %DEFINITION: jeu d'atteignabilité multijoueur à objectif quantitatif
 
 \begin{defi}[Jeu d'atteignabilité multijoueur à objectif quantitatif]
 	
-	Un \textit{jeu d'atteignabilité multijoueur à objectif quantitatif} est un jeu multijoueur avec coût $\mathcal{G} = (\Pi ,V ,(V_{i})_{i \in \Pi} ,E ,(Cost_{i})_{i \in \Pi})$ tel que pour tout joueur $i \in Pi$ $Cost_{i} = \varphi _{i}$ pour un certain $Goal _{i} \subseteq V$.
+	Un \textit{jeu d'atteignabilité multijoueur à objectif quantitatif} est un jeu multijoueur avec coût $\mathcal{G} = (\Pi ,V ,(V_{i})_{i \in \Pi} ,E ,(Cost_{i})_{i \in \Pi})$ tel que pour tout joueur $i \in \Pi$ $Cost_{i} = \varphi _{i}$ pour un certain $Goal _{i} \subseteq V$.
 	On note ces jeux $\mathcal{G} = (\mathcal{A},(\varphi _{i})_{i\in \Pi},(Goal_{i})_{i \in \Pi})$.
 \end{defi}
 	
@@ -92,4 +102,12 @@
 %EXEMPLE D'EN
 
 \input{exempleEN1}
+
+% Résultat d'existence d'un équilibre de Nash à petite mémoire
+
+ Dans~\cite{DBLP:conf/lfcs/BrihayePS13}, le théorème suivant est énoncé et prouvé:
+
+\begin{thm}
+	Soient $\mathcal{A} = (\Pi, V, (V_{i})_{i \in \Pi}, E)$ et $\mathcal{G} = (\mathcal{A},(\varphi _{i})_{i \in \Pi}, (Goal_{i})_{i \in \Pi})$ un jeu d'atteignabilité multijoueur à objectif quantitatif, il existe un équilibre de Nash dans tout jeu initialisé ($\mathcal{G},v_{0}$) avec $v_{0}\in V$. De plus, cet équilibre possède une mémoire d'au plus $|V| + |\Pi|$.
+\end{thm}
 
