@@ -1,11 +1,12 @@
 %!TEX root=main.tex
 
-\subsubsection{Problèmes posés}
+\subsubsection{Questions posées}
+\label{section:questionsPosees}
 
-Dans cette section, nous allons expliciter les différents problèmes et questions que nous nous posons et que nous aimerions résoudre.\\
+Dans cette section, nous allons expliciter les différentes questions que nous nous posons et que nous aimerions résoudre.\\
 
 
-Tout d'abord considérons le jeu $(\mathcal{G},v_{1})$ où $\mathcal{G} = ( \{ 1,2 \}, V, (V_{1}, V_{2}),E, (Cost _{1},Cost _{2}))$ où: \begin{enumerate}
+Tout d'abord, considérons le jeu $(\mathcal{G},v_{1})$ où $\mathcal{G} = ( \{ 1,2 \}, V, (V_{1}, V_{2}),E, (Cost _{1},Cost _{2}))$ où: \begin{enumerate}
 \item[$\bullet$] Pour tout  $\rho = \rho _{0} \rho _{1} \rho _{2} \ldots $ où $\rho \in Plays$ $Cost_{i}(\rho) = $ $\begin{cases} 
 								\min \{ i | \rho _{i} \in Goal_{i} \} & \text{si } \exists i \text{ tq } \rho _{i} \in Goal_{i} \\
 								+\infty & \text{ sinon}
@@ -52,7 +53,7 @@ Soit $\sigma _{1}(v) =$ $\begin{cases}
 						
 						
 						
-\noindent et soit $\sigma _{2}(v) = v_{1}$ alors $(\sigma _{1},\sigma _{2})$ est une équilibre de Nash du jeu $(\mathcal{G},v_{1})$ dont l'outcome est $(v_{1}v_{2})^{\omega}$. Nous remarquons qu'avec cet équilibre de Nash aucun des deux joueurs n'atteint son objectif. Nous pouvons également observer que si les deux joueurs coopéraient ils pourraient tous deux minimiser leur coût. En effet, si les deux joueurs suivaient un profil de stratégie ayant comme outcome $\rho = v_{1}v_{0}v_{1}(v_{2}v_{3})^{\omega} $ nous aurions $Cost_{1}(\rho) = 4$ et $Cost_{2}(\rho) = 1$.
+\noindent et soit $\sigma _{2}(v) = v_{1}$ alors $(\sigma _{1},\sigma _{2})$ est un équilibre de Nash du jeu $(\mathcal{G},v_{1})$ dont l'outcome est $(v_{1}v_{2})^{\omega}$. Nous remarquons qu'avec cet équilibre de Nash aucun des deux joueurs n'atteint son objectif. Nous pouvons également observer que si les deux joueurs coopéraient, ils pourraient tous deux minimiser leur coût. En effet, si les deux joueurs suivaient un profil de stratégie ayant comme outcome $\rho = v_{1}v_{0}v_{1}(v_{2}v_{3})^{\omega} $ nous aurions $Cost_{1}(\rho) = 4$ et $Cost_{2}(\rho) = 1$.
 
 Nous nous posons alors les questions suivantes:
 
@@ -62,18 +63,40 @@ Nous nous posons alors les questions suivantes:
 Existe-t'il un équilibre de Nash tel que chaque joueur atteigne son objectif?
 
 \end{qst}
-
-A partir d'un jeu $(\mathcal{G},v_{0})$ où $\mathcal{G} =( \{ 1, 2 \}, V, (V_{1},V_{2}), (Cost_{1},Cost_{2}),(Goal_{1},Goal_{2}))$ est un jeu d'atteignabilité à deux joueurs avec coût nous pouvons y associer deux jeux à somme nullesdu type \og reachability-price game \fg:
-\begin{enumerate}
-	\item $\mathcal{G}_{1} = (V,(V_{Min},V_{Max}),E,RP_{Min},RP_{Max},Goal)$ où $V_{Min} = V_{1}$, $V_{Max} = V_{2}$ et $Goal = Goal_{1}$ (ie. le jeu dans lequel $J_{1}$ tente d'atteindre au plus vite son objectif et où $J_{2}$ veut l'en empêcher),
-	\item $\mathcal{G}_{2} = (V,(V_{Min},V_{Max}),E,RP_{Min},RP_{Max},Goal)$ où $V_{Min} = V_{2}$, $V_{Max} = V_{1}$ et $Goal = Goal_{2}$ (ie. le jeu dans lequel $J_{2}$ tente d'atteindre au plus vite son objectif et où $J_{1}$ veut l'en empêcher).
-\end{enumerate}
 	
 
 \begin{qst}
-	Soit $(\mathcal{G},v_{0})$ où $\mathcal{G} = (V,(V_{Min},V_{Max}),E,RP_{Min},RP_{Max},Goal)$ est un \og reachability-price game \fg et soit $\rho \in Plays$ un jeu sur $(\mathcal{G},v_{0})$, existe-t'il une procédure algorithmique pour déterminer si ce jeu $\rho$ correspond à l'outcome d'un équilibre de Nash $(\sigma _{1},\sigma _{2})$ pour de certaines stratégies $\sigma _{1}\in \Sigma _{Min}$ et $\sigma _{2}\in \Sigma _{Max}$ ?
+	Soit $(\mathcal{G},v_{0})$ où $\mathcal{G} = (V,(V_{Min},V_{Max}),E,RP_{Min},RP_{Max},Goal)$ est un \og reachability-price game\fg  et soit $\rho \in Plays$ un jeu sur $(\mathcal{G},v_{0})$, existe-t'il une procédure algorithmique pour déterminer si ce jeu $\rho$ correspond à l'outcome d'un équilibre de Nash $(\sigma _{1},\sigma _{2})$ pour certaines stratégies $\sigma _{1}\in \Sigma _{Min}$ et $\sigma _{2}\in \Sigma _{Max}$ ?
 	
 \end{qst}
-	
 
+A partir d'un jeu $(\mathcal{G},v_{0})$ où $\mathcal{G} =( \{ 1, 2 \}, V, (V_{1},V_{2}), E, (\varphi _{1},\varphi _{2}),(Goal_{1},Goal_{2}))$ est un jeu d'atteignabilité à deux joueurs avec coût nous pouvons y associer deux jeux à somme nulle du type \og reachability-price game \fg:
+\begin{enumerate}
+	\item $\mathcal{G}_{1} = (V,(V_{Min},V_{Max}),E,RP_{Min},RP_{Max},Goal)$ où $V_{Min} = V_{1}$, $V_{Max} = V_{2}$ et $Goal = Goal_{1}$ (i.e. le jeu dans lequel $J_{1}$ tente d'atteindre au plus vite son objectif et où $J_{2}$ veut l'en empêcher),
+	\item $\mathcal{G}_{2} = (V,(V_{Min},V_{Max}),E,RP_{Min},RP_{Max},Goal)$ où $V_{Min} = V_{2}$, $V_{Max} = V_{1}$ et $Goal = Goal_{2}$ (i.e. le jeu dans lequel $J_{2}$ tente d'atteindre au plus vite son objectif et où $J_{1}$ veut l'en empêcher).
+\end{enumerate}
+
+Pour tout $v \in V$, nous notons alors $Val_{1}(v)$ la valeur de $Val(v)$ calculée dans $\mathcal{G}_{1}$ et $Val_{2}(v)$ la valeur de $Val(v)$ calculée dans $\mathcal{G}_{2}$.
+
+\begin{qst}
+	
+	\label{qst:3}
+	
+	Soient $\mathcal{A} = (\Pi, V, (V_{1}, V_{2}), E)$ une arène et $(\mathcal{G} = (\mathcal{A}, (\varphi _{1}, \varphi _{2}), (Goal_{1}, Goal_{2}))$ un jeu d'atteignabilité à deux joueurs à objectif quantitatif, soit $(\mathcal{G}, v_{0})$ le jeu initialisé pour un certain $v_{0} \in V $ soit $\rho = s_{0}s_{1}... \in Plays$, on se demande s'il existe $(\sigma _{1},\sigma _{2})$ un équilibre de Nash dans $(\mathcal{G},v_{0})$ tel que $\rho = Outcome(v_{0},(\sigma _{1},\sigma _{2}))$ et $(\sigma _{1},\sigma _{2}) \in \Sigma _{1} \times \Sigma _{2}.$
+\end{qst}
+
+Pour répondre à la question~\ref{qst:3} nous nous intéressons à la véracité de la propriété~\ref{prop:outEN2} :
+
+\begin{propriete}
+	\label{prop:outEN2}
+	Soient $\mathcal{A} = (\Pi, V, (V_{1}, V_{2}), E)$ une arène et $\mathcal{G} = (\mathcal{A}, (\varphi _{1}, \varphi _{2}), (Goal_{1}, Goal_{2})$ un jeu d'atteignabilité à deux joueurs à objectif quantitatif, soit $(\mathcal{G}, v_{0})$ le jeu initialisé pour un certain $v_{0} \in V $ et soit $\rho = v_{0}v_{1}... \in Plays$. 
+	
+	Posons $(x,y) = (\varphi _{1}(\rho), \varphi _{2}(\rho))$ et pour $v_{j} \in \rho$ ($j \in \mathbb{N}$) nous définissons: $\epsilon _{j} = \sum _{n= 0} ^{j-1} w(v_{n},v_{n+1})$ où $w$ est la fonction de poids associée à $G = (V,E)$ .
+	
+	\begin{center}Il existe $(\sigma _{1},\sigma _{2}) \in \Sigma _{1} \times \Sigma _{2}$ un équilibre de Nash dans $(\mathcal{G},v_{0})$ tq $Outcome(v_{0},(\sigma _{1},\sigma _{2})) = \rho$\\ $\text{}$\\ si et seulement si\\$\text{}$\\ pour tout $j \in \mathbb{N}$, $\begin{cases}
+													Val_{1}(v_{j}) + \epsilon _{j} \geq x & \text{ si } v_{j} \in V_{1} \\
+													Val_{2}(v_{j}) + \epsilon _{j} \geq y & \text{ si } v_{j} \in V_{2} 
+													\end{cases}$.\end{center}  
+\end{propriete}
+	
  						
