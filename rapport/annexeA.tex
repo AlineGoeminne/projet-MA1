@@ -3,9 +3,9 @@
 
 \section{Annexe A: Algorithme de Dijkstra}
 \label{algo:dijkstra}
-Cette section se base sur le livre de référence de Cormen \emph{et al.} ~\cite{Cormen:2009:IA:580470} (pages 658--662).\\
+Cette section se base sur le livre de Cormen \emph{et al.}~\cite{Cormen:2009:IA:580470} (pages 658--662).\\
 
-Soit $G = (V,E)$ un graphe orienté et pondéré,à partir d'un sommet $s$ donné (appelé \textit{source}) l'algorithme de Dijkstra permet de calculer les plus courts chemins à partir de $s$ vers les autres sommets du graphe. Cet algorithme s'applique sur des graphes orientés pondérés tels que la fonction de poids $w$ associée au graphe vérifie la propriété suivante: pour tout $(u,v)\in E$ on a que $w(u,v) \geq 0$.\\
+Soit $G = (V,E)$ un graphe orienté et pondéré, à partir d'un sommet $s$ donné (appelé \textit{source}) l'algorithme de Dijkstra permet de calculer les plus courts chemins à partir de $s$ vers les autres sommets du graphe. Cet algorithme s'applique sur des graphes orientés pondérés tels que la fonction de poids $w$ associée au graphe vérifie la propriété suivante: pour tout $(u,v)\in E$ on a que $w(u,v) \geq 0$.\\
 
 %Idée de l'algorithme
 
@@ -14,9 +14,9 @@ Soit $G = (V,E)$ un graphe orienté et pondéré,à partir d'un sommet $s$ donn�
 	
 	\item[$\bullet$] A tout sommet $s'$ de $V$ on associe une \textit{valeur} $d$ qui représente l'estimation du plus court chemin de $s$ à $s'$. Cette valeur est mise à jour en court d'exécution de l'algorithme afin qu'à la fin de celle-ci $d$ soit exactement le poids du plus court chemin de $s$ à $s'$. On initialise l'algorithme de Dijkstra en mettant la valeur $+\infty$ à tous les sommets et $0$ à $s$. En effet, le plus court chemin pour aller de $s$ à $s$ est de rester en $s$.
 	
-	\item[$\bullet$] On utilise une \textit{file de priorité} $Q$ (structure de données permettant de stocker des éléments en fonction de la valeur d'une clef) qui permet de stocker les sommets classés par leur valeur $d$. Sur cette file de priorité on peut effectuer les opérations suivantes: insertion d'un élément, extraction d'un élément ayant la clef de la plus petit valeur,test de la présence ou non d'élément dans $Q$, augmentation ou diminution de la valeur de la clef associée à un sommet. A l'initialisation de l'algorithme les sommets présents dans $Q$ sont tous ceux présents dans $V$.
+	\item[$\bullet$] On utilise une \textit{file de priorité} $Q$ (structure de données permettant de stocker des éléments en fonction de la valeur d'une clef) qui permet de stocker les sommets classés par leur valeur $d$. Sur cette file de priorité, on peut effectuer les opérations suivantes: insertion d'un élément, extraction d'un élément ayant la clef de la plus petite valeur, test de la présence ou non d'élément dans $Q$, augmentation ou diminution de la valeur de la clef associée à un sommet. A l'initialisation de l'algorithme les sommets présents dans $Q$ sont tous ceux présents dans $V$.
 	
-	\item[$\bullet$] Afin de pouvoir retrouver un plus court chemin de $s$ à un autre sommet $s'$ chaque sommet stocke le \textit{prédécesseur} qui a permis de constituer ce plus court chemin.
+	\item[$\bullet$] Afin de pouvoir retrouver un plus court chemin de $s$ à un autre sommet $s'$, chaque sommet stocke le \textit{prédécesseur} qui a permis de constituer ce plus court chemin.
 	
 	\item[$\bullet$] On maintient $S \subseteq V$ un ensemble de sommets qui vérifient la propriété suivante: pour tout sommet $s'\in V$ le plus court chemin de $s$ à $s'$ a déjà été calculé. A l'initialisation de l'algorithme $V = \emptyset$.
 	
@@ -33,7 +33,7 @@ $\text{}$\\
 
 \noindent \textbf{Pseudo-code}
 
-Maintenant que les grandes idées de l'algorithme ont été expliquées, retranscrivons le pseudo-code. Pour des questions de complexité, l'ensemble des arcs du graphe sont représentés sous la forme d'une \textit{liste d'adjacence} \footnote{Une liste d'adjacence,Adj, est définit comme tel: à chaque case d'un tableau est associé un sommet de $V$ et à chacun de ces sommets est associé la liste de ses successeurs. $Adj[u]$ permet de récupérer la liste des successeurs du sommet $u$. } et le file de priorité est implémentée par un \textit{tas (heap min)}. L'algorithme ~\ref{algo:dijk} représente le pseudo-code de l'algorithme proprement dit, comme explicité dans le livre de référence de Cormen \emph{et al.} ~\cite{Cormen:2009:IA:580470}. Les algorithmes \ref{algo:initSU},\ref{algo:initTas},\ref{algo:relaxer} décrivent les algorithmes qui sont appelés au sein de l'algorithme ~\ref{algo:dijk}.
+Maintenant que les grandes idées de l'algorithme ont été expliquées, retranscrivons le pseudo-code. Pour des questions de complexité, l'ensemble des arcs du graphe sont représentés sous la forme d'une \textit{liste d'adjacence} \footnote{Une liste d'adjacence,Adj, est définie comme telle: à chaque case d'un tableau est associé un sommet de $V$ et à chacun de ces sommets est associée la liste de ses successeurs. $Adj[u]$ permet de récupérer la liste des successeurs du sommet $u$. } et la file de priorité est implémentée par un \textit{tas (heap min)}. L'algorithme ~\ref{algo:dijk} représente le pseudo-code de l'algorithme proprement dit, comme explicité dans le livre de Cormen \emph{et al.} ~\cite{Cormen:2009:IA:580470}. Les algorithmes \ref{algo:initSU},\ref{algo:initTas},\ref{algo:relaxer} décrivent les algorithmes qui sont appelés au sein de l'algorithme ~\ref{algo:dijk}.
 
 \begin{algorithm}
 	\caption{\textsc {Dijkstra(G,w,s)}}
@@ -121,8 +121,8 @@ Maintenant que les grandes idées de l'algorithme ont été expliquées, retrans
 		
 \end{algorithm}
 
-La complexité de l'algorithme de Dijkstra dépend de la manière dont est implémentée la file de priorité. Si on implémente celle-ci de telle sorte que chaque opération \textsc{Extraire-Min}() est en $\mathcal{O}(\log V)$ ainsi que chaque \textsc{DécrémenterClef}($,Clef(v),nouvVal$) alors l'agorithme est en $\mathcal{O}((V + E) \log V)$.\\
-Les preuves d'exactitude et de complexité de l'agorithme Dijkstra ne sont pas abordées ici mais se trouve dans le livre de référence de Cormen \emph{et al.} ~\cite{Cormen:2009:IA:580470}.
+La complexité de l'algorithme de Dijkstra dépend de la manière dont est implémentée la file de priorité. Si on implémente celle-ci de telle sorte que chaque opération \textsc{Extraire-Min}() est en $\mathcal{O}(\log V)$ ainsi que chaque \textsc{DécrémenterClef}($Clef(v),nouvVal$) alors l'agorithme est en $\mathcal{O}((V + E) \log V)$.\\
+Les preuves d'exactitude et de complexité de l'agorithme Dijkstra ne sont pas abordées ici mais se trouvent dans le livre de Cormen \emph{et al.} ~\cite{Cormen:2009:IA:580470}.
 
 
 

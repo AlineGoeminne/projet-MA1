@@ -1,9 +1,9 @@
 %!TEX root=main.tex
 
 \section{Concepts fondamentaux de théorie des jeux}
-Dans le cadre de notre projet, nous sommes intéressés par les jeux sur graphes où tous les joueurs ont un \textit{objectif d'atteignabilité}.
-Dans cette section, nous abordons la notion de jeux sur graphe de manière générale ainsi que les concepts fondamentaux liés à la théorie des jeux tels que les notions de stratégies, d'équilibres de Nash, ...\\
-Cette section sera essentiellement inspirée de l'article de Brihaye et al. \cite{DBLP:conf/lfcs/BrihayePS13}.
+Dans le cadre de notre projet, nous sommes intéressés par les jeux sur graphe où tous les joueurs ont un \textit{objectif d'atteignabilité}.
+Dans cette section, nous abordons la notion de jeux sur graphe de manière générale ainsi que les concepts fondamentaux liés à la théorie des jeux.\\
+Cette section est essentiellement inspirée de l'article de Brihaye \emph{et al.} \cite{DBLP:conf/lfcs/BrihayePS13}.
 
 \subsection{Jeux sur graphe}
 
@@ -52,7 +52,7 @@ Cette section sera essentiellement inspirée de l'article de Brihaye et al. \cit
 
 \noindent\textbf{Déroulement d'une partie}\label{derPar}
 
-Nous pouvons imaginer le déroulement d'une partie d'un jeu sur graphe de la manière suivante: pour commencer un jeton est positionné sur un sommet $v_{0}$ du graphe (le sommet initial dans le cas de la remarque \ref{sommetInit}). Ensuite, comme ce sommet appartient à un certain $V_{i}$, le joueur $i$ choisit une arête $(v_{0},v_{1}) \in E$ et fait "glisser" le jeton le long de l'arc vers le sommet $v_{1}$. Ce sommet $v_{1}$ appartient à un certain $V_{j}$, c'est donc au joueur $j$ de choisir une arête $(v_{1},v_{2})\in E$ du graphe et faire "glisser" le jeton le long de cette arête. Le jeu se poursuit de la sorte infiniment. \\
+Nous pouvons imaginer le déroulement d'une partie d'un jeu sur graphe de la manière suivante: pour commencer un jeton est positionné sur un sommet $v_{0}$ du graphe (le sommet initial dans le cas de la remarque \ref{sommetInit}). Ensuite, comme ce sommet appartient à un certain $V_{i}$, le joueur $i$ choisit une arête $(v_{0},v_{1}) \in E$ et fait \og glisser \fg le jeton le long de l'arc vers le sommet $v_{1}$. Ce sommet $v_{1}$ appartient à un certain $V_{j}$, c'est donc au joueur $j$ de choisir une arête $(v_{1},v_{2})\in E$ du graphe et faire \og glisser\fg le jeton le long de cette arête. Le jeu se poursuit de la sorte infiniment. \\
 
 
 \subsection{Stratégie}
@@ -67,13 +67,13 @@ Nous pouvons imaginer le déroulement d'une partie d'un jeu sur graphe de la man
 
 %\todo{Vérifier que j'utilise bien toutes les notions que je définis.}\\
 
-Un \textit{jeu} $\rho \in V^{\omega}$(respectivement une \textit{histoire} $h \in V^{*}$) dans $\mathcal{A}$ est un chemin infini (respectivement fini) à travers le graphe. Nous noterons $\epsilon$ l'histoire vide, \textit{Plays} l'ensemble des jeux dans $\mathcal{A}$ et \textit{Hist} l'ensemble des histoires. Nous utiliserons les notations suivantes $\rho = \rho _{0}  \rho _{1} \rho _{2}\rho _{3} \ldots$ (où $\rho _{0},  \rho _{1},\ldots \in V$)  représentera un jeu et de manière similaire, pour une histoire $h$, $ h = h_{0} h_{1} h_{2} h_{3} ... h_{k}$ ( pour un certain $k \in \mathbb{N}$) où  $h_{0}, h_{1}, \ldots \in V$.
+Un \textit{jeu} $\rho \in V^{\omega}$(respectivement une \textit{histoire} $h \in V^{*}$) dans $\mathcal{A}$ est un chemin infini (respectivement fini) à travers le graphe. Nous notons $\epsilon$ l'histoire vide, \textit{Plays} l'ensemble des jeux dans $\mathcal{A}$ et \textit{Hist} l'ensemble des histoires. Nous utilisons les notations suivantes $\rho = \rho _{0}  \rho _{1} \rho _{2}\rho _{3} \ldots$ (où $\rho _{0},  \rho _{1},\ldots \in V$)  représente un jeu et de manière similaire, pour une histoire $h$, $ h = h_{0} h_{1} h_{2} h_{3} ... h_{k}$ ( pour un certain $k \in \mathbb{N}$) où  $h_{0}, h_{1}, \ldots \in V$.
 Un \textit{préfixe} de longueur $n+1$ (pour un certain $n\in \mathbb{N}$) d'un jeu $\rho = \rho _{0}  \rho _{1} \rho _{2}\rho _{3} \ldots$ est une histoire $\rho _{0}  \rho _{1} \rho _{2}\rho _{3} \ldots \rho _{n}$ et est notée $\rho[0,n]$. Soit $ h = h_{0} h_{1} \ldots h_{k}$ une histoire et soit $v \in V$ tel que $(h_{k},v)\in E$ on note $hv$ l'histoire $h_{0} h_{1} \ldots h_{k}v$. De même, étant donné une histoire $ h = h_{0} h_{1} h_{2} h_{3} ... h_{k}$ et un jeu $\rho = \rho _{0}  \rho _{1} \rho _{2} \ldots$ tels que $(h_{k},\rho_{0})\in E$ on note $h\rho$ le jeu $ h_{0} h_{1} \ldots h_{k}\rho _{0}  \rho _{1} \rho _{2} \ldots$ .
 
-Etant donné une histoire $ h = h_{0} h_{1} h_{2} h_{3} ... h_{k}$,  on définit une fonction \textit{Last}(respectivement \textit{First}) qui prend comme argument l'histoire $h$ et qui retourne le dernier sommet $h_{k}$ (respectivement le premier sommet $h_{0}$).Nous définissons l'ensemble des histoires telles que c'est au tour du joueur $i \in \Pi$ de prendre une décision $Hist_{i} = \{ h \in Hist | Last(h) \in V_{i} \}$.
+Etant donné une histoire $ h = h_{0} h_{1} h_{2} h_{3} ... h_{k}$,  on définit une fonction \textit{Last} (respectivement \textit{First}) qui prend comme argument l'histoire $h$ et qui retourne le dernier sommet $h_{k}$ (respectivement le premier sommet $h_{0}$). Nous définissons l'ensemble des histoires telles que c'est au tour du joueur $i \in \Pi$ de prendre une décision $Hist_{i} = \{ h \in Hist | Last(h) \in V_{i} \}$.
 
 \begin{rem}
-	Si un sommet initial $v_{0}$ a été fixé alors tous les jeux (et toutes les histoires) commencent par le sommet $v_{0}.$\\
+	Si un sommet initial $v_{0}$ a été fixé, alors tous les jeux (et toutes les histoires) commencent par le sommet $v_{0}.$\\
 \end{rem}
 
 %--------------------------------------
@@ -81,7 +81,7 @@ Etant donné une histoire $ h = h_{0} h_{1} h_{2} h_{3} ... h_{k}$,  on définit
 %--------------------------------------
 
 \begin{defi}[Stratégie]
-	Une \textit{stratégie} d'un joueur $i \in \Pi$ dans $\mathscr{A}$ est une fonction \mbox{$\sigma:Hist_{i} \rightarrow V$} telle que à chaque histoire $ h = h_{0} h_{1} h_{2} h_{3} ... h_{k}$ pour laquelle $h_{k} \in V_{i}$ est associée un sommet $v \in V$. De plus, on a: $(Last(h),\sigma(h))\in V$.
+	Une \textit{stratégie} d'un joueur $i \in \Pi$ dans $\mathcal{A}$ est une fonction \mbox{$\sigma _{i}: Hist_{i} \rightarrow V$} telle que à chaque histoire $ h = h_{0} h_{1} h_{2} h_{3} ... h_{k}$ pour laquelle $h_{k} \in V_{i}$ est associée un sommet $v \in V$. De plus, on a: $(Last(h),\sigma _{i}(h))\in E$.
 \end{defi}
 
 \begin{defi}[Jeu consistant]	
@@ -93,7 +93,7 @@ Etant donné une histoire $ h = h_{0} h_{1} h_{2} h_{3} ... h_{k}$,  on définit
 \end{rem}
 
 \begin{notations}
-	Tout au long de ce rapport nous utilisons les conventions suivantes:
+	Tout au long de ce document nous utilisons les conventions suivantes:
 	\begin{enumerate}
 		\item[$\bullet$] Un \textit{profil de stratégies} $(\sigma _{i})_{i \in \Pi}$ est un tuple tel que pour tout $i$ $\sigma _{i}$ désigne la stratégie du 	joueur $i$. 
 				
@@ -116,7 +116,7 @@ Etant donné une histoire $ h = h_{0} h_{1} h_{2} h_{3} ... h_{k}$,  on définit
 
 
 
-Lorsque l'on cherche des stratégies pour un joueur $J_{i}$, on distingue les \textit{stratégies sans mémoire},\textit{stratégie avec mémoire finie} et les \textit{stratégie avec mémoire infinie}.
+Lorsque l'on cherche des stratégies pour un joueur $J_{i}$, on distingue les \textit{stratégies sans mémoire},les \textit{stratégies avec mémoire finie} et les \textit{stratégies avec mémoire infinie}.
 
 \begin{defi}[Stratégie sans mémoire]
 	
@@ -132,7 +132,7 @@ Lorsque l'on cherche des stratégies pour un joueur $J_{i}$, on distingue les \t
 		\item[$\bullet$] $\delta : M \times V \rightarrow M$ est la fonction de mise à jour de la mémoire,
 		\item[$\bullet$] $ \nu: M \times V_{i} \rightarrow V$ est la fonction de choix, telle que pour tout $m \in M$ et $v\in V_{i}$ $(v, \nu(m,v))\in E$.\end{enumerate}
 		
-		On peut étendre la fonction de mise à jour de la mémoire à une fonction $\delta ^{*}: M \times Hist \rightarrow$ définie par récurrence sur la longueur de $h \in Hist$ de la manière suivante :\\ $\begin{cases}
+		On peut étendre la fonction de mise à jour de la mémoire à une fonction $\delta ^{*}: M \times Hist \rightarrow M$ définie par récurrence sur la longueur de $h \in Hist$ de la manière suivante :\\ $\begin{cases}
 																	\sigma^{*}(m,\epsilon) = m	\\
 																	\sigma^{*}(m,hv)=\sigma(\sigma^{*}(m,h),v) & \text{pour tout } m\in M \text{ et } hv\in Hist
 																	\end{cases}$ 

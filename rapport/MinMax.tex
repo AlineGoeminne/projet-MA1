@@ -31,14 +31,18 @@ Le but de \textit{Min} (resp. \textit{Max}) est donc de \textbf{minimiser} (resp
 
 \begin{defi}[Garantir le paiement]$\text{}$\\
 	
-	\begin{center}On dit que le joueur \textit{Max} \textit{garantit le paiement} $d \in \mathbb{R}$\\ 
+	Soit $(\mathcal{G}, v_{0})$ un jeu Min-Max avec coût initialisé,
+	
+	\begin{center}On dit que le joueur \textit{Max} \textit{garantit le paiement} $d \in \mathbb{R}$ dans $(\mathcal{G}, v_{0})$\\ 
 		ssi \\ 
-	$\exists \sigma _{1}\Sigma _{Max}$ tq $\forall \sigma _{2} \in \Sigma _{Min}$ $ Gain_{Max}(\sigma _{1},\sigma _{2}) \geq d$\\\end{center}
+	$\exists \sigma _{1} \in \Sigma _{Max}$ tq $\forall \sigma _{2} \in \Sigma _{Min}$ $ Gain_{Max}(\rho) \geq d$\\
+	où $ \rho = Outcome(v_{0},(\sigma _{1},\sigma _{2}))$\end{center}
 	
 	\begin{center} 
 		On dit que le joueur \textit{Min} \textit{garantit le paiement} $d \in \mathbb{R}$\\		
 		ssi	\\
-		$\exists \sigma _{1}\in \Sigma _{Min}$ tq $\forall \sigma _{2} \in \Sigma _{Max}$ $ Cost_{Min}(\sigma _{1},\sigma _{2}) \leq d$\\
+		$\exists \sigma _{1}\in \Sigma _{Min}$ tq $\forall \sigma _{2} \in \Sigma _{Max}$ $ Cost_{Min}(\rho) \leq d$ \\
+		où $ \rho = Outcome(v_{0},(\sigma _{1},\sigma _{2}))$
 		\end{center}
 
 \end{defi}
@@ -56,7 +60,7 @@ Le but de \textit{Min} (resp. \textit{Max}) est donc de \textbf{minimiser} (resp
 	\end{enumerate}
 \end{defi}
 \begin{rem}
-	La \textit{valeur supérieure}  $\overline{Val}(v)$ est la plus petite valeur dont $J_{Min}$ garantit le paiement et la \textit{valeur inférieure} $\underline{Val}(v) $ est la plus grande valeur dont $J_{Max}$ garantit le paiement.
+	La \textit{valeur supérieure}  $\overline{Val}(v)$ est la plus petite valeur dont $J_{Min}$ garantit le paiement dans $(\mathcal{G},v)$ et la \textit{valeur inférieure} $\underline{Val}(v) $ est la plus grande valeur dont $J_{Max}$ garantit le paiement dans $(\mathcal{G},v)$.
 \end{rem}
 
 %PROPRIETE 
@@ -99,15 +103,15 @@ Le but de \textit{Min} (resp. \textit{Max}) est donc de \textbf{minimiser} (resp
 
 \input{reachPriceGame1}
 
-Dans ~\cite{DBLP:conf/lfcs/BrihayePS13} le théorème suivant est énoncé:
+Dans~\cite{DBLP:conf/lfcs/BrihayePS13} le théorème suivant est énoncé:
 
 \begin{thm}
 	\label{thm:1}
-	Les \og\textit{reachability-price games}\fg sont déterminés et ont des stratégies optimales sans mémoire.
+	Les \og\textit{reachability-price games}\fg  sont déterminés et ont des stratégies optimales sans mémoire.
 \end{thm}
 
 
-Comme dans le cas des jeux d'atteignabilité à objectif qualitatif et au vu du résultat ~\ref{thm:1} précédant nous nous interrogeons quant à la façon d'implémenter un algorithme pour résoudre les \textit \og \textit{reachability-price games} \fg.L'objectif de cet algorithme est de trouver une stratégie optimale pour chaque joueur ainsi que la valeur associée à chaque sommet du graphe. L'idée est la suivante: le joueur \textit{Min} a pour but d'emprunter un \textbf{plus court chemin} possible allant d'un noeud initial $v_{0}$ vers un noeud $v \in Goal$. On trouve dans la littérature différents algorithmes qui résolvent les problèmes de plus court chemin dans les graphes orientés.Toutefois, il n'y a pas de deuxième joueur qui agit de manière \textbf{antagoniste} face au joueur \textit{Min} qui entre en compte dans ces algorithmes. C'est pourquoi nous avons tenté une adaptation de l'algorithme de \textit{Dijkstra} (que nous rappelons dans l'annexe A (p.\pageref{algo:dijkstra})).
+Au vu du résultat ~\ref{thm:1} précédent, comme dans le cas des jeux d'atteignabilité à objectif qualitatif nous nous interrogeons quant à la façon d'implémenter un algorithme pour résoudre les \og \textit{reachability-price games} \fg. L'objectif de cet algorithme est de trouver une stratégie optimale pour chaque joueur ainsi que la valeur associée à chaque sommet du graphe. L'idée est la suivante: le joueur \textit{Min} a pour but d'emprunter un \textbf{plus court chemin} possible allant d'un noeud initial $v_{0}$ vers un noeud $v \in Goal$. On trouve dans la littérature différents algorithmes qui résolvent les problèmes de plus court chemin dans les graphes orientés. Toutefois, il n'y a pas de deuxième joueur qui agit de manière \textbf{antagoniste} face au joueur \textit{Min} qui entre en compte dans ces algorithmes. C'est pourquoi, nous avons tenté une adaptation de l'algorithme de \textit{Dijkstra} (que nous rappelons dans l'annexe A (p.\pageref{algo:dijkstra})).
 
 Comme dans le cas de l'algorithme de Dijkstra, la fonction de coût associée au graphe doit être de la forme $w : E \rightarrow \mathbb{R}^{+}$. Le but de l'algorithme est de calculer le paiement minimum que le joueur \textit{Min} peut garantir quelle que soit la stratégie adoptée par le joueur \textit{Max}. Du fait que le joueur \textit{Max} joue de manière antagoniste par rapport au joueur \textit{Min}, à chaque fois que c'est au joueur \textit{Max} de prendre une décision il voudra maximiser son gain. Pour ce faire, on aura besoin de connaître le chemin le plus coûteux allant du sommet du joueur \textit{Max} en cours de traitement vers un certain état objectif $o \in Goal$. Dès lors, contrairement à l'algorithme classique de Dijkstra qui part d'une source, l'algorithme s'exécutera à rebours à partir des états $o \in Goal$. Ci-dessous nous reprenons les idées essentielles de l'algorithme proposé ainsi que son pseudo-code.\\
 
@@ -115,13 +119,13 @@ Comme dans le cas de l'algorithme de Dijkstra, la fonction de coût associée au
 
 \begin{enumerate}
 	
-	\item[$\bullet$] A tout sommet $v \in V$ on associe une valeur $d$ qui représente l'estimation de la valeur $Val(v)$ (qui existe par le théorème ~\ref{thm:1}). Cette valeur est mise à jour en cours d'exécution de l'algorithme de sorte qu'à la fin de celle-ci on ait pour tout $v \in V$ $Val(v) = d$. Comme pour l'algorithme de Dijkstra on initialise la valeur des sommets à $+\infty$ sauf pour les sommets objectifs $o \in Goal$ pour lesquels on initialise la valeur à 0.
+	\item[$\bullet$] A tout sommet $v \in V$ on associe une valeur $d$ qui représente l'estimation de la valeur $Val(v)$ (qui existe par le théorème ~\ref{thm:1}). Cette valeur est mise à jour en cours d'exécution de l'algorithme de sorte qu'à la fin de celle-ci on ait pour tout $v \in V$ $Val(v) = d$. Comme pour l'algorithme de Dijkstra, on initialise la valeur des sommets à $+\infty$ sauf pour les sommets objectifs $o \in Goal$ pour lesquels on initialise la valeur à 0.
 	
-	\item[$\bullet$] De plus, pour tout sommet $v \in V$, on associe une \textit{file de priorité} $S$ dans laquelle on stocke chaque successeur $s$ de $v$ déjà relaxé (ie. dont on a fini le traitement). A chacun de ces successeurs on joint l'estimation de  $Val(v)$ si l'$Outcome$ associé à cette estimation est de la forme $v s ... o$ pour $o \in Goal$. On note les éléments de $S$: $(val,succ)$.
+	\item[$\bullet$] De plus, pour tout sommet $v \in V$, on associe une \textit{file de priorité} $S$ (structure de données permettant de stocker des éléments en fonction de la valeur d'une clef) dans laquelle on stocke chaque successeur $s$ de $v$ déjà relaxé (i.e. dont on a fini le traitement). A chacun de ces successeurs, on joint l'estimation de  $Val(v)$ si l'$outcome$ associé à cette estimation est de la forme $v s ... o$ pour $o \in Goal$. On note les éléments de $S$: $(val,succ)$.
 	
-	\item[$\bullet$] Pour tout sommet $v \in V_{Max}$, on associe le nombre de successeurs que ce sommet possède. On note ce nombre : $nbrSucc$. De plus, si l'on désire reconstituer la stratégie optimale pour le joueur \textit{Max} on stockera dans une structure de données adéquate la liste des successeurs déjà testés pour la recherche du chemin le plus long.
+	\item[$\bullet$] Pour tout sommet $v \in V_{Max}$, on associe le nombre de successeurs que ce sommet possède. On note ce nombre : $nbrSucc$. De plus, si l'on désire reconstituer la stratégie optimale pour le joueur \textit{Max}, on stocke dans une structure de données adéquate la liste des successeurs déjà testés pour la recherche du chemin le plus long.
 	
-		\item[$\bullet$] On utilise une \textit{file de priorité} $Q$ (structure de données permettant de stocker des éléments en fonction de la valeur d'une clef) qui permet de stocker les sommets classés par leur valeur $d$. Sur cette file de priorité on peut effectuer les opérations suivantes: insertion d'un élément, extraction d'un élément ayant la clef de la plus petit valeur,lecture de l'élément ayant la clef de la plus petite valeur,test de la présence ou non d'élément dans $Q$, augmentation ou diminution de la valeur de la clef associée à un sommet. A l'initialisation de l'algorithme les sommets présents dans $Q$ sont tous ceux présents dans $V$.
+		\item[$\bullet$] On utilise une \textit{file de priorité} $Q$ qui permet de stocker les sommets classés par leur valeur $d$. Sur cette file de priorité, on peut effectuer les opérations suivantes: insertion d'un élément, extraction d'un élément ayant la clef de la plus petite valeur, lecture de l'élément ayant la clef de la plus petite valeur, test de la présence ou non d'élément dans $Q$, augmentation ou diminution de la valeur de la clef associée à un sommet. A l'initialisation de l'algorithme les sommets présents dans $Q$ sont tous ceux présents dans $V$.
 	
 	\item[$\bullet$] On maintient $T \subseteq V$ un ensemble de sommets qui vérifient la propriété suivante: pour tout sommet $v \in V$ $Val(v) = d$. Il s'agit donc de l'ensemble des sommets dont le traitement est terminé. A l'initialisation de l'algorithme $T = \emptyset$.
 	
@@ -130,39 +134,39 @@ Comme dans le cas de l'algorithme de Dijkstra, la fonction de coût associée au
 		\item On regarde la valeur du minimum de $Q$ et le sommet $s$ associé.
 		\item Si cette valeur est $+\infty$, alors cela signifie qu'on a fini de traiter tous les sommets qui pouvaient atteindre un sommet objectif. On ajoute donc tous les sommets restants de $Q$ dans $T$.
 		\item S'il s'agit d'un sommet du joueur \textit{Min} ou d'un sommet objectif $o$ alors on extrait le minimum de $Q$ et on l'ajoute à $T$, on \textit{relaxe} tous les arcs entrant de $s$.
-		\item S'il s'agit d'un sommet du joueur \textit{Max}, on regarde la valeur de $nbrSucc$ si elle est égale à 1 alors le joueur \textit{Max} n'a pas le choix du chemin à emprunter. On ajoute donc $s$ à $T$ et on \textit{relaxe} tous les arcs entrant de $s$. Si $nbrSucc \neq 1$, alors \textit{Max} a plusieurs choix de chemin. Pour maximiser son gain, il ne choisira pas de passer par le successeur qui admet la plus petite valeur de $Val(s)$. On retire donc la plus petite valeur $S$, on met à joueur la clef de $s$ dans $Q$ et on décrémente $nbrSucc$ ainsi on sait qu'il y a un successeur de moins à traiter et on ajoute ce successeur à l'ensemble des successeurs déjà traités. En effet, au bout du compte, on désire que la dernière valeur restante dans $s.Q$ soit celle qui assure la maximisation du gain de \textit{Max}.
+		\item S'il s'agit d'un sommet du joueur \textit{Max}, on regarde la valeur de $nbrSucc$ si elle est égale à 1 alors le joueur \textit{Max} n'a pas le choix du chemin à emprunter. On ajoute donc $s$ à $T$ et on \textit{relaxe} tous les arcs entrant de $s$. Si $nbrSucc \neq 1$, alors \textit{Max} a plusieurs choix de chemin. Pour maximiser son gain, il ne choisira pas de passer par le successeur qui admet la plus petite valeur de $Val(s)$. On retire donc la plus petite valeur de $S$, on met à jour la clef de $s$ dans $Q$ et on décrémente $nbrSucc$. Ainsi, on sait qu'il y a un successeur de moins à traiter et on ajoute ce successeur à l'ensemble des successeurs déjà traités. En effet, on désire que la dernière valeur restante dans $s.Q$ soit celle qui assure la maximisation du gain de \textit{Max}.
 	\end{enumerate}
 	
-	\item[$\bullet$] La \textit{relaxation} des arcs entrants de $s$ consiste en la méthode suivante: pour tout $(p,s)\in E$ on lit le minimum de $s.S$(la file de priorité des valeurs associées aux successeurs du sommet $s$), on calcule la nouvelle estimation de la valeur du sommet $p$, on insère dans $p.S$ la valeur calculée associée à $s$; on décrémente la clef associée à $p$ dans $Q$.
+	\item[$\bullet$] La \textit{relaxation} des arcs entrants de $s$ consiste en la méthode suivante: pour tout $(p,s)\in E$ on lit le minimum de $s.S$ (la file de priorité des valeurs associées aux successeurs du sommet $s$), on calcule la nouvelle estimation de la valeur du sommet $p$, on insère dans $p.S$ la valeur calculée associée à $s$. On décrémente la clef associée à $p$ dans $Q$.
 	
 \end{enumerate}
 
 \noindent \textbf{Pseudo-code}\\
 
-Soient $\mathcal{A} = (V, (V_{Min}, V_{Max}), E) $ une arène et $\mathcal{G} = (\mathcal{A},RP_{Min},RP_{Max})$ un \og \textit{reachability-prince game} \fg. Nous utilisons les notations suivante : 
+Soient $\mathcal{A} = (V, (V_{Min}, V_{Max}), E) $ une arène et $\mathcal{G} = (\mathcal{A},RP_{Min},RP_{Max})$ un \og \textit{reachability-prince game} \fg. Nous utilisons les notations suivantes : 
 \begin{enumerate} 
 	\item[$\bullet$]$Q$ et $S$ sont les files de priorité décrites ci-dessus.
 	\item[$\bullet$]$s.S$  correspond à la file de priorité $S$ du sommet $s$.
 	\item[$\bullet$]$T$ est le sous-ensemble de $V$ décrit ci-dessus.
-	\item[$\bullet$]Pour tout $v \in V$, $Pred(v)$ est l'ensemble des prédécesseurs de $v$.
+	\item[$\bullet$]Pour tout $v \in V$, $Pred(v)$ (resp. $Succ(v)$) est l'ensemble des prédécesseurs (resp. successeurs) de $v$.
 	\item[$\bullet$]Pour tout $v \in V$, $v.d$ est l'estimation de $Val(v)$.
-	\item[$\bullet$]Pour tout $v \in V_{Max}$, $v.nbrSucc$ est le nombre de successeurs de $v$ qu'il reste à traiter, $v.t$ est l'ensemble des successeurs de $v$ déjà testés.
+	\item[$\bullet$]Pour tout $v \in V_{Max}$, $v.nbrSucc$ est le nombre de successeurs de $v$ qu'il reste à tester, $v.t$ est l'ensemble des successeurs de $v$ déjà testés.
 \end{enumerate}
 
 L'algorithme en lui même est explicité par l'algorithme ~\ref{algo:dijkMinMax} et les algorithmes \ref{algo:initS},\ref{algo:initQ},\ref{algo:relaxerMinMax},\ref{algo:traiterMax} sont appelés au sein de l'algorithme ~\ref{algo:dijkMinMax}.
-Comme pour l'algorithme de Dijkstra, pour une meilleure complexité les files de priorités sont supposées implémentées par une structure de donnée telle que chaques opérations \textsc{Extraire-Min}() et \textsc{Lire-Min()} est en $\mathcal{O}(\log V)$ ainsi que chaque \textsc{DécrémenterClef}($Clef(v),nouvVal$) alors l'agorithme est en $\mathcal{O}((V + E) \log V)$.\\ 
+Comme pour l'algorithme de Dijkstra, pour une meilleure complexité les files de priorité sont supposées implémentées par une structure de données telle que chaque opération \textsc{Extraire-Min}() et \textsc{Lire-Min()} est en $\mathcal{O}(\log V)$ ainsi que chaque \textsc{DécrémenterClef}($Clef(v),nouvVal$).\\ 
 
 %ALGO: DijkstraMinMax
 
 \begin{algorithm}
-	\caption{\textsc {DijkstraMinMax}(G,w,o)}
+	\caption{\textsc {DijkstraMinMax}(G,w,Goal)}
 	 \label{algo:dijkMinMax}
 	\begin{algorithmic}[1]
-		\REQUIRE $G = (V,E)$ un graphe orienté pondéré où $E$ est représenté par sa matrice d'adjacence, $w: E \rightarrow \mathbb{R}^{+}$ une fonction de poids,$o$ le sommet objectif.
+		\REQUIRE $G = (V,E)$ un graphe orienté pondéré où $E$ est représenté par sa matrice d'adjacence, $w: E \rightarrow \mathbb{R}^{+}$ une fonction de poids, $Goal$ l'ensemble des sommets objectifs.
 		\ENSURE / \textbf{\textsc{Effet(s) de bord :}} Calcule pour chaque noeud la valeur de ce noeud.
 		
-		\STATE $Q \leftarrow$\textsc{Initialiser-Q}($G,o$)
-		\STATE $S \leftarrow$\textsc{Initialiser-S}($G,o$)
+		\STATE $Q \leftarrow$\textsc{Initialiser-Q}($G,Goal$)
+		\STATE $S \leftarrow$\textsc{Initialiser-S}($G,Goal$)
 		
 		\STATE $T \leftarrow \emptyset$
 		\WHILE {$Q \neq \emptyset$}
@@ -176,7 +180,7 @@ Comme pour l'algorithme de Dijkstra, pour une meilleure complexité les files de
 			
 			
 			\ELSE
-				\IF{$s \in V_{Min} \cup \{ o \}$ }
+				\IF{$s \in V_{Min} \cup \{ Goal \}$ }
 					\STATE $s \leftarrow Q.$\textsc{Extraire-Min}$()$
 					\STATE $T.$\textsc{Insérer}$(s)$
 					\FORALL{$p \in Pred(s)$}
@@ -198,11 +202,11 @@ Comme pour l'algorithme de Dijkstra, pour une meilleure complexité les files de
 %ALGO: Initialiser-S
 
 \begin{algorithm}
-	\caption{\textsc {Initialiser-S}($G,o)$}
+	\caption{\textsc {Initialiser-S}($G,Goal)$}
 	 \label{algo:initS}
 	\begin{algorithmic}[1]
-		\REQUIRE $G$ un graphe orienté pondéré et le noeud objectif $o$.
-		\ENSURE / \textbf{\textsc{Effet(s) de bord :}} initialise les files de priorités de tous les sommets.
+		\REQUIRE $G$ un graphe orienté pondéré et l'ensemble des objectifs $Goal$.
+		\ENSURE / \textbf{\textsc{Effet(s) de bord :}} initialise les files de priorité de tous les sommets.
 		
 		\FORALL{$v \in G.V\backslash \{ Goal \}$}
 			\STATE $S \leftarrow$ nouveau tas
@@ -224,10 +228,10 @@ Comme pour l'algorithme de Dijkstra, pour une meilleure complexité les files de
 
 
 \begin{algorithm}
-	\caption{\textsc {Initialiser-Q}$(G,o)$}
+	\caption{\textsc {Initialiser-Q}$(G,Goal)$}
 	 \label{algo:initQ}
 	\begin{algorithmic}[1]
-		\REQUIRE $G$ un graphe orienté pondéré, l'état objectif $o$.
+		\REQUIRE $G$ un graphe orienté pondéré, l'ensemble des états objectifs $Goal$.
 		\ENSURE Un tas $Q$ qui comprend tous les sommets de $V$ classés par leur valeur $d$.
 		
 		\STATE $Q \leftarrow$ nouveau tas 
@@ -294,14 +298,19 @@ Comme pour l'algorithme de Dijkstra, pour une meilleure complexité les files de
 		
 \end{algorithm}
 
-On remarque que l'algorithme \textsc{DijkstraMinMax}  est un algorithme à effet de bord mais ne renvoie aucune valeur. Pour récupérer les valeurs de chaque sommet $s$, ainsi qu'une stratégie optimale pour $J_{Min}$ et une strategie optimale pour $J_{max}$ il suffit de récupérer la racine de $s.S$ qui comprend $Val(s)$ ainsi que le successeur qu'il faut emprunter pour obtenir cette valeur. On obtient alors les algorithmes \textsc{RécupéréStratégies} (qui récupère une stratégie optimale pour chaque joueur) et \textsc{RécupérerValeurs} qui récupère la valeur de chaque noeud).
+\FloatBarrier
+
+
+
+
+On remarque que l'algorithme \textsc{DijkstraMinMax}  est un algorithme à effet de bord mais ne renvoie aucune valeur. Pour récupérer la valeur de chaque sommet $s$, ainsi qu'une stratégie optimale pour $J_{Min}$ et une strategie optimale pour $J_{max}$, il suffit de récupérer la racine de $s.S$ qui comprend $Val(s)$ ainsi que le successeur qu'il faut emprunter pour obtenir cette valeur. On obtient alors les algorithmes \textsc{RécupérerStratégies} (qui récupère une stratégie optimale pour chaque joueur) et \textsc{RécupérerValeurs} qui récupère la valeur de chaque noeud).
 
 \begin{rem}
 	
 	Dans le cas où $Val(v) = +\infty$, nous n'avons pas de successeur à notre disposition dans la file de priorité. Comme les fonctions de stratégie sont des fonctions totales, il faut toutefois définir $\sigma _{i} (v)$.
 \begin{enumerate}
 	\item[$1^{er} cas:$] Si $v \in V_{Min}$ alors cela signifie que pour tout $s \in V$ tq $(v,s) \in E$ on a : $Val(s) = +\infty$. En effet, s'il existe $s' \in V$ tq $(v,s')\in E$ et $Val(v') < +\infty$ alors $J_{Min}$ a tout intérêt à jouer $\sigma _{Min}(v) = s'$.
-	\item[$2^{eme} cas:$] Si $v \in V_{Max}$ alors cela signifie qu'il existe $s \in V$ tq $(v,s) \in E$ tq : $Val(s) = +\infty$. En effet, sinon pour tout $s' \in V$ tq $(v,s') \in E$ et $Val(v') < +\infty$ alors $Val(v) \neq +\infty$. 
+	\item[$2^{eme} cas:$] Si $v \in V_{Max}$ alors cela signifie qu'il existe $s \in V$ tq $(v,s) \in E$ tq : $Val(s) = +\infty$. Sinon, pour tout $s' \in V$ tq $(v,s') \in E$ et $Val(v') < +\infty$ alors $Val(v) \neq +\infty$. 
 	
 \end{enumerate}
 
@@ -316,10 +325,10 @@ On remarque que l'algorithme \textsc{DijkstraMinMax}  est un algorithme à effet
 	\FORALL{$v \in V_{Max}$} 
 		\IF{$Val(v) = +\infty$}
 			\STATE Choisir $s \in Succ(v) \backslash v.t$
-			\STATE \textsc{Afficher( $v " \rightarrow " s$)}
+			\STATE \textsc{Afficher( $v$" $\rightarrow $ " $s$)}
 		\ELSE
 			\STATE $(val,succ) \leftarrow v.S.$\textsc{Lire-Min}$()$
-			\STATE \textsc{Afficher( $v " \rightarrow " succ$)}
+			\STATE \textsc{Afficher( $v$" $\rightarrow$ " $succ$)}
 		\ENDIF
 	\ENDFOR
 	
@@ -327,7 +336,7 @@ On remarque que l'algorithme \textsc{DijkstraMinMax}  est un algorithme à effet
 	\FORALL{$v \in V_{Min}$} 
 		\IF{$Val(v) = +\infty$}
 			\STATE Choisir $s \in Succ(v)$
-			\STATE \textsc{Afficher( $v " \rightarrow " s$)}
+			\STATE \textsc{Afficher( $v$" $ \rightarrow$ " $s$)}
 		\ELSE	
 			\STATE $(val,succ) \leftarrow v.S.$\textsc{Lire-Min}$()$
 			\STATE \textsc{Afficher( $v $"$ \rightarrow $" $succ$)}

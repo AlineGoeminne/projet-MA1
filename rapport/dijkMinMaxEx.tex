@@ -2,7 +2,7 @@
 
 \begin{exemple}
 
-	Soient $\mathcal{A} = (V, (V_{Min}, V_{Max}), E) $,$w: E \rightarrow \mathbb{R}$ une fonction de poids et $\mathcal{G} = (\mathcal{A},RP_{Min},RP_{Max})$ le \og \textit{reachability-price game} associé, l'arène et la fonction de poids sont représentés sur le graphe de la figure~\ref{ex:reachPrice1} et $V_{Min}$ (resp. $V_{Max}$) est représenté par les sommets ronds (resp. les sommets carrés). $Goal ={v_{0}}$. Pour les figures , les états grisés représentent les états entièrement traités (ie. les états dans $T$) et à l'intérieure de ceux-ci se trouve la valeur associée à l'état. De plus la table~\ref{tab:filePrior} (p.~\pageref{tab:filePrior}) reprend pour chaque étape et chaque noeud le contenu de la file de priorité $S$.
+	Soient $\mathcal{A} = (V, (V_{Min}, V_{Max}), E) $, $w: E \rightarrow \mathbb{R}$ une fonction de poids et $\mathcal{G} = (\mathcal{A}, g, Goal)$ le \og \textit{reachability-price game}\fg  associé, l'arène et la fonction de poids sont représentés sur le graphe de la figure~\ref{ex:reachPrice1} et $V_{Min}$ (resp. $V_{Max}$) est représenté par les sommets ronds (resp. les sommets carrés). $Goal =\{ v_{0} \}$. Pour les figures [9-15] , les états grisés représentent les états entièrement traités (i.e. les états dans $T$) et à l'intérieur de ceux-ci se trouve la valeur associée à l'état. De plus la table~\ref{tab:filePrior} (p.~\pageref{tab:filePrior}) reprend pour chaque étape et chaque noeud le contenu de la file de priorité $S$.
 	
 	\begin{figure}[ht!]
 		\centering
@@ -88,7 +88,7 @@
 		\end{tikzpicture}
 
 
-		\caption{Première étape -- Traitement du noeud $v_{0}$. On relaxe :($v_{1},v_{0}$) et ($v_{2},v_{0}$). On grise $v_{0}$.}
+		\caption{Première étape -- Traitement du noeud $v_{0}$. On relaxe :($v_{1},v_{0}$), ($v_{2},v_{0}$), ($v_{3},v_{0}$) et ($v_{0},v_{0}$). On grise $v_{0}$.}
 		\label{ex:reachPrice2}
 
 
@@ -132,7 +132,7 @@
 			\end{tikzpicture}
 
 
-			\caption{Deuxième étape -- Traitement du noeud $v_{2}$. $nbrSucc = 2$, on n'a donc pas encore testé tous les chemins possibles à partir de ce noeud. Décrémentation de $nbrSucc$ et retrait de la plus petit valeur de $S$. }
+			\caption{Deuxième étape -- Traitement du noeud $v_{2}$. $nbrSucc = 2$, on n'a donc pas encore testé tous les chemins possibles à partir de ce noeud. Décrémentation de $nbrSucc$, retrait de la plus petit valeur de $S$ et ajout de $v_{0}$ dans les successeurs déjà testés. }
 			\label{ex:reachPrice3}
 
 
@@ -215,7 +215,7 @@
 
 	\end{tikzpicture}
 
-	\caption{Quatrième étape -- Traitement du noeud $v_{2}$.$nbrSucc = 1$. On relaxe $(v_{4},v_{2})$ et $(v_{3},v_{2})$. On grise $v_{2}$. }
+	\caption{Quatrième étape -- Traitement du noeud $v_{2}$. $nbrSucc = 1$. On relaxe $(v_{4},v_{2})$ et $(v_{3},v_{2})$. On grise $v_{2}$. }
 	\label{ex:reachPrice5}
 
 

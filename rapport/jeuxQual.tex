@@ -6,9 +6,10 @@
 %DEFINITION: jeu d'atteignabilité à objectif qualitatif
 	
 	\begin{defi}[Jeu d'atteignabilité à objectif qualitatif]
-		Un \textit{jeu d'atteignabilité à objectif qualitatif} est un jeu sur graphe $\mathcal{G} = (\Pi,(V,E),(V_{i})_{i \in \Pi}, (Goal_{i})_{i},(\Omega _{i})_{i \in \Pi})$ où :
+		Un \textit{jeu d'atteignabilité à objectif qualitatif} est un jeu sur graphe $\mathcal{G} = (\mathcal{A}, (Goal_{i})_{i},(\Omega _{i})_{i \in \Pi})$ où :
 		\begin{enumerate}
-			\item[$\bullet$] Pour tout $i \in \Pi$, $Goal_{i\in \Pi} \subseteq V $ est l'ensemble des sommets de $V$ que $J_{i}$ essaie d'atteindre.
+			\item[$\bullet$] $\mathcal{A} = (\Pi,V,(V_{i})_{i \in \Pi}, E)$ est l'arène d'un jeu sur graphe,
+			\item[$\bullet$] Pour tout $i \in \Pi$, $Goal_{i\in \Pi} \subseteq V $ est l'ensemble des sommets de $V$ que $J_{i}$ essaie d'atteindre,
 			\item[$\bullet$] Pour tout $i \in \Pi$, $\Omega _{i} = \{(u_{j})_{j \in \mathbb{N}}\in V^{\omega}| \exists k \in \mathbb{N}$  tel que $u_{k}\in Goal_{i}\}$. C'est l'ensemble des jeux $\rho$ sur $\mathcal{G}$ pour lesquels $J_{i}$ gagne le jeu.
 		\end{enumerate}	
 	\end{defi}
@@ -40,12 +41,8 @@
 %-------------------------------------
 	
 	\subsubsection{Jeux à deux joueurs et à somme nulle}
-	Nous sommes intéressés à étudier les jeux d'atteignabilité à objectif qualitatif dans le cadre des jeux à deux joueurs. Dans ce cadre, nous notons $\Pi = \{1,2\}$.Nous supposons que $\Omega _{2} = V^{\omega}\backslash \Omega _{1}$, on dit alors que le jeu est \textit{à somme nulle}. Ceci signifie que dans le cas du jeu d'atteignabilité à deux joueurs le but de $J_{2}$ est d'empêcher $J_{1}$ d'atteindre son objectif. Nous allons expliciter une méthode permettant de déterminer à partir de quels sommets $J_{1}$ (respectivement $J_{2}$) est assuré de gagner le jeu (respectivement d'empêcher $J_{1}$ d'atteindre son objectif). Dans ce cas nous posons $F$ l'ensemble des sommets objectifs de $J_{1}$.
+	Nous sommes intéressés par l'étude des jeux d'atteignabilité à objectif qualitatif dans le cadre des jeux à deux joueurs. Dans ce cadre, nous notons $\Pi = \{ 1,2\}$. Nous supposons que $\Omega _{2} = V^{\omega}\backslash \Omega _{1}$, on dit alors que le jeu est \textit{à somme nulle}. Ceci signifie que dans le cas du jeu d'atteignabilité à deux joueurs le but de $J_{2}$ est d'empêcher $J_{1}$ d'atteindre son objectif. Nous allons expliciter une méthode permettant de déterminer à partir de quels sommets $J_{1}$ (respectivement $J_{2}$) est assuré de gagner le jeu (respectivement d'empêcher $J_{1}$ d'atteindre son objectif). Dans ce cas, nous posons $F$ l'ensemble des sommets objectifs de $J_{1}$.
 	
-	\begin{rem}
-		Ce jeu est un exemple de \textit{jeu combinatoire}.
-	\end{rem}
-
 %PROPRIETE	
 	\label{Wempty}
 	\begin{propriete}
@@ -53,7 +50,7 @@
 	\end{propriete}
 	\begin{demonstration}
 		Supposons au contraire que $W_{1}\cap W_{2} \neq \emptyset$. Cela signifie qu'il existe $s \in W_{1}$ tel que $s \in W_{2}$.\\
-		$s \in W_{1}$ si et seulement si il existe $\sigma _{1}$ une stratégie de $J_{1}$ telle que pour toute $\sigma {2}$ stratégie de $J_{2}$ nous avons : $Outcome(s,(\sigma _{1},\sigma _{2})) \in \Omega _{1}$.\\
+		$s \in W_{1}$ si et seulement si il existe $\sigma _{1}$ une stratégie de $J_{1}$ telle que pour toute $\sigma _{2}$ stratégie de $J_{2}$ nous avons : $Outcome(s,(\sigma _{1},\sigma _{2})) \in \Omega _{1}$.\\
 		$s \in W_{2}$ si et seulement si il existe $\tilde{\sigma} _{2}$ une stratégie de $J_{2}$ telle que pour toute $\tilde{\sigma}_{1}$ stratégie de $J_{1}$ nous avons : $Outcome(s,(\tilde{\sigma}_{1},\tilde{\sigma}_{2})) \in \Omega _{2}$.\\
 		Dès lors, on obtient : $Outcome(s,(\sigma _{1},\tilde{\sigma}_{2})) \in \Omega _{1} \cap \Omega _{2}$. Or $\Omega _{1} \cap \Omega _{2} = \emptyset$, ce qui amène la contradiction.\\
 	\end{demonstration}
@@ -96,7 +93,7 @@
 % DEFINITION: attracteur
 	
 	\begin{defi}
-		La limite de la suite $(X_{k})_{k \in \mathbb{N}}$ est appelée \textit{attracteur de F} et sera notée $Attr(F)$.
+		La limite de la suite $(X_{k})_{k \in \mathbb{N}}$ est appelée \textit{attracteur de F} et est notée $Attr(F)$.
 	\end{defi}
 	
 % PROPRIETE
@@ -119,12 +116,12 @@
 			\item[$\star$] Pour $n=0$: alors $v \in X_{0} = F$ et l'objectif est atteint par $J_{1}$.
 			\item[$\star$] Supposons que la propriété soit vérifiée pour tout $ 0 \leq n \leq k $ et montrons qu'elle est toujours satisfaite pour $n = k + 1 \leq N$. \\
 			Soit $v \in X_{k+1} = X_{k} \cup Pre(X_{k})$. \\
-			Si $v \in X_{k}$ alors par hypothèse de récurrence il existe $\sigma _{1}$ telle que $Outcome(v,(\sigma _{1},\sigma _{2})) \subseteq \Omega _{1}$.\\
-			Si $v \in Pre(X_{k})$, alors si $v \in V_{1}$ par définition de $Pre(X_{k})$ on sait qu'il existe $v'\in V_{k}$ tel que $(v,v')\in E$. Ainsi, on définit $\sigma _{1}(v) = v'$. Tandis que si $v \in V_{2}$, par définition de $Pre(X)$, quelle que soit la stratégie $\sigma _{2}$ adoptée par $J_{2}$  nous sommes assurés que $\sigma _{2}(v) \in X_{k}$. Dès lors le résultat $Outcome(v,(\sigma _{1},\sigma _{2})) \subseteq \Omega _{1}$ est assuré.
+			Si $v \in X_{k}$ alors par hypothèse de récurrence, il existe $\sigma _{1}$ telle que $Outcome(v,(\sigma _{1},\sigma _{2})) \subseteq \Omega _{1}$.\\
+			Si $v \in Pre(X_{k})$, alors si $v \in V_{1}$ par définition de $Pre(X_{k})$ on sait qu'il existe $v'\in V_{k}$ tel que $(v,v')\in E$. Ainsi, on définit $\sigma _{1}(v) = v'$. Tandis que si $v \in V_{2}$, par définition de $Pre(X)$, quelle que soit la stratégie $\sigma _{2}$ adoptée par $J_{2}$  nous sommes assurés que $\sigma _{2}(v) \in X_{k}$. Dès lors, le résultat $Outcome(v,(\sigma _{1},\sigma _{2})) \subseteq \Omega _{1}$ est assuré.
 		\end{enumerate}
-		Dès lors l'assertion est bien vérifiée.\\
+		Par cette preuve par récurrence, l'assertion est bien vérifiée.\\
 		
-		\noindent$\mathbf{V \backslash Attr(F) \subseteq W_{2}}$: Soit $v \in V \backslash Attr(F)$. Une stratégie gagnante pour $J_{2}$ est une stratégie telle que à chaque tour de jeu le sommet $s$ considéré soit dans l'ensemble $V\backslash Attr(F)$. En effet, sinon, au vu de la preuve précédent il existerait à partir du sommet $s$ une stratégie gagnante pour $J_{1}$ et $J_{1}$ n'aurait donc qu'à utiliser cette stratégie pour s'assurer la victoire. Donc, si $v \in V_{1}$ par définition de 	$V \backslash Attr(F)$ on est assuré que pour tout $v'\in V $ tel que $(v,v')\in E$ $v' \in V \backslash Attr(F)$. De plus, si $ v \in V_{2}$ par définition de $V \backslash Attr(F)$ il existe $v' \in V$ tel que $(v,v')\in E$ et $v' \in V \backslash Attr(F)$. La stratégie $\sigma _{2}$ adoptée par $J_{2}$ sera donc $\sigma _{2}(v)= v'$.Procéder de la sorte nous assure $Outcome(v,(\sigma _{1},\sigma _{2})) \subseteq \Omega _{2}$. Ce que nous voulions démontrer.\\
+		\noindent$\mathbf{V \backslash Attr(F) \subseteq W_{2}}$: Soit $v \in V \backslash Attr(F)$. Une stratégie gagnante pour $J_{2}$ est une stratégie telle que à chaque tour de jeu le sommet $s$ considéré soit dans l'ensemble $V\backslash Attr(F)$. Sinon, au vu de la preuve précédente, il existerait à partir du sommet $s$ une stratégie gagnante pour $J_{1}$ et $J_{1}$ n'aurait donc qu'à utiliser cette stratégie pour s'assurer la victoire. Donc, si $v \in V_{1}$ par définition de $V \backslash Attr(F)$ on est assuré que pour tout $v'\in V $ tel que $(v,v')\in E$ $v' \in V \backslash Attr(F)$. De plus, si $ v \in V_{2}$ par définition de $V \backslash Attr(F)$ il existe $v' \in V$ tel que $(v,v')\in E$ et $v' \in V \backslash Attr(F)$. La stratégie $\sigma _{2}$ adoptée par $J_{2}$ sera donc $\sigma _{2}(v)= v'$.Procéder de la sorte nous assure $Outcome(v,(\sigma _{1},\sigma _{2})) \subseteq \Omega _{2}$. Ce que nous voulions démontrer.\\
 		
 		\noindent $\mathbf{W_{1} \subseteq Attr(F)}$: Supposons au contraire : $W_{1} \not\subseteq Attr(F)$. Cela signifie qu'il existe $v \in W_{1}$ tel que $v \notin Attr(F)$. D'où $v \in V\backslash Attr(F)$ et comme $V \backslash Attr(F) \subseteq W_{2}$, on a $v \in W_{2}$. Or par la propriété \ref{Wempty}, $W_{1} \cap W_{2} = \emptyset $ et ici $v \in W_{1}$ et $v \in W_{2}$. Ce qui amène la contradiction.\\
 		
@@ -148,11 +145,11 @@ Appliquons sur l'exemple ci-dessous, le principe de l'attracteur.
 
 \noindent\textbf{Implémentation}:\\
 
-Au vu de la définition de l'attracteur d'un ensemble, l'implémentation de la résolution d'un jeu d'atteignabilité à deux joueurs avec objectif qualitatif en découle aisément. \\
+Au vu de la définition de l'attracteur d'un ensemble, l'implémentation de la résolution d'un jeu d'atteignabilité à deux joueurs avec objectif qualitatif en découle aisément. Nous donnons ci-après le pseudo-code d'un algorithme permettant de résoudre ce type de jeu. \\
 
-Soit $\mathcal{G} = ((V,E),V_{1},V_{2},\Omega _{1}, \Omega _{2},F)$, nous supposons que $V$ comprend $n$ sommets numérotés de $1$ à $n$ et que le graphe $G = (V,E)$ est encodé sur base de sa \textit{matrice d'adjacence}: matAdj. Ie: soit $M$ une matrice $ n \times n $ telle que $ \forall 1 \leq i \leq n, \forall 1\leq j \leq n , M_{i,j} = 1 \Leftrightarrow (v_{i},v_{j})\in E $ et $M_{i,j} = 0$ sinon.\\
+Soit $\mathcal{G} = ((V,E),V_{1},V_{2}, F, \Omega _{1}, \Omega _{2})$, nous supposons que $V$ comprend $n$ sommets numérotés de $1$ à $n$ et que le graphe $G = (V,E)$ est encodé sur base de sa \textit{matrice d'adjacence}: matAdj. I.e. soit $M$ une matrice $ n \times n $ telle que $ \forall 1 \leq i \leq n, \forall 1\leq j \leq n , M_{i,j} = 1 \Leftrightarrow (v_{i},v_{j})\in E $ et $M_{i,j} = 0$ sinon.\\
 
-Un premier algorithme calcule à partir d'un sous ensemble $X \subseteq V$ de $V$ l'ensemble $Pre(X)$ comme définit en \ref{def:predecesseur}. Le principe de cet algorithme est le suivant: pour tout sommet $v\in V_{1}$ on teste s'il existe un arc sortant de $v$ vers un sommet de $X$. Si c'est le cas, alors $v\in Pre(X)$. On traite ensuite tous les sommets $v \in V_{2}$. Pour qu'un tel sommet $v$ appartienne à $Pre(X)$ il faut que tous les arcs sortant de $v$ atteignent un sommet de $X$.
+Un premier algorithme calcule à partir d'un sous ensemble $X \subseteq V$ de $V$ l'ensemble $Pre(X)$ comme défini en \ref{def:predecesseur}. Le principe de cet algorithme est le suivant: pour tout sommet $v\in V_{1}$ on teste s'il existe un arc sortant de $v$ vers un sommet de $X$. Si c'est le cas, alors $v\in Pre(X)$. On traite ensuite tous les sommets $v \in V_{2}$. Pour qu'un tel sommet $v$ appartienne à $Pre(X)$ il faut que tous les arcs sortant de $v$ atteignent un sommet de $X$.
 
 \begin{algorithm}
 	\caption{PreX}
@@ -165,7 +162,7 @@ Un premier algorithme calcule à partir d'un sous ensemble $X \subseteq V$ de $V
 		\FORALL { $v_{i} \in V_{1}$}	
 			\STATE ind $\leftarrow$ 0
 			\STATE existeArc $\leftarrow$ faux
-			\WHILE{$\neg existeArc$}
+			\WHILE{$\neg existeArc$ et $ind \leq n$}
 				\IF {($matAdj_{i,ind} = 1$) et ($v_{ind}\in X$)}
 					\STATE existeArc $\leftarrow$ vrai
 				\ELSE
@@ -180,7 +177,7 @@ Un premier algorithme calcule à partir d'un sous ensemble $X \subseteq V$ de $V
 		\FORALL { $v_{i}\in V_{2}$}
 			\STATE ind $\leftarrow$ 0
 			\STATE tousArcs $\leftarrow$ vrai
-			\WHILE{tousArcs}
+			\WHILE{tousArcs et $ind \leq n$}
 				\IF {($matAdj_{i,ind} = 1$) et ($v_{ind}\not\in X$)}
 					\STATE tousArcs $\leftarrow$ faux
 				\ELSE
@@ -198,7 +195,7 @@ Un premier algorithme calcule à partir d'un sous ensemble $X \subseteq V$ de $V
 		
 \end{algorithm}
 
-Un second algorithme permet de calculer les états gagnants de $J_{1}$ en utilisant les résultats \ref{prop:suiteUltConst} et \ref{prop:attracteur}. En effet, on y construit itérativement la suite $(X_{k})_{k \in \mathbb{N}}$ jusqu'à ce qu'elle devienne ultimement constante (ie: jusqu'à ce que la cardinalité des ensembles $X_{k}$ ne varie plus).
+Un second algorithme permet de calculer les états gagnants de $J_{1}$ en utilisant les résultats \ref{prop:suiteUltConst} et \ref{prop:attracteur}. En effet, on y construit itérativement la suite $(X_{k})_{k \in \mathbb{N}}$ jusqu'à ce qu'elle devienne ultimement constante (i.e. jusqu'à ce que la cardinalité des ensembles $X_{k}$ ne varie plus).
 
 \begin{algorithm}
 	\caption{Attr(F)}
@@ -212,7 +209,7 @@ Un second algorithme permet de calculer les états gagnants de $J_{1}$ en utilis
 		\WHILE {(tailleDiff = vrai)}
 			\STATE ancCard $\leftarrow$ $|X_{k}|$
 			\STATE $preX_{k}$ $\leftarrow PreX(X_{k})$
-			\STATE Ajouter à $X_{k}$tous les éléments de $preX_{k}$
+			\STATE Ajouter à $X_{k}$ tous les éléments de $preX_{k}$
 			\STATE nouvCard $\leftarrow$ $|X_{k}|$
 			
 			\IF {ancCard = nouvCard}
