@@ -79,7 +79,7 @@ Le but de \textit{Min} (resp. \textit{Max}) est donc de \textbf{minimiser} (resp
 \begin{defi}[Stratégie $\epsilon$-optimale]
 	Soit $\epsilon > 0$,
 	\begin{enumerate}
-	\item[$\bullet$] $\sigma _{1} \in \Sigma _{Max}$ est une \textit{stratégie $\epsilon$-optimale} ssi $\forall v \in V $ $ \forall \sigma _{2}\in \Sigma_{Min}$ $ Gain_{Max}(\rho) \geq \underline{Val}(v) + \epsilon  $\\ où $\rho = Outcome(v, (\sigma _{1},\sigma _{2}))$.
+	\item[$\bullet$] $\sigma _{1} \in \Sigma _{Max}$ est une \textit{stratégie $\epsilon$-optimale} ssi $\forall v \in V $ $ \forall \sigma _{2}\in \Sigma_{Min}$ $ Gain_{Max}(\rho) \geq \underline{Val}(v) - \epsilon  $\\ où $\rho = Outcome(v, (\sigma _{1},\sigma _{2}))$.
 	\item[$\bullet$] $\sigma _{2} \in \Sigma _{Min}$ est une \textit{stratégie $\epsilon$-optimale} ssi $\forall v \in V $ $ \forall \sigma _{1}\in \Sigma_{Max}$ $Cost_{Min}(\rho) \leq \overline{Val}(v) + \epsilon $\\ où $\rho = Outcome(v, (\sigma _{1},\sigma _{2}))$.
 	\item[$\bullet$] Si $\epsilon = 0$, on dit que la stratégie $\sigma _{i}$ est \textit{optimale}
 	\end{enumerate}
