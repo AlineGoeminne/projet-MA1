@@ -36,13 +36,13 @@ Le but de \textit{Min} (resp. \textit{Max}) est donc de \textbf{minimiser} (resp
 	\begin{center}On dit que le joueur \textit{Max} \textit{garantit le paiement} $d \in \mathbb{R}$ dans $(\mathcal{G}, v_{0})$\\ 
 		ssi \\ 
 	$\exists \sigma _{1} \in \Sigma _{Max}$ tq $\forall \sigma _{2} \in \Sigma _{Min}$ $ Gain_{Max}(\rho) \geq d$\\
-	où $ \rho = Outcome(v_{0},(\sigma _{1},\sigma _{2}))$\end{center}
+	où $ \rho = \langle \sigma _{1},\sigma _{2} \rangle_{v_0}$\end{center}
 	
 	\begin{center} 
 		On dit que le joueur \textit{Min} \textit{garantit le paiement} $d \in \mathbb{R}$ dans $(\mathcal{G}, v_{0})$\\		
 		ssi	\\
 		$\exists \sigma _{1}\in \Sigma _{Min}$ tq $\forall \sigma _{2} \in \Sigma _{Max}$ $ Cost_{Min}(\rho) \leq d$ \\
-		où $ \rho = Outcome(v_{0},(\sigma _{1},\sigma _{2}))$
+		où $ \rho = \langle \sigma _{1},\sigma _{2}\rangle_{v_0}$
 		\end{center}
 
 \end{defi}
@@ -54,9 +54,9 @@ Le but de \textit{Min} (resp. \textit{Max}) est donc de \textbf{minimiser} (resp
 	
 	Soit $\mathcal{G}$ un jeu Min-Max avec coût, on définit pour chaque sommet $v \in V$: 
 	\begin{enumerate}
-		\item[$\bullet$]\textit{Valeur supérieure:} $\overline{Val}(v) = \inf\limits_{\sigma _{1} \in \Sigma _{Min}} \sup\limits_{\sigma _{2} \in \Sigma_{Max}} Cost_{Min}(\rho)$ où $\rho = Outcome(v,(\sigma _{1},\sigma _{2}))$
+		\item[$\bullet$]\textit{Valeur supérieure:} $\overline{Val}(v) = \inf\limits_{\sigma _{1} \in \Sigma _{Min}} \sup\limits_{\sigma _{2} \in \Sigma_{Max}} Cost_{Min}(\rho)$ où $\rho = \langle \sigma _{1},\sigma _{2}\rangle_v$
 		
-		\item[$\bullet$]\textit{Valeur inférieure:} $\underline{Val}(v) = \sup\limits_{\sigma _{2} \in \Sigma_{Max}}  \inf\limits_{\sigma _{1} \in \Sigma _{Min}} Gain_{Max}(\rho)$  où $\rho = Outcome(v,(\sigma _{1},\sigma _{2}))$
+		\item[$\bullet$]\textit{Valeur inférieure:} $\underline{Val}(v) = \sup\limits_{\sigma _{2} \in \Sigma_{Max}}  \inf\limits_{\sigma _{1} \in \Sigma _{Min}} Gain_{Max}(\rho)$  où $\rho = \langle \sigma _{1},\sigma _{2}\rangle_v$
 	\end{enumerate}
 \end{defi}
 \begin{rem}
@@ -76,12 +76,12 @@ Le but de \textit{Min} (resp. \textit{Max}) est donc de \textbf{minimiser} (resp
 
 %DEFINITION: Stratégie optimale
 
-\begin{defi}[Stratégie $\epsilon$-optimale]
+\begin{defi}[Stratégie $\varepsilon$-optimale]
 	Soit $\epsilon > 0$,
 	\begin{enumerate}
-	\item[$\bullet$] $\sigma _{1} \in \Sigma _{Max}$ est une \textit{stratégie $\epsilon$-optimale} ssi $\forall v \in V $ $ \forall \sigma _{2}\in \Sigma_{Min}$ $ Gain_{Max}(\rho) \geq \underline{Val}(v) - \epsilon  $\\ où $\rho = Outcome(v, (\sigma _{1},\sigma _{2}))$.
-	\item[$\bullet$] $\sigma _{2} \in \Sigma _{Min}$ est une \textit{stratégie $\epsilon$-optimale} ssi $\forall v \in V $ $ \forall \sigma _{1}\in \Sigma_{Max}$ $Cost_{Min}(\rho) \leq \overline{Val}(v) + \epsilon $\\ où $\rho = Outcome(v, (\sigma _{1},\sigma _{2}))$.
-	\item[$\bullet$] Si $\epsilon = 0$, on dit que la stratégie $\sigma _{i}$ est \textit{optimale}
+	\item[$\bullet$] $\sigma _{1} \in \Sigma _{Max}$ est une \textit{stratégie $\varepsilon$-optimale} ssi $\forall v \in V $ $ \forall \sigma _{2}\in \Sigma_{Min}$ $ Gain_{Max}(\rho) \geq \underline{Val}(v) - \varepsilon  $\\ où $\rho = \langle \sigma _{1},\sigma _{2} \rangle_v$.
+	\item[$\bullet$] $\sigma _{2} \in \Sigma _{Min}$ est une \textit{stratégie $\varepsilon$-optimale} ssi $\forall v \in V $ $ \forall \sigma _{1}\in \Sigma_{Max}$ $Cost_{Min}(\rho) \leq \overline{Val}(v) + \varepsilon $\\ où $\rho = \langle \sigma _{1},\sigma _{2} \rangle_v$.
+	\item[$\bullet$] Si $\varepsilon = 0$, on dit que la stratégie $\sigma _{i}$ est \textit{optimale}
 	\end{enumerate}
 \end{defi}
 

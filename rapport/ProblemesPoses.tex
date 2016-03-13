@@ -82,7 +82,7 @@ Pour tout $v \in V$, nous notons alors $Val_{1}(v)$ la valeur de $Val(v)$ calcul
 	
 	\label{qst:3}
 	
-	Soient $\mathcal{A} = (\Pi, V, (V_{1}, V_{2}), E)$ une arène et $(\mathcal{G} = (\mathcal{A}, (\varphi _{1}, \varphi _{2}), (Goal_{1}, Goal_{2}))$ un jeu d'atteignabilité à deux joueurs à objectif quantitatif, soit $(\mathcal{G}, v_{0})$ le jeu initialisé pour un certain $v_{0} \in V $ soit $\rho = s_{0}s_{1}... \in Plays$, on se demande s'il existe $(\sigma _{1},\sigma _{2})$ un équilibre de Nash dans $(\mathcal{G},v_{0})$ tel que $\rho = Outcome(v_{0},(\sigma _{1},\sigma _{2}))$ et $(\sigma _{1},\sigma _{2}) \in \Sigma _{1} \times \Sigma _{2}.$
+	Soient $\mathcal{A} = (\Pi, V, (V_{1}, V_{2}), E)$ une arène et $(\mathcal{G} = (\mathcal{A}, (\varphi _{1}, \varphi _{2}), (Goal_{1}, Goal_{2}))$ un jeu d'atteignabilité à deux joueurs à objectif quantitatif, soit $(\mathcal{G}, v_{0})$ le jeu initialisé pour un certain $v_{0} \in V $ soit $\rho = s_{0}s_{1}... \in Plays$, on se demande s'il existe $(\sigma _{1},\sigma _{2})$ un équilibre de Nash dans $(\mathcal{G},v_{0})$ tel que $\rho = \langle \sigma _{1},\sigma _{2} \rangle_{v_0}$ et $(\sigma _{1},\sigma _{2}) \in \Sigma _{1} \times \Sigma _{2}.$
 \end{qst}
 
 Pour répondre à la question~\ref{qst:3} nous nous intéressons à la véracité de la propriété~\ref{prop:outEN2} :
@@ -93,7 +93,7 @@ Pour répondre à la question~\ref{qst:3} nous nous intéressons à la véracit�
 	
 	Posons $(x,y) = (\varphi _{1}(\rho), \varphi _{2}(\rho))$ et pour $v_{j} \in \rho$ ($j \in \mathbb{N}$) nous définissons: $\epsilon _{j} = \sum _{n= 0} ^{j-1} w(v_{n},v_{n+1})$ où $w$ est la fonction de poids associée à $G = (V,E)$ .
 	
-	\begin{center}Il existe $(\sigma _{1},\sigma _{2}) \in \Sigma _{1} \times \Sigma _{2}$ un équilibre de Nash dans $(\mathcal{G},v_{0})$ tq $Outcome(v_{0},(\sigma _{1},\sigma _{2})) = \rho$\\ $\text{}$\\ si et seulement si\\$\text{}$\\ pour tout $j \in \mathbb{N}$, $\begin{cases}
+	\begin{center}Il existe $(\sigma _{1},\sigma _{2}) \in \Sigma _{1} \times \Sigma _{2}$ un équilibre de Nash dans $(\mathcal{G},v_{0})$ tq $\langle \sigma _{1},\sigma _{2}\lright_{v_0} = \rho$\\ $\text{}$\\ si et seulement si\\$\text{}$\\ pour tout $j \in \mathbb{N}$, $\begin{cases}
 													Val_{1}(v_{j}) + \epsilon _{j} \geq x & \text{ si } v_{j} \in V_{1} \\
 													Val_{2}(v_{j}) + \epsilon _{j} \geq y & \text{ si } v_{j} \in V_{2} 
 													\end{cases}$.\end{center}  
