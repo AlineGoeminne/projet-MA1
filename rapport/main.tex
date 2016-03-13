@@ -1,5 +1,5 @@
 %
-%  untitled
+%  Projet MA1 info
 %
 %  Created by Aline Goeminne on 2015-12-14.
 %  Copyright (c) 2015 __MyCompanyName__. All rights reserved.
@@ -31,6 +31,11 @@
 \usepackage{tikz}
 \usetikzlibrary{decorations.markings}
 \usetikzlibrary{positioning}
+
+\usepackage{pgf,tikz}
+\usepackage{mathrsfs}
+\usetikzlibrary{arrows}
+
 \usepackage{placeins}
 \usepackage{algorithm}
 \usepackage{algorithmic}
@@ -137,6 +142,7 @@ Aline \textsc{Goeminne}
 \newpage
 \input{jeuxAtt}
 \newpage
+\input{ProblemesPoses}
 %\input{conclusion}
 \newpage
 
@@ -144,6 +150,9 @@ Aline \textsc{Goeminne}
 
 \bibliographystyle{plain}
 \bibliography{biblio}
+\addtocounter{section}{1}
+        \addcontentsline{toc}{section}{\protect\numberline{\thesection} Références}
+%\addcontentsline{toc}{section}{\protect\numberline{\thesection}{biblio}
 \newpage
 
 \input{annexeA}
