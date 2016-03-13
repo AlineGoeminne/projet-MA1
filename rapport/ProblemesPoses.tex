@@ -72,8 +72,8 @@ Existe-t'il un équilibre de Nash tel que chaque joueur atteigne son objectif?
 
 A partir d'un jeu $(\mathcal{G},v_{0})$ où $\mathcal{G} =( \{ 1, 2 \}, V, (V_{1},V_{2}), E, (\varphi _{1},\varphi _{2}),(Goal_{1},Goal_{2}))$ est un jeu d'atteignabilité à deux joueurs avec coût nous pouvons y associer deux jeux à somme nulle du type \og reachability-price game \fg:
 \begin{enumerate}
-	\item $\mathcal{G}_{1} = (V,(V_{Min},V_{Max}),E,RP_{Min},RP_{Max},Goal)$ où $V_{Min} = V_{1}$, $V_{Max} = V_{2}$ et $Goal = Goal_{1}$ (i.e. le jeu dans lequel $J_{1}$ tente d'atteindre au plus vite son objectif et où $J_{2}$ veut l'en empêcher),
-	\item $\mathcal{G}_{2} = (V,(V_{Min},V_{Max}),E,RP_{Min},RP_{Max},Goal)$ où $V_{Min} = V_{2}$, $V_{Max} = V_{1}$ et $Goal = Goal_{2}$ (i.e. le jeu dans lequel $J_{2}$ tente d'atteindre au plus vite son objectif et où $J_{1}$ veut l'en empêcher).
+	\item $\mathcal{G}_{1} = (V,(V_{Min},V_{Max}),E,g,Goal)$ où $V_{Min} = V_{1}$, $V_{Max} = V_{2}$, $g = \varphi_{1}$ et $Goal = Goal_{1}$ (\emph{i.e.,} le jeu dans lequel $J_{1}$ tente d'atteindre au plus vite son objectif et où $J_{2}$ veut l'en empêcher),
+	\item $\mathcal{G}_{2} = (V,(V_{Min},V_{Max}),E,g,Goal)$ où $V_{Min} = V_{2}$, $V_{Max} = V_{1}$,$g = \varphi_{2}$ et $Goal = Goal_{2}$ (\emph{i.e.,} le jeu dans lequel $J_{2}$ tente d'atteindre au plus vite son objectif et où $J_{1}$ veut l'en empêcher).
 \end{enumerate}
 
 Pour tout $v \in V$, nous notons alors $Val_{1}(v)$ la valeur de $Val(v)$ calculée dans $\mathcal{G}_{1}$ et $Val_{2}(v)$ la valeur de $Val(v)$ calculée dans $\mathcal{G}_{2}$.

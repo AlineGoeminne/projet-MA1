@@ -147,7 +147,7 @@ Appliquons sur l'exemple ci-dessous, le principe de l'attracteur.
 
 Au vu de la définition de l'attracteur d'un ensemble, l'implémentation de la résolution d'un jeu d'atteignabilité à deux joueurs avec objectif qualitatif en découle aisément. Nous donnons ci-après le pseudo-code d'un algorithme permettant de résoudre ce type de jeu. \\
 
-Soit $\mathcal{G} = ((V,E),V_{1},V_{2}, F, \Omega _{1}, \Omega _{2})$, nous supposons que $V$ comprend $n$ sommets numérotés de $1$ à $n$ et que le graphe $G = (V,E)$ est encodé sur base de sa \textit{matrice d'adjacence}: matAdj. I.e. soit $M$ une matrice $ n \times n $ telle que $ \forall 1 \leq i \leq n, \forall 1\leq j \leq n , M_{i,j} = 1 \Leftrightarrow (v_{i},v_{j})\in E $ et $M_{i,j} = 0$ sinon.\\
+Soit $\mathcal{G} = ((V,E),V_{1},V_{2}, F, \Omega _{1}, \Omega _{2})$, nous supposons que $V$ comprend $n$ sommets numérotés de $1$ à $n$ et que le graphe $G = (V,E)$ est encodé sur base de sa \textit{matrice d'adjacence}: matAdj. \emph{I.e.,} soit $M$ une matrice $ n \times n $ telle que $ \forall 1 \leq i \leq n, \forall 1\leq j \leq n , M_{i,j} = 1 \Leftrightarrow (v_{i},v_{j})\in E $ et $M_{i,j} = 0$ sinon.\\
 
 Un premier algorithme calcule à partir d'un sous ensemble $X \subseteq V$ de $V$ l'ensemble $Pre(X)$ comme défini en \ref{def:predecesseur}. Le principe de cet algorithme est le suivant: pour tout sommet $v\in V_{1}$ on teste s'il existe un arc sortant de $v$ vers un sommet de $X$. Si c'est le cas, alors $v\in Pre(X)$. On traite ensuite tous les sommets $v \in V_{2}$. Pour qu'un tel sommet $v$ appartienne à $Pre(X)$ il faut que tous les arcs sortant de $v$ atteignent un sommet de $X$.
 
@@ -195,7 +195,7 @@ Un premier algorithme calcule à partir d'un sous ensemble $X \subseteq V$ de $V
 		
 \end{algorithm}
 
-Un second algorithme permet de calculer les états gagnants de $J_{1}$ en utilisant les résultats \ref{prop:suiteUltConst} et \ref{prop:attracteur}. En effet, on y construit itérativement la suite $(X_{k})_{k \in \mathbb{N}}$ jusqu'à ce qu'elle devienne ultimement constante (i.e. jusqu'à ce que la cardinalité des ensembles $X_{k}$ ne varie plus).
+Un second algorithme permet de calculer les états gagnants de $J_{1}$ en utilisant les résultats \ref{prop:suiteUltConst} et \ref{prop:attracteur}. En effet, on y construit itérativement la suite $(X_{k})_{k \in \mathbb{N}}$ jusqu'à ce qu'elle devienne ultimement constante (\emph{i.e.,} jusqu'à ce que la cardinalité des ensembles $X_{k}$ ne varie plus).
 
 \begin{algorithm}
 	\caption{Attr(F)}
