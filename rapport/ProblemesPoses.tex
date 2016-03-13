@@ -1,6 +1,6 @@
 %!TEX root=main.tex
 
-\subsubsection{Questions posées}
+\section{Questions posées}
 \label{section:questionsPosees}
 
 Dans cette section, nous allons expliciter les différentes questions que nous nous posons et que nous aimerions résoudre.\\
@@ -99,4 +99,122 @@ Pour répondre à la question~\ref{qst:3} nous nous intéressons à la véracit�
 													\end{cases}$.\end{center}  
 \end{propriete}
 	
- 						
+\subsection{Question 1}
+\subsection{Question 2}
+\subsection{Question 3}
+Plutôt que de prouver la propriété~\ref{prop:outEN2} pour $|\Pi|= 2$,nous allons montrer qu'en fait nous pouvons la généralise pour $|\Pi| \geq 2 .$ Pour ce faire, nous avons besoin d'introduire quelques notions préliminaires.
+
+
+\begin{defi}
+	\label{defi:coalGame}
+ Soient $\mathcal{A} = (\Pi, V, (V_{i})_{i\in\Pi}, E)$ une arène et $\mathcal{G} = (\mathcal{A}, (\varphi _{i})_{i\in\Pi}, (Goal_{i})_{i\in\Pi})$ un jeu d'atteignabilité à $|\Pi| \geq 2$ à objectif quantitatif.
+Pour tout joueur $i \in \Pi$, nous pouvons y associer un jeu à somme nulle de type \og reachability-price game \fg~ noté $\mathcal{G}_{i}$.
+On définit ce jeu de la manière suivante : 
+$$ \displaystyle \mathcal{G}_{i}= (\mathcal{A}_{i}, g , Goal) \text{ où } \mathcal{A}_{i} = (\{i,\Pi\backslash{i}\}, V, (V_{i},V\backslash V_i,E) \text{, } g = \varphi_i \text{ et } Goal = Goal_i$$
+
+\noindent De plus, pour tout $v\in V$, $Val_i(v)$ est la valeur du jeu $\mathcal{G}_i$ pour tout noeud $v\in V$. 
+\end{defi} 
+
+En d'autres mots, $G_i$ correspond au jeu où le joueur $i$ (joueur Min) joue contre la coalition $\Pi\backslash\{ i \}$ (joueur Max) . Cela signifie que le joueur $i$ tente d'atteindre son objectif le plus rapidement possible tandis que tous les autres joueurs veulent l'en empêcher (ou tout du moins maximiser son gain). Nous avons vu précédemment qu'un tel jeu est déterminé et que les deux joueurs possèdent une stratégie optimale ($\sigma^*_i$ et $\sigma^*_{-i}$) telles que:
+$$ \inf_{\sigma _{i\in \Sigma _{Min}}} \varphi_i(\langle \sigma_i,\sigma^*_{-i}\rangle_v)= Val_i(v) = \sup _{\sigma_{-i}\in \Sigma_{Max}} \varphi_i(\langle \sigma^*_i, \sigma_{-i}\rangle_v).$$ De plus, de la stratégie optimale $\sigma^*_{-i}$ nous pouvons dériver une stratégie pour tout joueur $j \neq i$ que nous notons $\sigma_{j,i}$.\\
+
+Ces considérations étant clairement établies, nous pouvons maintenant énoncer et prouver le résultat~\ref{prop:outEN3} qui nous intéresse.
+\begin{propriete}
+	\label{prop:outEN3}
+	Soit $|\Pi| = n \geq 2$,
+	soient $\mathcal{A} = (\Pi, V, (V_{i})_{i\in\Pi}, E)$ une arène et $\mathcal{G} = (\mathcal{A}, (\varphi _{i})_{i\in\Pi}, (Goal_{i})_{i\in\Pi})$ un jeu d'atteignabilité à $n$ joueurs à objectif quantitatif, soit $(\mathcal{G}, v_{0})$ le jeu initialisé pour un certain $v_{0} \in V $ et soit $\rho = v_{0}v_{1}... \in Plays$. 
+	
+	Posons $(x_{i})_{i\in\Pi} = (\varphi _{i}(\rho))_{i\in\Pi}$ le profil de paiement associé à la partie $\rho$ . Nous définissons pour $v_{k} \in \rho$ ($k \in \mathbb{N}$)  $\varepsilon _{k} := \sum _{n= 0} ^{k-1} w(v_{n},v_{n+1})$ où $w$ est la fonction de poids associée à $G = (V,E)$.
+	
+	\begin{center}Il existe $ (\sigma _{i})_{i\in\Pi} \in \prod_{i\in\Pi} \Sigma _{i}$ un équilibre de Nash dans $(\mathcal{G},v_{0})$ tq $\langle (\sigma _{i})_{i \in \Pi}\rangle_{v_0} = \rho$\\ $\text{}$\\ si et seulement si\\$\text{}$\\  $ \forall k \in \mathbb{N}, \forall j \in \Pi$, $Val_{j}(v_{k}) + \varepsilon _{k} \geq x_j \text{  si } v_{k} \in V_{j}$.\end{center}
+	
+\end{propriete}
+
+\setcounter{equation}{0}
+
+\begin{demonstration}
+	Nous allons montrer les deux implications:\\
+	\begin{itemize}
+		\item[$(\Downarrow)$] Supposons au contraire qu'il existe $k\in \mathbb{N}$ et $j\in\Pi$ tels que $Val_j(v_k) + \varepsilon_k < x_j$,
+		\begin{equation}
+			\label{eq:questEq1}
+			i.e., Val_j(v_k) < x_j + \varepsilon_k = \varphi_j(\langle (\sigma_i)_{i \in \Pi}\rangle_{v_k})
+		\end{equation}
+		où $\varphi_j(\langle (\sigma_i)_{i \in \Pi}\rangle_{v_k})$ est le coût de la partie pour le joueur $j$ si elle avait commencé en $v_k$.
+		De plus, on a : 
+		\begin{equation}
+			\label{eq:questEq2}
+			Val_j(v_k) = \sup_{\tau_{-j}\in \Sigma_{Max}} g(\langle \sigma^*_j,\tau_{-j} \rangle_{v_k}) \geq g (\langle \sigma^*_j,\sigma_{-j} \rangle_{v_k}) = \varphi_j(\langle \sigma^*_j,\sigma_{-j} \rangle_{v_k})
+		\end{equation}
+		où $\sigma^*_j$ est la stratégie optimale du joueur $j$ associée à $\mathcal{G}_j$ et $\sigma_{-j}$ dans l'expression $g (\langle \sigma^*_j,\sigma_{-j} \rangle_{v_k})$ est un abus de notation désignant la stratégie où la coalition $\Pi\backslash\{ j \}$ suit chacune des stratégies $\sigma_i$ pour tout $i \neq j$.\\
+		
+		Dès lors, \eqref{eq:questEq1} et \eqref{eq:questEq2} nous donnent:
+		\begin{equation}
+			\label{eq:questEq3}
+			\varphi_j(\langle \sigma^*_j,\sigma_{-j} \rangle_{v_k}) < \varphi_j(\langle(\sigma_i)_{i\in \Pi}\rangle_{v_k})
+		\end{equation}
+		
+		La relation~\eqref{eq:questEq3} signifie qu'à partir du noeud $v_k$ le joueur $j$ ferait mieux de suivre la stratégie $\sigma^*_j$. Il s'agit donc d'une déviation profitable pour le joueur $j$ par rapport au profil de stratégies $(\sigma_i)_{i\in \Pi}$. Cela implique que $(\sigma_i)_{i\in\Pi}$ n'est pas un équilibre de Nash. Nous avons donc la contradiction attendue.\\
+		
+		\item[$(\Uparrow)$] Soit $(\tau_i)_{i\in \Pi}$ un profil de stratégies qui permet d'obtenir l'outcome $\rho$ de paiement $(x_i)_{i\in\Pi}$.
+		A partir de $(\tau_i)_{i\in \Pi}$ nous désirons construire un équilibre de Nash ayant le même outcome (et donc le même profil de coût).
+		L'idée est la suivante: dans un premier temps tous les joueurs suivent leur stratégie conformément au profil $(\tau_i)_{i \in \Pi}$. Si un des joueurs, notons le $i$,  dévie de sa stratégie alors les autres joueurs se réunissent en une coalition $\Pi\backslash \{ i \}$ et jouent en suivant leur stratégie de punition dans $\mathcal{G}_i$ (\emph{i.e.,} pour tout j $\neq$ i, le joueur $j$ suit la stratégie $\sigma^*_{j,i}$).\\
+		
+	Comme dans le papier \og Multiplayer Cost Games With Simple Nash Equilibria \fg~\cite{DBLP:conf/lfcs/BrihayePS13}, nous définissons une fonction de punition: $P : Hist \rightarrow \Pi\cup \{ \perp \}$ qui permet de définir quel est le premier joueur à avoir dévié du profil de stratégies initial $(\tau_i)_{i\in\Pi}$. Cette fonction est telle que $P(h) = \perp$ si aucun joueur n'a dévié le long de l'histoire $h$ et $P(h) = i$ pour un certain $i \in \Pi$ si le joueur $i$ a dévié le long de l'histoire $h$. Nous pouvons donc définir la fonction $P$ par récurrence sur la longueur des histoires : pour $v_0$, le noeud initial, $P(v_0) = \perp$  et pour $h \in Hist$ et $v\in V$ on a :
+	$$
+	P(hv) = \begin{cases}
+			\perp & \text{ si } P(h) = \perp \text{ et } hv \text{ est un préfixe de } \rho \\
+			i & \text{ si } P(h) = \perp ,\, hv \text{ n'est pas un préfixe de }\rho \text{ et } Last(h)\in V_i\\
+			P(h) & \text{ sinon (\emph{i.e.,}}\, P(h)\neq \perp) \end{cases}
+	$$\\
+	
+	Nous pouvons maintenant définir notre équilibre de Nash potentiel dans $\mathcal{G}$. Pour tout $i\in \Pi$ et tout $h\in Hist$ tels que $Last(h)\in V_i$:
+	$$\sigma_i(h)= \begin{cases}
+					\tau_i(h) & \text{ si }P(h)= \perp \text{ ou }i \\
+					\sigma^*_{i,P(h)}(h) & \text{ sinon }\end{cases}$$\\
+					
+	Nous devons maintenant montrer que le profil de stratégies $(\sigma_i)_{i\in\Pi}$ ainsi défini est un équilibre de Nash d'outcome $\rho$.\\
+	Il est clair que $\langle (\sigma_i)_{i\in\Pi} \rangle_{v_0} = \rho$.\\
+	Montrons maintenant qu'il s'agit bien d'un équilibre de Nash.\\
+	\noindent Supposons au contraire que ce ne soit pas le cas. Cela signifie qu'il existe une déviation profitable pour un certain joueur $j \in\Pi$. Notons-la $\tilde{\sigma}_j$ .\\
+		\noindent Soit $\tilde{\rho} = \langle \tilde{\sigma}_j , (\sigma_i)_{i \in \Pi \backslash \{j \}} \rangle_{v_0}$ l'outcome tel que le joueur $j$ joue sa déviation profitable et où les autres joueurs jouent conformément à leur ancienne stratégie.
+		Puisque $\tilde{\sigma}_j$ est une déviation profitable nous avons: 
+		\begin{equation}
+			\label{eq:questEq4}
+			\varphi_j(\tilde{\rho}) < \varphi_j(\rho)
+		\end{equation}
+		
+		De plus, comme $\rho$ et $\tilde{\rho}$ commencent tous les deux à partir du noeud $v_0$, ils possèdent un préfixe commun. En d'autres termes, il existe une histoire $hv \in Hist$ telle que: 
+		\begin{equation*}
+			\rho = h. \langle (\sigma_i)_{i\in\Pi} \rangle_v \text{ et } \tilde{\rho} =  h.\langle \tilde{\sigma_j}, (\sigma)_{i\in\Pi\backslash \{ j \}} \rangle_v
+		\end{equation*}
+		 S'il en existe plusieurs nous en choisissons une de longueur maximale.
+		Au vu de la définition de $\sigma_i$ , nous pouvons réécrire:
+		
+		\begin{equation*}
+			\rho = h. \langle (\tau_i)_{i\in\Pi} \rangle_v \text{ et } \tilde{\rho} = h.\langle \tilde{\sigma_j}, (\sigma^*_{i,j})_{i\in\Pi \backslash\{ j \}}
+		\end{equation*}
+		En effet, le joueur $j$ dévie en $v$, donc à partir de $v$ tout joueur $i \neq j$ joue sa stratégie de punition. De plus, nous avons les relations suivantes : 
+		\begin{align}
+			Val_j(v) &= \inf_{\mu_j\in\Sigma_{Min}}\varphi_j(\langle \mu_j, \sigma^*_{-j}\rangle_v)\notag\\
+					 &\leq \varphi_j(\langle \tilde{\sigma}_j, \sigma^*_{-j}\rangle_v)\notag\\
+					& = \varphi_j(\langle \tilde{\sigma}_j, (\sigma^*_{i,j})_{i \in \Pi \backslash \{ j \}}\rangle_v). \label{eq:questEq5}
+		\end{align}
+		
+	Supposons $h = v_0 \ldots v_k$ pour un certain $k \in \mathbb{N}$. Alors,
+	\begin{equation}
+		\label{eq:questEq6}
+		\varphi_j(\tilde{\rho}) = \varepsilon_k + \varphi(\langle \tilde{\sigma}_j , (\sigma^*_{i,j})_{i\in\Pi\backslash\{ j \}}\rangle_v)
+	\end{equation}
+	Dès lors, \eqref{eq:questEq5} et~\eqref{eq:questEq6} nous donnent:
+	\begin{equation}
+		\label{eq:questEq7}
+		Val_j(v) \leq \varphi_j(\tilde{\rho}) - \varepsilon_k
+	\end{equation}
+	
+	Donc par~\eqref{eq:questEq4} et~\eqref{eq:questEq7}  nous avons:
+	$$ Val_j(v) \leq \varphi_j(\tilde{\rho})- \varepsilon_k < \varphi_j(\rho)-\varepsilon_k = x_j-\varepsilon_k$$
+	Ce qui contredit l'hypothèse et conclut notre preuve.
+	\end{itemize}
+\end{demonstration}
+
