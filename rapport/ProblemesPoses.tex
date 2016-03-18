@@ -66,6 +66,7 @@ Existe-t'il un équilibre de Nash tel que chaque joueur atteigne son objectif?
 	
 
 \begin{qst}
+	\label{qst:2}
 	Soit $(\mathcal{G},v_{0})$ où $\mathcal{G} = (V,(V_{Min},V_{Max}),E,RP_{Min},RP_{Max},Goal)$ est un \og reachability-price game\fg  et soit $\rho \in Plays$ un jeu sur $(\mathcal{G},v_{0})$, existe-t'il une procédure algorithmique pour déterminer si ce jeu $\rho$ correspond à l'outcome d'un équilibre de Nash $(\sigma _{1},\sigma _{2})$ pour certaines stratégies $\sigma _{1}\in \Sigma _{Min}$ et $\sigma _{2}\in \Sigma _{Max}$ ?
 	
 \end{qst}
@@ -91,18 +92,107 @@ Pour répondre à la question~\ref{qst:3} nous nous intéressons à la véracit�
 	\label{prop:outEN2}
 	Soient $\mathcal{A} = (\Pi, V, (V_{1}, V_{2}), E)$ une arène et $\mathcal{G} = (\mathcal{A}, (\varphi _{1}, \varphi _{2}), (Goal_{1}, Goal_{2})$ un jeu d'atteignabilité à deux joueurs à objectif quantitatif, soit $(\mathcal{G}, v_{0})$ le jeu initialisé pour un certain $v_{0} \in V $ et soit $\rho = v_{0}v_{1}... \in Plays$. 
 	
-	Posons $(x,y) = (\varphi _{1}(\rho), \varphi _{2}(\rho))$ et pour $v_{j} \in \rho$ ($j \in \mathbb{N}$) nous définissons: $\epsilon _{j} = \sum _{n= 0} ^{j-1} w(v_{n},v_{n+1})$ où $w$ est la fonction de poids associée à $G = (V,E)$ .
+	Posons $(x,y) = (\varphi _{1}(\rho), \varphi _{2}(\rho))$ et pour $v_{j} \in \rho$ ($j \in \mathbb{N}$) nous définissons: $\varepsilon _{j} = \sum _{n= 0} ^{j-1} w(v_{n},v_{n+1})$ où $w$ est la fonction de poids associée à $G = (V,E)$ .
 	
 	\begin{center}Il existe $(\sigma _{1},\sigma _{2}) \in \Sigma _{1} \times \Sigma _{2}$ un équilibre de Nash dans $(\mathcal{G},v_{0})$ tq $\langle \sigma _{1},\sigma _{2}\rangle_{v_0} = \rho$\\ $\text{}$\\ si et seulement si\\$\text{}$\\ pour tout $j \in \mathbb{N}$, $\begin{cases}
-													Val_{1}(v_{j}) + \epsilon _{j} \geq x & \text{ si } v_{j} \in V_{1} \\
-													Val_{2}(v_{j}) + \epsilon _{j} \geq y & \text{ si } v_{j} \in V_{2} 
+													Val_{1}(v_{j}) + \varepsilon _{j} \geq x & \text{ si } v_{j} \in V_{1} \\
+													Val_{2}(v_{j}) + \varepsilon _{j} \geq y & \text{ si } v_{j} \in V_{2} 
 													\end{cases}$.\end{center}  
 \end{propriete}
 	
 \subsection{Question 1}
 \subsection{Question 2}
+Afin de pouvoir répondre à cette question nous allons commencer par énoncer et prouver un résultat qui nous permettra de déterminer si un outcome donné correspond à un équilibre de Nash.
+
+\begin{propriete}
+	\label{prop:question2}
+	 Soient $(\mathcal{G},v_0)$ tel que $\mathcal{G} = (\mathcal{A}, g, Goal)$ où $\mathcal{A}= ({Min,Max}, V, (V_{Min},V_{Max}))$ un \og reachability-price game\fg~initialisé, $\rho = v_0 \ldots v_k \ldots \in Plays$ tel que $g(\rho) = x$ pour un certain $x \in \mathbb{N}_0$ et $\varepsilon_k = \sum_{n=0}^{k-1} w(v_n,v_{n-1})$,
+	\begin{center} $\exists (\sigma_1, \sigma_2) \in \Sigma_{Min} \times \Sigma_{Max}$ un équilibre de Nash tel que $\langle \sigma_1, \sigma_2 \rangle_{v_0} = \rho$\\ $\text{}$ \\ si et seulement si \\ $\text{}$ \\
+		$ \forall v_k \in \rho$,  $\begin{cases} Val(v_k) \geq x - \varepsilon _k & \text{si } v_k \in V_{Min} \\
+		 									 Val(v_k) \leq x - \varepsilon _k &  \text{si } v_k \in V_{Max}\end{cases}$ \end{center}
+
+\end{propriete}
+\setcounter{equation}{0}
+
+\begin{demonstration}
+	
+	Nous savons qu'un tel jeu est déterminé et qu'il existe $(\sigma_{1}^* , \sigma_{2}^*) \in (\Sigma_{Min},\Sigma_{Max})$ des stratégies optimales. Nous avons donc qu'il existe $(\sigma_{1}^* , \sigma_{2}^*) \in (\Sigma_{Min},\Sigma_{Max})$ tel que pour tout $v \in V,\, g(\langle \sigma_1^*,\sigma_2^* \rangle_v) = Val(v)$. \\
+	
+	\begin{itemize}
+		\item[($\Downarrow$)] Supposons $(\sigma_1, \sigma_2)$ soit un équilibre de Nash d'outcome $\rho$ et de paiement $x$. Supposons au contraire qu'il existe $v_k \in \rho$ tel que ($Val(v_k) < x - \varepsilon_k$ si $v_k \in V_{Min}$) ou ($Val(v_k) > x - \varepsilon $ si $v_k \in V_{Max}$).\\
+		Sans perte de généralité, nous supposons:  
+		\begin{align}
+			\exists v_k \in \rho (v_k \in V_{Min}) \text{ tel que } Val(v_k) &< x - \varepsilon_k \notag \\
+																			&= g(\langle \sigma_1, \sigma_2 \rangle_{v_k}) \label{eq:ENeq1}
+		\end{align}
+		
+		De plus, nous avons :
+		\begin{align} Val(v_k) = \sup_{\tau_2 \in \Sigma_{Max}} g(\langle \sigma_1^*, \tau_2 \rangle_{v_k}) \geq g(\langle \sigma_1^*,\sigma_2 \rangle_{v_k}). \label{eq:ENeq2}\end{align}
+			
+		De \eqref{eq:ENeq1} et \eqref{eq:ENeq2}, nous déduisons:
+		\begin{align}
+			g(\langle \sigma_1^*, \sigma_2 \rangle _{v_k}) < g (\langle \sigma_1, \sigma_2 \rangle_{v_k}) \label{eq:ENeq3}
+		\end{align}
+		Comme le joueur Min cherche à minimiser son gain, la relation \eqref{eq:ENeq3} signifie que le joueur Min a une déviation profitable  à partir de $v_k$.\\
+		Ceci nous permet de conclure que $(\sigma_1,\sigma_2)$ n'est pas un équilibre de Nash.
+		
+		\item[($\Uparrow$)]
+		Soit $(\tau_1, \tau_2) \in \Sigma_1 \times \Sigma_2$ un profil de stratégies qui permet d'obtenir l'outcome $\rho$ de paiement $x$.
+		A partir de $(\tau_1, \tau_2)$ nous désirons construire un équilibre de Nash ayant le même outcome (et donc le même coût).
+		L'idée est la suivante: dans un premier temps les deux joueurs suivent leur stratégie conformément au profil $(\tau_1,\tau_2)$. Si un des joueurs, notons le $i$,  dévie de sa stratégie alors l'autre joueur décide de le \og punir \fg~et joue en suivant sa stratégie optimale $\sigma_{-i}^*$\\ 
+		
+		
+		Comme dans le papier \og Multiplayer Cost Games With Simple Nash Equilibria \fg~\cite{DBLP:conf/lfcs/BrihayePS13}, nous définissons une fonction de punition: $P : Hist \rightarrow \{ Min, Max \}\cup \{ \perp \}$ qui permet de définir quel est le premier joueur à avoir dévié du profil de stratégies initial $(\tau_1, \tau_2)$. Cette fonction est telle que $P(h) = \perp$ si aucun joueur n'a dévié le long de l'histoire $h$ et $P(h) = i$ pour un certain $i \in \{ Min, Max \}$ si le joueur $i$ a dévié le long de l'histoire $h$. Nous pouvons donc définir la fonction $P$ par récurrence sur la longueur des histoires : pour $v_0$, le noeud initial, $P(v_0) = \perp$  et pour $h \in Hist$ et $v\in V$ on a :
+		$$
+		P(hv) = \begin{cases}
+				\perp & \text{ si } P(h) = \perp \text{ et } hv \text{ est un préfixe de } \rho \\
+				i & \text{ si } P(h) = \perp ,\, hv \text{ n'est pas un préfixe de }\rho \text{ et } Last(h)\in V_i\\
+				P(h) & \text{ sinon (\emph{i.e.,}}\, P(h)\neq \perp) \end{cases}
+		$$\\
+		
+		Nous définissons pour tout $h \in Hist_{i}$:
+		$\sigma_i(h) = \begin{cases} \tau_i(h) & \text{ si } P(h) = \perp \text{ ou } i \\
+		\sigma_i^*(h) & \text{ sinon}
+		
+		\end{cases}$
+		
+		Nous avons clairement que $\langle \sigma_1, \sigma_2 \rangle_{v_{k}} = \rho$.\\
+		Nous devons maintenant montrer qu'il s'agit d'un équilibre de Nash.
+		Supposons au contre que le joueur Max possède une déviation profitable que nous notons $\tilde{\sigma_{2}}$. Comme $\sigma_2$ et $\tilde{\sigma_2}$ sont des stratégies du jeu $(\mathcal{G}, v_0)$ on a que:
+		\begin{align} \tilde{\rho} &= \langle \sigma_1, \tilde{\sigma_2} \rangle_{v_0} 
+								   = h. \langle \sigma_1, \tilde{\sigma_2} \rangle_{v_k} & \text{ car Max dévie donc Min le punit} \label{eq:ENeq4} \\
+								\rho &= \langle \sigma_1, \sigma_2 \rangle_{v_0} 
+								     = h. \langle \sigma_1, \sigma_2 \rangle_{v_k} \label{eq:ENeq5}
+								\end{align} 
+	où $h$ est le plus long préfixe commun et $J_{Max}$ dévie en $v_k$.
+	Comme $\tilde{\sigma_2}$ est une déviation profitable et au vu de \eqref{eq:ENeq4} et \eqref{eq:ENeq5} on a:
+	\begin{align}
+		g(\tilde{\rho}) > g(\rho) && \text{ (Joueur Max maximise son gain}) \label{eq:ENeq6}
+	\end{align}
+	La relation~\eqref{eq:ENeq6} implique:
+	\begin{align}
+		g(\langle \sigma_1, \tilde{\sigma_2} \rangle _{v_k}) > g(\langle \sigma_1, \sigma_2 \rangle _{v_k})  \label{eq:ENeq7}
+	\end{align}
+	
+	De plus, 
+	\begin{align}
+		g(\langle \sigma_1, \tilde{\sigma_2} \rangle_{v_k}) = g( \langle \sigma_1^*, \tilde{\sigma_2} \rangle_{v_k}) \leq Val(v_k) \label{eq:ENeq8}
+	\end{align}
+	Par hypothèse on a :
+	\begin{align}
+		Val(v_k) \leq x - \varepsilon_k = g(\langle \tau_1, \tau_2 \rangle_{v_k} ) = g(\langle \sigma_1, \sigma_2 \rangle_{v_k}) \label{eq:ENeq9}
+	\end{align}
+	Par \eqref{eq:ENeq8} et \eqref{eq:ENeq9} on a : 
+	$$ g(\langle \sigma_1, \tilde{\sigma}_2 \rangle_{v_k}) \leq g( \langle \sigma_1, \sigma_2 \rangle_{v_k}).$$
+	Ce qui contredit \eqref{eq:ENeq7} et termine notre preuve.
+	\end{itemize}
+	
+\end{demonstration}
+
+Grâce au résultat de la propriété~\ref{prop:question2} nous avons presque répondu à la question~\ref{qst:2}. Pour un outcome donné il suffirait en effet de vérifier que la propriété est vérifiée. Toutefois, l'outcome associé à un profil de stratégies est infini, il faut donc trouver un moyen de le représenter afin qu'un algorithme puisse s'appliquer dessus.
+
 \subsection{Question 3}
-Plutôt que de prouver la propriété~\ref{prop:outEN2} pour $|\Pi|= 2$,nous allons montrer qu'en fait nous pouvons la généralise pour $|\Pi| \geq 2 .$ Pour ce faire, nous avons besoin d'introduire quelques notions préliminaires.
+Plutôt que de prouver la propriété~\ref{prop:outEN2} pour $|\Pi|= 2$, nous allons montrer qu'en fait nous pouvons la généralise pour $|\Pi| \geq 2 .$ Pour ce faire, nous avons besoin d'introduire quelques notions préliminaires.
 
 
 \begin{defi}
