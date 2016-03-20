@@ -134,7 +134,7 @@ Afin de pouvoir répondre à cette question nous allons commencer par énoncer e
 			g(\langle \sigma_1^*, \sigma_2 \rangle _{v_k}) < g (\langle \sigma_1, \sigma_2 \rangle_{v_k}) \label{eq:ENeq3}
 		\end{align}
 		Comme le joueur Min cherche à minimiser son gain, la relation \eqref{eq:ENeq3} signifie que le joueur Min a une déviation profitable  à partir de $v_k$.\\
-		Ceci nous permet de conclure que $(\sigma_1,\sigma_2)$ n'est pas un équilibre de Nash.
+		Ceci nous permet de conclure que $(\sigma_1,\sigma_2)$ n'est pas un équilibre de Nash. Ce qui est la contradiction recherchée. \\
 		
 		\item[($\Uparrow$)]
 		Soit $(\tau_1, \tau_2) \in \Sigma_1 \times \Sigma_2$ un profil de stratégies qui permet d'obtenir l'outcome $\rho$ de paiement $x$.
@@ -205,7 +205,7 @@ $$ \displaystyle \mathcal{G}_{i}= (\mathcal{A}_{i}, g , Goal) \text{ où } \math
 \noindent De plus, pour tout $v\in V$, $Val_i(v)$ est la valeur du jeu $\mathcal{G}_i$ pour tout noeud $v\in V$. 
 \end{defi} 
 
-En d'autres mots, $G_i$ correspond au jeu où le joueur $i$ (joueur Min) joue contre la coalition $\Pi\backslash\{ i \}$ (joueur Max) . Cela signifie que le joueur $i$ tente d'atteindre son objectif le plus rapidement possible tandis que tous les autres joueurs veulent l'en empêcher (ou tout du moins maximiser son gain). Nous avons vu précédemment qu'un tel jeu est déterminé et que les deux joueurs possèdent une stratégie optimale ($\sigma^*_i$ et $\sigma^*_{-i}$) telles que:
+En d'autres mots, $G_i$ correspond au jeu où le joueur $i$ (joueur Min) joue contre la coalition $\Pi\backslash\{ i \}$ (joueur Max). Cela signifie que le joueur $i$ tente d'atteindre son objectif le plus rapidement possible tandis que tous les autres joueurs veulent l'en empêcher (ou tout du moins maximiser son gain). Nous avons vu précédemment qu'un tel jeu est déterminé et que les deux joueurs possèdent une stratégie optimale ($\sigma^*_i$ et $\sigma^*_{-i}$) telles que:
 $$ \inf_{\sigma _{i\in \Sigma _{Min}}} \varphi_i(\langle \sigma_i,\sigma^*_{-i}\rangle_v)= Val_i(v) = \sup _{\sigma_{-i}\in \Sigma_{Max}} \varphi_i(\langle \sigma^*_i, \sigma_{-i}\rangle_v).$$ De plus, de la stratégie optimale $\sigma^*_{-i}$ nous pouvons dériver une stratégie pour tout joueur $j \neq i$ que nous notons $\sigma_{j,i}$.\\
 
 Ces considérations étant clairement établies, nous pouvons maintenant énoncer et prouver le résultat~\ref{prop:outEN3} qui nous intéresse.
@@ -279,10 +279,10 @@ Ces considérations étant clairement établies, nous pouvons maintenant énonce
 			\rho = h. \langle (\sigma_i)_{i\in\Pi} \rangle_v \text{ et } \tilde{\rho} =  h.\langle \tilde{\sigma_j}, (\sigma)_{i\in\Pi\backslash \{ j \}} \rangle_v
 		\end{equation*}
 		 S'il en existe plusieurs nous en choisissons une de longueur maximale.
-		Au vu de la définition de $\sigma_i$ , nous pouvons réécrire:
+		Au vu de la définition de $\sigma_i$, nous pouvons réécrire:
 		
 		\begin{equation*}
-			\rho = h. \langle (\tau_i)_{i\in\Pi} \rangle_v \text{ et } \tilde{\rho} = h.\langle \tilde{\sigma_j}, (\sigma^*_{i,j})_{i\in\Pi \backslash\{ j \}}
+			\rho = h. \langle (\tau_i)_{i\in\Pi} \rangle_v \text{ et } \tilde{\rho} = h.\langle \tilde{\sigma_j}, (\sigma^*_{i,j})_{i\in\Pi \backslash\{ j \} }\rangle_v
 		\end{equation*}
 		En effet, le joueur $j$ dévie en $v$, donc à partir de $v$ tout joueur $i \neq j$ joue sa stratégie de punition. De plus, nous avons les relations suivantes : 
 		\begin{align}
