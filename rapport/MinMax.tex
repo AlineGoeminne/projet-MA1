@@ -79,8 +79,8 @@ Le but de \textit{Min} (resp. \textit{Max}) est donc de \textbf{minimiser} (resp
 \begin{defi}[Stratégie $\varepsilon$-optimale]
 	Soit $\epsilon > 0$,
 	\begin{enumerate}
-	\item[$\bullet$] $\sigma _{1} \in \Sigma _{Max}$ est une \textit{stratégie $\varepsilon$-optimale} ssi $\forall v \in V $ $ \forall \sigma _{2}\in \Sigma_{Min}$ $ Gain_{Max}(\rho) \geq \underline{Val}(v) - \varepsilon  $\\ où $\rho = \langle \sigma _{1},\sigma _{2} \rangle_v$.
-	\item[$\bullet$] $\sigma _{2} \in \Sigma _{Min}$ est une \textit{stratégie $\varepsilon$-optimale} ssi $\forall v \in V $ $ \forall \sigma _{1}\in \Sigma_{Max}$ $Cost_{Min}(\rho) \leq \overline{Val}(v) + \varepsilon $\\ où $\rho = \langle \sigma _{1},\sigma _{2} \rangle_v$.
+	\item[$\bullet$] $\sigma _{2} \in \Sigma _{Max}$ est une \textit{stratégie $\varepsilon$-optimale} ssi $\forall v \in V $ $ \forall \sigma _{1}\in \Sigma_{Min}$ $ Gain_{Max}(\rho) \geq \underline{Val}(v) - \varepsilon  $\\ où $\rho = \langle \sigma _{1},\sigma _{2} \rangle_v$.
+	\item[$\bullet$] $\sigma _{1} \in \Sigma _{Min}$ est une \textit{stratégie $\varepsilon$-optimale} ssi $\forall v \in V $ $ \forall \sigma _{2}\in \Sigma_{Max}$ $Cost_{Min}(\rho) \leq \overline{Val}(v) + \varepsilon $\\ où $\rho = \langle \sigma _{1},\sigma _{2} \rangle_v$.
 	\item[$\bullet$] Si $\varepsilon = 0$, on dit que la stratégie $\sigma _{i}$ est \textit{optimale}
 	\end{enumerate}
 \end{defi}
@@ -107,7 +107,7 @@ Dans~\cite{DBLP:conf/lfcs/BrihayePS13} le théorème suivant est énoncé:
 
 \begin{thm}
 	\label{thm:1}
-	Les \og\textit{reachability-price games}\fg  sont déterminés et ont des stratégies optimales sans mémoire.
+	Les \og\textit{reachability-price games}\fg~ tels que la fonction de poids associée au graphe est positive sont déterminés et ont des stratégies optimales sans mémoire.
 \end{thm}
 
 
@@ -170,7 +170,7 @@ Comme pour l'algorithme de Dijkstra, pour une meilleure complexité les files de
 		
 		\STATE $T \leftarrow \emptyset$
 		\WHILE {$Q \neq \emptyset$}
-			\STATE $s \leftarrow Q.\textsc{Lire-Min()}$
+			\STATE $s \leftarrow Q.\textsc{Lire-Min()}$ \label{lalgo:dijk1}
 			\STATE $(val,succ) \leftarrow s.S.$\textsc{Lire-Min}$()$
 			\IF{$val = +\infty$}
 				\WHILE{$Q \neq \emptyset$}
@@ -367,8 +367,142 @@ On remarque que l'algorithme \textsc{DijkstraMinMax}  est un algorithme à effet
 %EXEMPLE: application de l'algorithme DijkstraMinMax sur un exemple 
 
 \input{dijkMinMaxEx}
+%PREUVE de l'EXACTITUDE de l'algorithme de DijkastraMinMax
+\noindent\textbf{Preuve d'exactitude}\\
+
+Notre but maintenant est de montrer que l'algorithme \verb|DijkstraMinMax| est exact. C'est-à-dire que nous voulons montrer qu'à la fin de l'exécution de cet algorithme, nous connaissant $Val(v)$ pour tout $v\in V$ ainsi qu'une stratégie optimale pour le joueur Min et pour le joueur Max.
+Pour ce faire, nous nous inspirons de la preuve effectuée par Simon Olbregts dans le cadre de son projet de 1\up{er} Master en sciences informatiques~\cite{simon}. 
+Pour plus de clarté et de concision nous avons besoin d'introduire quelques notations:\\
+
+\begin{itemize}
+	\item[$\bullet$] Soient $x$ et $y$ des noeuds du graphe, $x \leadsto y$ représente un chemin $x$ à $y$ qui suit des stratégies optimales pour le joueur Min et le joueur Max (\emph{i.e.,}il s'agit d'un \emph{chemin optimal})
+	\item[$\bullet$] $T_{i}$ est l'ensemble des noeuds traités après la i\up{ème} itération. Un noeud est considéré comme traité quand il est enlevé de $Q$.
+	\item[$\bullet$] $E_i$ est les arêtes du graphe $G$ duquel on a enlevé tous les arcs sortant d'un noeud Max et qu'on ne choisissait pas d'emprunter car il existait un meilleur choix et ce après la i\up{ème} itération. Un tel arc est appelé un \emph{arc bloqué}.
+	\item[$\bullet$] $\rho_i(v) := \min _{v' \in T_i}\{ w(v,v') + Val(v') \} $ où $(v,v')$ est un arc de $G_i$.
+\end{itemize}
+
+$\text{}$\\
+\noindent Nous allons donc montrer que les invariants suivant sont exacts: 
+
+\begin{enumerate}
+	\item $\forall v \in T_i$ on connait la valeur $Val(v)$ et la stratégie à adopter en $v$.
+	\item $\forall v \in V \backslash \{ T_i \},$ on connait $\rho_i(v)$.
+\end{enumerate}
+	
+\noindent \underline{\textsc{A. Avant la première itération}}\\
+
+Nous avons : $T_i = \emptyset$ et $E_i = E$ à l'initialisation de l'algorithme. Donc pour tout $v \in V$, nous connaissons $\rho_i(v)$. En effet, si $v$ est un état objectif ($v \in Goal$) alors $\rho_i(v) = 0$ sinon, $\rho_i(v) = + \infty$.\\
+
+\noindent \underline{\textsc{B. En cours d'exécution}}\\
+\todo{ attention dans l'explication de l'algo j'ai mis R + un poids nul est donc envisageable. Vérifier si j'ai vraiment besoin que les noeuds objectifs soient tous traités en premier.}
+
+Commençons par constater qu'au vu de l'algorithme, les premières itérations de celui-ci traitent les noeuds objectifs. En effet, vu que les fonctions de poids qui nous intéressent sont de la forme $w: E \rightarrow \mathbb{N}_{0}$ lors de l'initialisation de l'algorithme les seuls noeuds placés dans $Q$ avec un poids différent de $ + \infty$ sont ceux des noeuds objectifs qui ont un poids de 0. Comme la fonction de poids est une fonction strictement positive lors des relaxations des prédécesseurs des noeuds objectifs, les valeurs présentent dans $Q$ seront toutes strictement plus grande que 0 (sauf pour les noeuds objectifs restant). Cet argumentation nous permet donc d'affirmer que pendant les $|Goal|$ première itération, tous les noeuds objectifs sont traités. De ce fait, nous sommes assurés que la valeur des noeuds objectifs est bien 0 et le restera tout au long de l'algorithme.
+
+Au préalable, afin de prouver que le premier invariant est correct, nous allons établir la véracité de deux propriétés dont voici les énoncés ainsi que leur preuve.
+\setcounter{equation}{0}
+
+\begin{propriete}
+	\label{prop:dijk1}
+	Soit $i$ une certaine étape de l'algorithme et $v \in V\backslash \{ T_i \}$ tel que $v$ se trouve sur un chemin optimal et que le successeur de $v$ sur ce chemin, notons-le $u$, ai déjà été traité (\emph{i.e.,} $u \in T_i$) alors:
+	$$ v \in V_{Min} \Rightarrow \rho_i(v) = Val(v).$$
+\end{propriete}
+
+\begin{demonstration}
+$\text{}$\\
+	Comme nous avons pris $v$ et $u$ sur un chemin optimal cela signifie qu'il existe $(\sigma_1^*, \sigma_2^*) \in \Sigma_{Min} \times \Sigma_{Max}$ des stratégies optimales telles que pour un certain $t \in V$ on ait : $\langle \sigma_1^*, \sigma_2^* \rangle_t = t\ldots vu\ldots$ .
+Nous voulons montrer que si on connait $Val(u)$ alors on a : $Val(v) = \rho_i(v)$.
+On sait, vu que $\sigma_1^*$ $ \sigma_2^*$ sont des stratégies optimales, que:
+
+\begin{align*}
+Val(v) &= g(\langle \sigma_1^*,\sigma_2^* \rangle_v) \notag \\
+ 	   &= w(v,u) + g(\langle \sigma_1^*,\sigma_2^* \rangle_u) \notag \\
+       &= w(v,u) + Val(u) 
+\end{align*}
+
+Nous voulons donc établir que:
+
+$$ w(v,u) + Val(u) = \min_{v' \in T_i, (v,v') \in E_i} \{ w(v,v') + Val(v') \} = \min_{v' \in T_i, (v,v') \in E} \{ w(v,v') + Val(v') \}$$
+
+La deuxième égalité est due au fait qu'on ne bloque pas d'arc issu d'un noeud du joueur Min et que $v\in V_{Min}$.
+De plus, comme le noeud $u$ a déjà été entièrement traité, on connait $Val(u)$ et il a été relaxé. De ce fait, la valeur $w(v,u) + Val(u)$ se trouve dans $v.S$ et calculer $\min_{v' \in T_i, (v,v') \in E} \{ w(v,v') + Val(v') \}$ revient à prendre le minimum du tas $v.S$.
+
+Par l'absurde, supposons que $ w(v,u) + Val(u)$ ne soit pas le minimum des valeurs stockées dans le tas. De ce fait nous avons :
+
+\begin{align} \exists t \in T_i \text{ tq } w(v,t) + Val(t) < w(v,u) + Val(u) \label{eq:dijk1} \end{align}
+
+Mais cette inégalité signifierait qu'au noeud $v$ le joueur Min ferait mieux d'emprunter l'arc $(v,t)$ plutôt que l'arc $(v,u)$ ce qui contredit le fait que $\sigma_1^*$ est une stratégie optimale vu qu'elle possède une déviation profitable. Cela amène donc bien la contradiction attendue et prouve notre résultat.
+
+Remarquons toutefois qu'il se pourrait qu'au lieu de~\eqref{eq:dijk1} on est : 
+
+$$ \exists t \in T_i \text{ tq } w(v,t) + Val(t) = w(v,u) + Val(u) $$
+
+Mais dans ce cas nous aurions que $\rho_i(v)= w(v,t) + Val(t) = w(v,u) + Val(u) = Val(v)$. 
+
+\end{demonstration}
+
+\begin{propriete}
+	\label{prop:dijk2}
+	Soit $i$ une certaine étape de l'algorithme et $v \in V\backslash \{ T_i \}$ tel que $v$ se trouve sur un chemin optimal et que le successeur de $v$ sur ce chemin, notons-le $u$, ai déjà été traité (\emph{i.e.,} $u \in T_i$) alors:
+	$$ v \in V_{Max} \Rightarrow \rho_i(v) \leq Val(v).$$
+\end{propriete}
+
+\begin{demonstration} 
+	$\text{}$\\
+	Comme nous avons pris $v$ et $u$ sur un chemin optimal cela signifie qu'il existe $(\sigma_1^*, \sigma_2^*) \in \Sigma_{Min} \times \Sigma_{Max}$ des stratégies optimales telles que pour un certain $t \in V$ on ait : $\langle \sigma_1^*, \sigma_2^* \rangle_t = t\ldots vu\ldots$ .
+Nous voulons montrer que si on connait $Val(u)$ alors on a : $Val(v) \geq \rho_i(v)$.
+
+Supposons au contraire que $ rho_i(v) > Val(v)$. Nous avons alors : 
+\begin{equation} \forall t \in T_i \text{ tq } (v,t)\in E_i \,\, w(v,t) + Val(t) > g(\langle \sigma_1^*, \sigma_2^*\rangle_v). \label{eq:dijk2}\end{equation}
+
+De cette relation nous pouvons conclure. En effet, cela signifie que depuis le noeud $v$ le joueur Max possède une déviation profitable qui est d'emprunter un des arcs $(v,t)$ de~\eqref{eq:dijk2}. Ceci contredit le fait que $\sigma_2^*$ est une stratégie optimale.
+	
+\end{demonstration}
+
+Maintenant que ces propriétés sont établies, reprenons la preuve d'exactitude de l'algorithme. Supposons que les invariants sont vérifiés jusqu'à l'étape $i$ et montrons qu'ils le sont toujours pour l'étape $i+1$.
+Commençons par le montrer pour le premier invariant.
+
+Soit $u \in T_i$ le noeud lu dans $Q$ (ligne~\ref{lalgo:dijk1} de l'algorithme \verb|DikjstraMinMax|). Comme il s'agit d'un minimum nous avons : $\forall v \in V\backslash \{ T_i \},\, \rho_i(u) \leq \rho_i(v)$. Plusieurs cas sont alors possibles.
+
+\begin{enumerate}
+	\item \underline{$\rho_i(u) = +\infty$}: Dans ce cas pour tous les noeuds $v \in V\backslash \{ T_i \}$ (\emph{i.e.,} ceux restant dans $Q$) $\rho_i(v) = + \infty$ car $\rho_i(u) = \min _{v \in V\backslash \{ T_i \}} \{\rho_i(v)\}$. S'il s'agit d'un noeud du joueur Max cela signifie qu'il peut choisir un arc tel qu'après cet arc il est assuré que le joueur Min ne pourra pas atteindre un de ses objectifs. S'il s'agit d'un noeud du joueur Min cela signifie qu'à partir de ce noeud il ne pourra jamais atteindre un de ses états objectifs. La stratégie optimale consiste donc à choisir un arc au hasard dans ceux restant $E_i$.
+	\item\underline{$\rho_i(u) < +\infty$ et $u \in Goal$}: Comme il s'agit d'un noeud objectif, on doit avoir que $Val(u) = 0$ ce qui est bien le cas car lors de l'initialisation de l'algorithme la valeur associée à chaque état objectif est 0 et elle ne peut pas être modifiée.
+	\item\underline{$\rho_i(u) < +\infty$ et $u \in V_{Min}$}: Nous devons vérifier que nous pouvons calculer $Val(u)$ et donc que l'on peut rajouter $u$ aux éléments traités. Nous devons donc nous assurer que $Val(u) = \rho_i(u)$.
+	Supposons au contraire que $Val(u) \neq \rho_i(u)$. Nous savons qu'il existe $(\sigma_1^*,\sigma_2^*) \in \Sigma_1 \times \Sigma_2 $ des stratégies optimales. Dès lors on a : $Val(u) = g(\langle \sigma_1^*, \sigma_2^* \rangle_u)$. Soit $\sigma_1$ la stratégie du joueur Min définie de la manière suivante : $$  \sigma(v) = \begin{cases}
+											\displaystyle	\argmin_{v'\in T_i,(v,v')\in E_i} w(v,v') + Val(v') & \text{ si } v = u\\
+												\sigma_1^*(v) &\text{ sinon} \end{cases}$$
+Dès lors, nous avons : 
+
+$$ Val(u) = \inf_{\tau_1 \in \Sigma_{Min}} g(\langle \tau_1 , \sigma_2^* \rangle_u) \leq g(\langle \sigma_1, \sigma_2^* \rangle_u) = \rho_i(u) $$
+
+Mais comme nous avons supposé que $Val(u) \neq \rho_i(u)$, il en découle : 
+
+\begin{equation} g(\langle \sigma_1^*, \sigma_2^* \rangle_u) < \rho_i(u).\label{eq:dijk3}\end{equation}
+
+De plus, nous pouvons écrire: $\langle \sigma_1^*, \sigma_2^* \rangle_u = u \ldots xy \ldots$ où $x \in V\backslash \{ T_i \}$ et $y \in T_i$.
+
+L'équation~\eqref{eq:dijk3} peut alors se réécrire: 
+
+$$ g( u \leadsto x) + g(\langle \sigma_1^*, \sigma_2^* \rangle_x) < \rho_i(u).$$
+
+Comme les poids sont positifs, l'inégalité suivante est également vérifiée:
+
+\begin{equation}
+	g(\langle \sigma_1^*, \sigma_2^* \rangle_x) < \rho_i(u). \label{eq:dijk4}
+\end{equation}
+
+Une étude de l'équation~\eqref{eq:dijk4} nous permet d'exhiber la contradiction souhaitée.
+
+\begin{enumerate}
+	\item \textbf{Si }$\mathbf{x \in V_{Min}}$: Par la propriété~\ref{prop:dijk1}, $\rho_i(x) = Val(x) = g(\langle \sigma_1^*, \sigma_2^* \rangle_x) < \rho_i(u)$. Or, on a choisi $u$ de telle manière que $\rho_i(u)$ soit minimal. 
+	\item \textbf{Si }$\mathbf{x \in V_{Min}}$:	 Par la propriété~\ref{prop:dijk2}, $\rho_i(x) \leq Val(x) = g(\langle \sigma_1^*, \sigma_2^* \rangle_x) < \rho_i(u) $. Ce qui contredit également le choix de $u$.
+	\item \textbf{Si }$\mathbf{x \neq u}$\textbf{ n'existe pas }: Par la propriété~\ref{prop:dijk1}, $\rho_i(u) = Val(u)$. Ce qu'on avait supposé faux.
+\end{enumerate}
+
+\item\underline{$\rho_i(u) < +\infty$ et $u \in V_{Min}$}: TODO
+\end{enumerate}
 
 
+	
 
 
  
