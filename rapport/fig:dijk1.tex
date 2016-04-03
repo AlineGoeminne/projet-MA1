@@ -1,0 +1,28 @@
+%!TEX root=main.tex
+
+
+\begin{figure}
+	\centering
+	\begin{tikzpicture}
+	\node[nRG] (v1) at (4,0){$o_1$};
+	\node[nR] (v2) at (2,0){$v$};
+	\node[nCG] (v3) at (0,0){$o_2$};
+	\node[nR] (v4) at (0,-2){$s$};
+
+
+	\draw[->,>=latex] (v2) to  node[midway,above]{$0$} (v1);
+	\draw[->,>=latex] (v3) to  node[midway,above]{$1$} (v2);
+	\draw[->,>=latex] (v3) to node[midway,left]{$1$} (v4);
+	\draw[->,>=latex] (v4) to node[midway,above]{$2$} (v1);
+	\draw[->,>=latex] (v1) to [loop right] node[midway,right]{$1$} (v1);
+	
+	
+
+
+	\end{tikzpicture}
+
+	\caption{Problème dans l'algorithme \textsc{DijkMinMax} si les coûts nuls sont acceptés.}
+	\label{fig:dijk1}
+
+
+\end{figure}
