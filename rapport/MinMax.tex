@@ -184,7 +184,7 @@ Comme pour l'algorithme de Dijkstra, pour une meilleure complexité les files de
 					\STATE $s \leftarrow Q.$\textsc{Extraire-Min}$()$
 					\STATE $T.$\textsc{Insérer}$(s)$
 					\FORALL{$p \in Pred(s)$}
-						\STATE \textsc{Relaxer}$(p,s,w)$
+						\STATE \textsc{Relaxer}$(p,s,w)$ \label{lalgo:dijk2}
 					\ENDFOR
 				
 				
@@ -281,7 +281,7 @@ Comme pour l'algorithme de Dijkstra, pour une meilleure complexité les files de
 		\IF {$s.nbrSucc = 1$}
 			\STATE $T.$\textsc{Insérer}(s)
 			\FORALL{( $p \in Pred(s)$)}
-				\STATE \textsc{Relaxer}$(p,s,w)$
+				\STATE \textsc{Relaxer}$(p,s,w)$ \label{lalgo:dijk3}
 			\ENDFOR
 			
 		\ELSE
@@ -368,9 +368,9 @@ On remarque que l'algorithme \textsc{DijkstraMinMax}  est un algorithme à effet
 
 \input{dijkMinMaxEx}
 %PREUVE de l'EXACTITUDE de l'algorithme de DijkastraMinMax
-\noindent\textbf{Preuve d'exactitude}\\
+\noindent\textbf{Exactitude de l'algorithme \textsc{DijkstraMinMax}}\\
 
-Notre but maintenant est de montrer que l'algorithme \verb|DijkstraMinMax| est exact. C'est-à-dire que nous voulons montrer qu'à la fin de l'exécution de cet algorithme, nous connaissant $Val(v)$ pour tout $v\in V$ ainsi qu'une stratégie optimale pour le joueur Min et pour le joueur Max.
+Notre but maintenant est de montrer que l'algorithme \textsc{DijkstraMinMax} est exact. C'est-à-dire que nous voulons montrer qu'à la fin de l'exécution de cet algorithme, nous connaissant $Val(v)$ pour tout $v\in V$ ainsi qu'une stratégie optimale pour le joueur Min et pour le joueur Max.
 Pour ce faire, nous nous inspirons de la preuve effectuée par Simon Olbregts dans le cadre de son projet de 1\up{er} Master en sciences informatiques~\cite{simon}. 
 Pour plus de clarté et de concision nous avons besoin d'introduire quelques notations:\\
 
@@ -394,11 +394,18 @@ $\text{}$\\
 Nous avons : $T_i = \emptyset$ et $E_i = E$ à l'initialisation de l'algorithme. Donc pour tout $v \in V$, nous connaissons $\rho_i(v)$. En effet, si $v$ est un état objectif ($v \in Goal$) alors $\rho_i(v) = 0$ sinon, $\rho_i(v) = + \infty$.\\
 
 \noindent \underline{\textsc{B. En cours d'exécution}}\\
-\todo{ attention dans l'explication de l'algo j'ai mis R + un poids nul est donc envisageable. Vérifier si j'ai vraiment besoin que les noeuds objectifs soient tous traités en premier.}
+\todo{ attention dans l'explication de l'algo j'ai mis $\mathbb{R}^{+}$ un poids nul est donc envisageable.}
 
-Commençons par constater qu'au vu de l'algorithme, les premières itérations de celui-ci traitent les noeuds objectifs. En effet, vu que les fonctions de poids qui nous intéressent sont de la forme $w: E \rightarrow \mathbb{N}_{0}$ lors de l'initialisation de l'algorithme les seuls noeuds placés dans $Q$ avec un poids différent de $ + \infty$ sont ceux des noeuds objectifs qui ont un poids de 0. Comme la fonction de poids est une fonction strictement positive lors des relaxations des prédécesseurs des noeuds objectifs, les valeurs présentent dans $Q$ seront toutes strictement plus grande que 0 (sauf pour les noeuds objectifs restant). Cet argumentation nous permet donc d'affirmer que pendant les $|Goal|$ première itération, tous les noeuds objectifs sont traités. De ce fait, nous sommes assurés que la valeur des noeuds objectifs est bien 0 et le restera tout au long de l'algorithme.
+Commençons par constater que si on considère une fonction de poids de la forme $w: E \rightarrow \mathbb{N}_{0}$ alors, au vu de l'algorithme, les premières itérations de celui-ci traitent les noeuds objectifs. Lors de l'initialisation de l'algorithme les seuls noeuds placés dans $Q$ avec un poids différent de $ + \infty$ sont ceux des noeuds objectifs qui ont un poids de 0. Comme la fonction de poids est une fonction strictement positive lors des relaxations des prédécesseurs des noeuds objectifs, les valeurs présentent dans $Q$ seront toutes strictement plus grande que 0 (sauf pour les noeuds objectifs restant). Cette argumentation nous permet donc d'affirmer que pendant les $|Goal|$ premières itérations, tous les noeuds objectifs sont traités. De ce fait, nous sommes assurés que la valeur des noeuds objectifs est bien 0 et le restera tout au long de l'algorithme.
+
+Si toutefois nous permettons les poids nuls, au vu de l'algorithme comme il est décrit actuellement nous pourrions nous retrouver face au problème suivant: si deux noeuds objectifs se trouvent sur un même chemin du type $ \ldots o_1vo_2 \ldots$ où $o_1$ et $o_2$ sont des noeuds objectifs,$v$ un noeud du joueur $Min$, $o_1$ un noeud du joueur Max et tels que $w(v,o_2) = 0$ et $w(o_1,v) = 1$ (cette situation est représentée par la figure~\ref{fig:dijk1}). Il se pourrait alors que la valeur du noeud $o_1$ soit modifiée alors qu'elle doit rester à 0. En effet, l'algorithme peut commencer à traiter le noeud $o_2$, le relaxer et donc faire passer la valeur $v.d$ à 0. Dès lors à l'itération suivante le noeud $v$ peut être choisi par l'algorithme et donc être relaxé. De ce fait la valeur 1 est placée dans le tas $o_1.S$ et comme le noeud $o_1$ du joueur Max possède plusieurs successeurs la valeur 0 du tas sera supprimée au profit de la valeur 1. Ce comportement n'est pas le comportement que nous attendons pour l'algorithme car pour tout noeud objectif $o$, $Val(o) = 0$.
+Ce problème peut être évité si lors de la relaxation d'un noeud on vérifie que le prédécesseur n'est pas un noeud objectif.
+\todo{Vérifier que cette solution règle bien le problème et n'en amène pas d'autres.}
+
+\include{fig:dijk1}
 
 Au préalable, afin de prouver que le premier invariant est correct, nous allons établir la véracité de deux propriétés dont voici les énoncés ainsi que leur preuve.
+
 \setcounter{equation}{0}
 
 \begin{propriete}
@@ -461,7 +468,7 @@ De cette relation nous pouvons conclure. En effet, cela signifie que depuis le n
 Maintenant que ces propriétés sont établies, reprenons la preuve d'exactitude de l'algorithme. Supposons que les invariants sont vérifiés jusqu'à l'étape $i$ et montrons qu'ils le sont toujours pour l'étape $i+1$.
 Commençons par le montrer pour le premier invariant.
 
-Soit $u \in T_i$ le noeud lu dans $Q$ (ligne~\ref{lalgo:dijk1} de l'algorithme \verb|DikjstraMinMax|). Comme il s'agit d'un minimum nous avons : $\forall v \in V\backslash \{ T_i \},\, \rho_i(u) \leq \rho_i(v)$. Plusieurs cas sont alors possibles.
+Soit $u \in T_i$ le noeud lu dans $Q$ (ligne~\ref{lalgo:dijk1} de l'algorithme \verb|DikjstraMinMax|). Comme il s'agit d'un minimum nous avons : $\forall v \in V\backslash \{ T_i \},\, \rho_i(u) \leq \rho_i(v)$. Plusieurs cas sont alors possibles. Pour plus de clarté, séparons ces cas en différents lemmes.
 
 \begin{enumerate}
 	\item \underline{$\rho_i(u) = +\infty$}: Dans ce cas pour tous les noeuds $v \in V\backslash \{ T_i \}$ (\emph{i.e.,} ceux restant dans $Q$) $\rho_i(v) = + \infty$ car $\rho_i(u) = \min _{v \in V\backslash \{ T_i \}} \{\rho_i(v)\}$. S'il s'agit d'un noeud du joueur Max cela signifie qu'il peut choisir un arc tel qu'après cet arc il est assuré que le joueur Min ne pourra pas atteindre un de ses objectifs. S'il s'agit d'un noeud du joueur Min cela signifie qu'à partir de ce noeud il ne pourra jamais atteindre un de ses états objectifs. La stratégie optimale consiste donc à choisir un arc au hasard dans ceux restant $E_i$.
@@ -494,13 +501,74 @@ Une étude de l'équation~\eqref{eq:dijk4} nous permet d'exhiber la contradictio
 
 \begin{enumerate}
 	\item \textbf{Si }$\mathbf{x \in V_{Min}}$: Par la propriété~\ref{prop:dijk1}, $\rho_i(x) = Val(x) = g(\langle \sigma_1^*, \sigma_2^* \rangle_x) < \rho_i(u)$. Or, on a choisi $u$ de telle manière que $\rho_i(u)$ soit minimal. 
-	\item \textbf{Si }$\mathbf{x \in V_{Min}}$:	 Par la propriété~\ref{prop:dijk2}, $\rho_i(x) \leq Val(x) = g(\langle \sigma_1^*, \sigma_2^* \rangle_x) < \rho_i(u) $. Ce qui contredit également le choix de $u$.
+	\item \textbf{Si }$\mathbf{x \in V_{Max}}$:	 Par la propriété~\ref{prop:dijk2}, $\rho_i(x) \leq Val(x) = g(\langle \sigma_1^*, \sigma_2^* \rangle_x) < \rho_i(u) $. Ce qui contredit également le choix de $u$.
 	\item \textbf{Si }$\mathbf{x \neq u}$\textbf{ n'existe pas }: Par la propriété~\ref{prop:dijk1}, $\rho_i(u) = Val(u)$. Ce qu'on avait supposé faux.
 \end{enumerate}
 
-\item\underline{$\rho_i(u) < +\infty$ et $u \in V_{Min}$}: TODO
+\item\underline{$\rho_i(u) < +\infty$ et $u \in V_{Max}$}: Remarquons que dans ce cas, pour qu'un sommet soit ajouté à l'ensemble des sommets traités, il faut qu'il ne reste plus qu'un arc \og non-bloqué \fg~ sortant du sommet $u$. Les autres arcs ont déjà été traités et n'ont pas été retenu pour la construction d'un chemin optimal. Notons cet arc $(u,u')$. Nous voulons montrer l'égalité suivante:
+
+$$ \rho_i(u) = Val(u) .$$
+
+Or, nous savons: 
+$$ Val(u) = \sup _{\tau_2 \in \Sigma_2 } g( \langle \sigma^*_1, \tau_2 \rangle_u) = \max_{v \in V | (u,v) \in E} \{ w(u,v) + Val(v) \} .$$
+Nous allons donc montrer:
+
+\begin{equation*}
+	\rho_i(u) = \max_{v \in V | (u,v) \in E} \{ w(u,v) + Val(v) \}.
+\end{equation*}
+
+Pour ce faire il nous suffit de montrer que pour tout sommet $v \in V$ l'inégalité suivante est respectée.
+
+\begin{equation}
+	\label{eq:dijk5}
+	w(u,v) + Val(v) \leq \rho_i(u) = w(u,u') + Val(u') 
+\end{equation}
+
+Soit $v \in V$ tel que $v \neq u$ et $(u,v) \in E$, l'arc $(u,v)$ a été \og bloqué \fg~lors d'une certaine itération $j < i $ dans ce cas nous connaissons les trois relations suivantes:
+\begin{equation} \label{eq:dijk6}
+	  \rho_j(u) = w(u,v) + Val(v) 
+	\end{equation}
+\begin{equation*}  \rho_j(u) = \min_{v' \in T_j |(v,v') \in E_j} \{ w(u,v') + Val(v') \} \end{equation*}
+\begin{equation*} \rho_j(u) \leq \rho_i(u) \end{equation*}
+	
+Nous pouvons donc déjà conclure que si $u' \in T_j$ alors l'inégalité~\eqref{eq:dijk5} est vérifiée.
+Intéressons-nous maintenant au cas où $u' \in V \backslash T_j$. Nous savons qu'il existe $(\sigma_1^*, \sigma_2^*) \in \Sigma_1 \times \Sigma_2$ telles que $Val(u') = g( \langle \sigma_1^*, \sigma_2^* \rangle_{u'})$. 
+Soit $x \in \langle \sigma_1^*, \sigma_2^* \rangle_{u'}$ un noeud sur le chemin optimal partant de $u'$ tel que $x \in V\backslash T_j$ et le successeur de $x$ sur ce chemin optimal appartient à $T_j$.
+Alors:
+$$ Val(u') = g( \langle \sigma_1^*, \sigma_2^* \rangle_{u'}) = w(u' \leadsto x) + g( \langle \sigma_1^*, \sigma_2^* \rangle_{x}) $$
+Dès lors comme les poids sur les arcs sont positifs:
+
+\begin{equation*}
+	Val(u') \geq g( \langle \sigma_1^*, \sigma_2^* \rangle_{x})
+\end{equation*}
+
+Plusieurs cas sont alors à traiter:
+
+\begin{enumerate}
+	\item \textbf{Si }$\mathbf{x \in V_{Min}}$: Par la propriété~\ref{prop:dijk1}, nous savons:
+	 \begin{equation}
+		\label{eq:dijk8}\rho_j(x) = Val(x) = g(\langle \sigma_1^*, \sigma_2^* \rangle_x) \leq Val(u') .
+	\end{equation}
+	Nous pouvons dérouler la suite d'inégalités suivante qui nous permet de conclure : 
+	\begin{align*}
+		\rho_i(u) &= w(u,u') + Val(u')\\
+		 		  &\geq Val(u') & \text{le poids des arcs est positif} \\
+				  &\geq \rho_j(x) & \text{par}~\eqref{eq:dijk8} \\
+				  &\geq \rho_j(u) & \text{à l'étape j on traite le noeud } u \text{ donc } \rho_j(u) \text{ minimal.}\\
+				  &= w(u,v) + Val(v) & \text{par}~\eqref{eq:dijk6}						
+	\end{align*}
+	Ce qui prouve bien~\eqref{eq:dijk5}.
+	\item \textbf{Si }$\mathbf{x \in V_{Max}}$:	 Par la propriété~\ref{prop:dijk2}, $\rho_j(x) \leq Val(x) = g(\langle \sigma_1^*, \sigma_2^* \rangle_x) \leq Val(u') $. Nous pouvons conclure par le même raisonnement que dans le cas précédant.
+	\item \textbf{Si }$\mathbf{x \neq u'}$\textbf{ n'existe pas }: Par la propriété~\ref{prop:dijk1}, $\rho_j(u') = Val(u')$ et le raisonnement précédant est toujours valable.
+\end{enumerate}
 \end{enumerate}
 
+Nous avons ainsi terminé la preuve concernant la premier invariant.\\
+
+Pour le second invariant nous pouvons remarquer que pour tout $v \in V$ la valeur de $\rho_i(v)$ est susceptible d'être modifiée uniquement lorsque qu'un noeud est complètement traité et qu'une relaxation a lieu. Ce procédé est aussi bien effectuée pour un noeud du joueur Min (ligne~\ref{lalgo:dijk2} de l'algorithme~\ref{algo:dijkMinMax}) que pour un noeud du joueur Max (ligne~\ref{lalgo:dijk3} de l'algorithme~\ref{algo:traiterMax}).\\
+
+%PREUVE de la complexité
+\noindent\textbf{Complexité de l'algorithme \textsc{DijkstraMinMax}}\\
 
 	
 
