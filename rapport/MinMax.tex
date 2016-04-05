@@ -154,7 +154,7 @@ Soient $\mathcal{A} = (V, (V_{Min}, V_{Max}), E) $ une arène et $\mathcal{G} = 
 \end{enumerate}
 
 L'algorithme en lui même est explicité par l'algorithme ~\ref{algo:dijkMinMax} et les algorithmes \ref{algo:initS},\ref{algo:initQ},\ref{algo:relaxerMinMax},\ref{algo:bloquerMax} sont appelés au sein de l'algorithme ~\ref{algo:dijkMinMax}.
-Comme pour l'algorithme de Dijkstra, pour une meilleure complexité les files de priorité sont supposées implémentées par une structure de données telle que chaque opération \textsc{Extraire-Min}() ainsi que chaque insertion et suppression d'un élément sont en $\mathcal{O}(\log V)$ ainsi que chaque \textsc{DécrémenterClef}($Clef(v),nouvVal$). De plus, \textsc{Lire-Min()} doit être implémenté en $\mathcal{O}(1)$. Ici nous avons choisi d'utiliser des tas. \\ 
+Comme pour l'algorithme de Dijkstra, pour une meilleure complexité les files de priorité sont supposées implémentées par une structure de données telle que chaque opération \textsc{Extraire-Min}() ainsi que chaque insertion et suppression d'un élément sont en $\mathcal{O}(\log_2 V)$ ainsi que chaque \textsc{DécrémenterClef}($Clef(v),nouvVal$). De plus, \textsc{Lire-Min()} doit être implémenté en $\mathcal{O}(1)$. Ici nous avons choisi d'utiliser des tas. \\ 
 
 %ALGO: DijkstraMinMax
 
@@ -169,30 +169,26 @@ Comme pour l'algorithme de Dijkstra, pour une meilleure complexité les files de
 		\STATE $S \leftarrow$\textsc{Initialiser-S}($G,Goal$)
 		
 		\STATE $T \leftarrow \emptyset$
-		\WHILE {$Q \neq \emptyset$}
+		\WHILE {$Q \neq \emptyset$} \label{lalgo:dijk4}
 			\STATE $s \leftarrow Q.\textsc{Lire-Min()}$ \label{lalgo:dijk1}
-			\STATE $(val,succ) \leftarrow s.S.$\textsc{Lire-Min}$()$
-			\IF{$val = +\infty$}
-				\WHILE{$Q \neq \emptyset$}
+			\STATE $(val,succ) \leftarrow s.S.$\textsc{Lire-Min}$()$ \label{lalgo:dijk6}
+			\IF{$val = +\infty$} \label{lalgo:dijk7}
 					\STATE $u \leftarrow Q.$\textsc{Extraire-Min}$()$
-					\STATE $T.$\textsc{Insérer}$(u)$
-				\ENDWHILE
-			
-			
-			\ELSE
-				\IF{($s \in V_{Min} \cup \{ Goal \}$) ou ($s.nbrSucc = 1$)}
+					\STATE $T.$\textsc{Insérer}$(u)$ \label{lalgo:dijk11}
+			\ELSE \label{lalgo:dijk12}
+				\IF{($s \in V_{Min} \cup \{ Goal \}$) ou ($s.nbrSucc = 1$)} \label{lalgo:dijk13}
 					\STATE $s \leftarrow Q.$\textsc{Extraire-Min}$()$
 					\STATE $T.$\textsc{Insérer}$(s)$
 					\FORALL{$p \in Pred(s)$}
 						\STATE \textsc{Relaxer}$(p,s,w)$ \label{lalgo:dijk2}
-					\ENDFOR
+					\ENDFOR \label{lalgo:dijk18}
 				
 				
-				\ELSE
+				\ELSE \label{lalgo:dijk19}
 					\STATE \textsc{Bloquer-Max}$(s)$
-				\ENDIF
-			\ENDIF
-		\ENDWHILE
+				\ENDIF \label{lalgo:dijk21}
+			\ENDIF\label{lalgo:dijk22}
+		\ENDWHILE \label{lalgo:dijk23}
 				
 			
 \end{algorithmic}
@@ -588,13 +584,13 @@ Premièrement, nous rappelons les complexités dans le pire des cas des opérati
 		\hline
 		\textsc{Lire-Min()} & $\mathcal{O}(1)$\\
 		\hline
-		\textsc{Extraire-Min()} & $\mathcal{O}(\log n)$\\
+		\textsc{Extraire-Min()} & $\mathcal{O}(\log_2 n)$\\
 		\hline
-		\textsc{Insérer}(item) & $\mathcal{O}(\log n)$\\
+		\textsc{Insérer}(item) & $\mathcal{O}(\log_2 n)$\\
 		\hline
-		\textsc{Augmenter-Clef}($clef,valeur$) & $\mathcal{O}(\log n)$\\
+		\textsc{Augmenter-Clef}($clef,valeur$) & $\mathcal{O}(\log_2 n)$\\
 		\hline
-		\textsc{Décrémenter-Clef}($clef,valeur$) & $\mathcal{O}(\log n)$\\
+		\textsc{Décrémenter-Clef}($clef,valeur$) & $\mathcal{O}(\log_2 n)$\\
 		\hline
 		
 	\end{tabular}
@@ -607,12 +603,24 @@ Deuxièmement, avant de nous intéresser à la complexité de l'algorithme princ
 	
 	\item \textsc{Initialiser-Q}($G,Goal)$ : On  commence par instancier un tas $Q$ en $\mathcal{O}(1)$. Ensuite, on rajoute une valeur pour chacun dans noeud dans $Q$. Rappelons que la complexité de de l'insertion dans un tas est $\mathcal{O}$(hauteur du tas), dans ce cas, comme les valeurs sont rajoutées une à une, la complexité est en $\mathcal{O}(n)$.
 	
-	\item \textsc{Relaxer}$(p, s, w)$ : Les instructions~\refrangeconj{lalgo:relaxer1}{lalgo:relaxer4} sont effectuées en $\mathcal{O}(1)$ tandis que celles~\refrangeconj{lalgo:relaxer5}{lalgo:relaxer10} sont en $\mathcal{O}(\log n)$ à cause de l'instruction \textsc{Décrémenter-Clef}. Enfin, les instructions~\refrangeconj{lalgo:relaxer11}{lalgo:relaxer12} ont une complexité en $\mathcal{O}(\log n)$. Dès lors, la complexité de cet algorithme secondaire est en $\mathcal{O}(\log n)$.
+	\item \textsc{Relaxer}$(p, s, w)$ : Les instructions~\refrangeconj{lalgo:relaxer1}{lalgo:relaxer4} sont effectuées en $\mathcal{O}(1)$ tandis que celles~\refrangeconj{lalgo:relaxer5}{lalgo:relaxer10} sont en $\mathcal{O}(\log_2 n)$ à cause de l'instruction \textsc{Décrémenter-Clef}. Enfin, les instructions~\refrangeconj{lalgo:relaxer11}{lalgo:relaxer12} ont une complexité en $\mathcal{O}(\log_2 n)$. Dès lors, la complexité de cet algorithme secondaire est en $\mathcal{O}(\log_2 n)$.
 	
-	 \item \textsc {Bloquer-Max}$(s)$: Les instructions~\ref{lalgo:bloc1} et~\ref{lalgo:bloc2} sont en $\mathcal{O}(\log n)$ tandis que les autres sont en $\mathcal{O}(1)$. Dès lors la complexité de cet algorithme est en $\mathcal{O}(\log n)$
+	 \item \textsc {Bloquer-Max}$(s)$: Les instructions~\ref{lalgo:bloc1} et~\ref{lalgo:bloc2} sont en $\mathcal{O}(\log_2 n)$ tandis que les autres sont en $\mathcal{O}(1)$. Dès lors la complexité de cet algorithme est en $\mathcal{O}(\log_2 n)$.
 	
 	
 \end{enumerate}
+
+Nous pouvons maintenant clôturer l'analyse de l'algorithme \textsc{DijkstraMinMax} en démontrant que sa complexité est en $\mathcal{O}((m+n)\log_2 n)$. Pour se faire une analyse minutieuse des instructions~\refrangeconj{lalgo:dijk4}{lalgo:dijk23} est nécessaire. En effet, plutôt que de calculer la complexité du corps de la boucle \og tant que\fg~et ensuite le nombre de fois où l'on rentre dans cette boucle, nous préférons une analyse globale. Nous nous intéressons donc, pour chaque instruction, au nombre de fois où celle-ci est exécutée dans le pire cas et ce sur l'entièreté de l'exécution de l'algorithme.
+
+\begin{itemize}
+	\item[$\bullet$] Pour les lignes~\ref{lalgo:dijk1} et~\ref{lalgo:dijk6} sont exécutées dans le pire cas $n$ fois. Donc, la complexité globale de ces deux lignes est en $\mathcal{O}(n)$.
+	\item[$\bullet$] Pour la condition \og si \fg~\refrangeconj{lalgo:dijk7}{lalgo:dijk11}, la complexité globale est également en   	 $\mathcal{O}(n \log_2 n)$.
+	
+	\item[$\bullet$] Pour la condition \og sinon \fg~\refrangeconj{lalgo:dijk12}{lalgo:dijk22}, il est important de remarquer qu'un arc ne peut être relaxé qu'une seule fois. De ce fait, la complexité globale de l'instruction \textsc{Relaxer}$(p,s,w)$~\ref{lalgo:dijk2} est en $\mathcal{O}(m \log_2 n)$. Nous pouvons ainsi affirmer que le bloc d'instructions~\refrangeconj{lalgo:dijk13}{lalgo:dijk18} est en $\mathcal{O}((m+n) \log_2 n)$ tandis que celui~\refrangeconj{lalgo:dijk19}{lalgo:dijk21} est en $\mathcal{O}((m+n) \log_2 n)$. Ce qui nous fait une complexité globale pour toute la condition en $\mathcal{O}((m+n) \log_2 n)$
+	
+\end{itemize}
+
+Comme les initialisations des tas sont en $\mathcal{O}(n)$, nous pouvons enfin conclure que l'algorithme \textsc{DijkstraMinMax} a une complexité en $\mathcal{O}((m+n) \log_2 n)$.
 	
 
 
