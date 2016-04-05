@@ -263,20 +263,20 @@ Comme pour l'algorithme de Dijkstra, pour une meilleure complexité les files de
 		\ENSURE / \textbf{\textsc{Effet(s) de bord :}} Ajoute à p.S une valeur pour $p$ et son successeur dans le cas où
 		$p$ est un noeud du jouer $\textit{Max}$ et met à jour la valeur de la racine sinon.
 		
-		\STATE $(sVal,succ)$ $\leftarrow$ \textsc{Lire-Min(s.S)}
-		\STATE $pVal \leftarrow w(p,s) + sVal$
-		\STATE $old \leftarrow p.S.$\textsc{Lire-Min()}
-		\STATE $p.S.$\textsc{Insérer}$((pVal,s))$
-		\IF{$pVal < old$}
-			\STATE $Q.$\textsc{Décrémenter-Clef}$(p,pVal)$
-			\IF{$p \in V_{Min}$}
+		\STATE $(sVal,succ)$ $\leftarrow$ \textsc{Lire-Min(s.S)} \label{lalgo:relaxer1}
+		\STATE $pVal \leftarrow w(p,s) + sVal$	
+		\STATE $old \leftarrow p.S.$\textsc{Lire-Min()} 
+		\STATE $p.S.$\textsc{Insérer}$((pVal,s))$ \label{lalgo:relaxer4}
+		\IF{$pVal < old$} \label{lalgo:relaxer5}
+			\STATE $Q.$\textsc{Décrémenter-Clef}$(p,pVal)$ 
+			\IF{$p \in V_{Min}$} 
 				\STATE $p.S[0] \leftarrow pVal$
-			\ENDIF
-		\ENDIF
+			\ENDIF 
+		\ENDIF \label{lalgo:relaxer10}
 		
-		\IF{$p \in V_{Max}$}
-			\STATE $p.S.$\textsc{Insérer}$((pVal,s))$
-		\ENDIF
+		\IF{$p \in V_{Max}$} \label{lalgo:relaxer11}
+			\STATE $p.S.$\textsc{Insérer}$((pVal,s))$ 
+		\ENDIF \label{lalgo:relaxer12}
 			
 \end{algorithmic}
 		
@@ -292,9 +292,9 @@ Comme pour l'algorithme de Dijkstra, pour une meilleure complexité les files de
 		\ENSURE / \textbf{\textsc{Effet(s) de bord :}} traite le sommet $s$ en supprimant la plus petite valeur de s.S et met
 		à jour la liste $t$ de successeurs de $s$ déjà testés.
 		
-			\STATE $(val,succ) \leftarrow$ $s.S.$\textsc{Extraire-Min}()
+			\STATE $(val,succ) \leftarrow$ $s.S.$\textsc{Extraire-Min}() \label{lalgo:bloc1}
 			\STATE $(nouvVal,nouvSucc) \leftarrow$ $s.S.$\textsc{Lire-Min}()
-			\STATE $Q.$\textsc{Incrémenter-Clef}$(s,nouvVal)$
+			\STATE $Q.$\textsc{Incrémenter-Clef}$(s,nouvVal)$ \label{lalgo:bloc2}
 			\STATE $s.nbrSucc \leftarrow s.nbrSucc - 1 $
 			\STATE $s.t.$\textsc{Insérer}$(succ)$
 			
@@ -571,11 +571,48 @@ Plusieurs cas sont alors à traiter:
 
 Nous avons ainsi terminé la preuve concernant la premier invariant.\\
 
-Pour le second invariant nous pouvons remarquer que pour tout $v \in V$ la valeur de $\rho_i(v)$ est susceptible d'être modifiée uniquement lorsque qu'un noeud est complètement traité et qu'une relaxation a lieu. Ce procédé est aussi bien effectuée pour un noeud du joueur Min (ligne~\ref{lalgo:dijk2} de l'algorithme~\ref{algo:dijkMinMax}) que pour un noeud du joueur Max (ligne~\ref{lalgo:dijk3} de l'algorithme~\ref{algo:traiterMax}).\\
+Pour le second invariant nous pouvons remarquer que pour tout $v \in V$ la valeur de $\rho_i(v)$ est susceptible d'être modifiée uniquement lorsque qu'un noeud est complètement traité et qu'une relaxation a lieu. Ce procédé est aussi bien effectuée pour un noeud du joueur Min que pour un noeud du joueur Max (ligne~\ref{lalgo:dijk2} de l'algorithme~\ref{algo:dijkMinMax}).\\
 
 %PREUVE de la complexité
 \noindent\textbf{Complexité de l'algorithme \textsc{DijkstraMinMax}}\\
 
+Posons $n = |V|$ et $ m = |E|$.
+
+Premièrement, nous rappelons les complexités dans le pire des cas des opérations sur les tas.
+
+\begin{center}
+	\begin{tabular}{|l|c|}
+		\hline
+		Opération & Complexité dans le pire cas \\
+		\hline
+		\hline
+		\textsc{Lire-Min()} & $\mathcal{O}(1)$\\
+		\hline
+		\textsc{Extraire-Min()} & $\mathcal{O}(\log n)$\\
+		\hline
+		\textsc{Insérer}(item) & $\mathcal{O}(\log n)$\\
+		\hline
+		\textsc{Augmenter-Clef}($clef,valeur$) & $\mathcal{O}(\log n)$\\
+		\hline
+		\textsc{Décrémenter-Clef}($clef,valeur$) & $\mathcal{O}(\log n)$\\
+		\hline
+		
+	\end{tabular}
+\end{center}
+
+Deuxièmement, avant de nous intéresser à la complexité de l'algorithme principal~\ref{algo:dijkMinMax} nous établissons la complexité des algorithmes secondaires.
+
+\begin{enumerate}
+	\item \textsc{Initialiser-S}($G,Goal)$ : Pour chaque noeud on instancie un tas en $\mathcal{O}(1)$ et on initialise la racine de celui-ci en $\mathcal{O}(1)$. Comme il y a $n$ noeuds, l'algorithme est en $\mathcal{O}(n)$.
+	
+	\item \textsc{Initialiser-Q}($G,Goal)$ : On  commence par instancier un tas $Q$ en $\mathcal{O}(1)$. Ensuite, on rajoute une valeur pour chacun dans noeud dans $Q$. Rappelons que la complexité de de l'insertion dans un tas est $\mathcal{O}$(hauteur du tas), dans ce cas, comme les valeurs sont rajoutées une à une, la complexité est en $\mathcal{O}(n)$.
+	
+	\item \textsc{Relaxer}$(p, s, w)$ : Les instructions~\refrangeconj{lalgo:relaxer1}{lalgo:relaxer4} sont effectuées en $\mathcal{O}(1)$ tandis que celles~\refrangeconj{lalgo:relaxer5}{lalgo:relaxer10} sont en $\mathcal{O}(\log n)$ à cause de l'instruction \textsc{Décrémenter-Clef}. Enfin, les instructions~\refrangeconj{lalgo:relaxer11}{lalgo:relaxer12} ont une complexité en $\mathcal{O}(\log n)$. Dès lors, la complexité de cet algorithme secondaire est en $\mathcal{O}(\log n)$.
+	
+	 \item \textsc {Bloquer-Max}$(s)$: Les instructions~\ref{lalgo:bloc1} et~\ref{lalgo:bloc2} sont en $\mathcal{O}(\log n)$ tandis que les autres sont en $\mathcal{O}(1)$. Dès lors la complexité de cet algorithme est en $\mathcal{O}(\log n)$
+	
+	
+\end{enumerate}
 	
 
 
