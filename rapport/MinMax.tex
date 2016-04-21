@@ -111,9 +111,9 @@ Dans~\cite{DBLP:conf/lfcs/BrihayePS13} le théorème suivant est énoncé:
 \end{thm}
 
 
-Au vu du résultat ~\ref{thm:1} précédent, comme dans le cas des jeux d'atteignabilité à objectif qualitatif nous nous interrogeons quant à la façon d'implémenter un algorithme pour résoudre les \og \textit{reachability-price games} \fg. L'objectif de cet algorithme est de trouver une stratégie optimale pour chaque joueur ainsi que la valeur associée à chaque sommet du graphe. L'idée est la suivante: le joueur \textit{Min} a pour but d'emprunter un \textbf{plus court chemin} possible allant d'un noeud initial $v_{0}$ vers un noeud $v \in Goal$. On trouve dans la littérature différents algorithmes qui résolvent les problèmes de plus court chemin dans les graphes orientés. Toutefois, il n'y a pas de deuxième joueur qui agit de manière \textbf{antagoniste} face au joueur \textit{Min} qui entre en compte dans ces algorithmes. C'est pourquoi, nous avons tenté une adaptation de l'algorithme de \textit{Dijkstra} (que nous rappelons dans l'annexe A (p.\pageref{algo:dijkstra})). Après avoir pris connaissance du travail de Simon Olbregts~\ref{simon} une comparaison et une refactorisation de notre algorithme basées sur le pseudo-code qu'il a lui-même proposé ont été effectuées.
+Au vu du résultat ~\ref{thm:1} précédent, comme dans le cas des jeux d'atteignabilité à objectif qualitatif nous nous interrogeons quant à la façon d'implémenter un algorithme pour résoudre les \og \textit{reachability-price games} \fg. L'objectif de cet algorithme est de trouver une stratégie optimale pour chaque joueur ainsi que la valeur associée à chaque sommet du graphe. L'idée est la suivante: le joueur \textit{Min} a pour but d'emprunter un \textbf{plus court chemin} possible allant d'un noeud initial $v_{0}$ vers un noeud $v \in Goal$. On trouve dans la littérature différents algorithmes qui résolvent les problèmes de plus court chemin dans les graphes orientés. Toutefois, il n'y a pas de deuxième joueur qui agit de manière \textbf{antagoniste} face au joueur \textit{Min} qui entre en compte dans ces algorithmes. C'est pourquoi, nous avons tenté une adaptation de l'algorithme de \textit{Dijkstra} (que nous rappelons dans l'annexe A (p.\pageref{algo:dijkstra})). Après avoir pris connaissance du travail de Simon Olbregts~\cite{simon} une comparaison et une refactorisation de notre algorithme basées sur le pseudo-code qu'il a lui-même proposé ont été effectuées.
 
-De manière similaire à l'algorithme de Dijkstra, la fonction de coût associée au graphe doit être de la forme $w : E \rightarrow \mathbb{R}^{+}_{0}$. Le fait que la valeur 0 soit exclue des valeurs possibles pour les poids des arcs est expliqué dans la preuve d'exactitude de l'algorithme. Le but de l'algorithme est de calculer le paiement minimum que le joueur \textit{Min} peut garantir quelle que soit la stratégie adoptée par le joueur \textit{Max}. Du fait que le joueur \textit{Max} joue de manière antagoniste par rapport au joueur \textit{Min}, à chaque fois que c'est au joueur \textit{Max} de prendre une décision il voudra maximiser son gain. Pour ce faire, on aura besoin de connaître le chemin le plus coûteux allant du sommet du joueur \textit{Max} en cours de traitement vers un certain état objectif $o \in Goal$. Dès lors, contrairement à l'algorithme classique de Dijkstra qui part d'une source, l'algorithme s'exécutera à rebours à partir des états $o \in Goal$. Ci-dessous nous reprenons les idées essentielles de l'algorithme proposé ainsi que son pseudo-code.\\
+De manière similaire à l'algorithme de Dijkstra, la fonction de coût associée au graphe doit être de la forme $w : E \rightarrow \mathbb{R}^{+}$. Le but de l'algorithme est de calculer le paiement minimum que le joueur \textit{Min} peut garantir quelle que soit la stratégie adoptée par le joueur \textit{Max}. Du fait que le joueur \textit{Max} joue de manière antagoniste par rapport au joueur \textit{Min}, à chaque fois que c'est au joueur \textit{Max} de prendre une décision il voudra maximiser son gain. Pour ce faire, on aura besoin de connaître le chemin le plus coûteux allant du sommet du joueur \textit{Max} en cours de traitement vers un certain état objectif $o \in Goal$. Dès lors, contrairement à l'algorithme classique de Dijkstra qui part d'une source, l'algorithme s'exécutera à rebours à partir des états $o \in Goal$. Ci-dessous nous reprenons les idées essentielles de l'algorithme proposé ainsi que son pseudo-code.\\
 
 \noindent \textbf{Idées de l'algorithme}\\
 
@@ -134,7 +134,7 @@ De manière similaire à l'algorithme de Dijkstra, la fonction de coût associé
 		\item On regarde la valeur du minimum de $Q$ et le sommet $s$ associé.
 		\item Si cette valeur est $+\infty$, alors cela signifie qu'on a fini de traiter tous les sommets qui pouvaient atteindre un sommet objectif. On ajoute donc tous les sommets restants de $Q$ dans $T$.
 		\item S'il s'agit d'un sommet du joueur \textit{Min} ou d'un sommet objectif $o$ alors on extrait le minimum de $Q$ et on l'ajoute à $T$, on \textit{relaxe} tous les arcs entrant de $s$. Il est va de même si le sommet est un sommet de joueur \textit{Max} et que la valeur de $nbrSucc$ est égale à 1. En effet, cela signifie qu'il n'a pas le choix du chemin à emprunter.
-		\item S'il s'agit d'un sommet du joueur \textit{Max} tel que la valeur de $nbrSucc$ n'est pas égale à 1 alors, alors \textit{Max} a plusieurs choix de chemin. Pour maximiser son gain, il ne choisira pas de passer par le successeur $s$ tel que la valeur de $w(v,s) + Val(s)$ est la plus petite. On retire donc la plus petite valeur de $S$, on met à jour la clef de $s$ dans $Q$ et on décrémente $nbrSucc$. Un tel arc $(v,s)$ est alors considéré comme \og bloqué \fg. Ainsi, on sait qu'il y a un successeur de moins à traiter et on ajoute ce successeur à l'ensemble des successeurs déjà traités. En effet, on désire que la dernière valeur restante dans $s.Q$ soit celle qui assure la maximisation du gain de \textit{Max}.
+		\item S'il s'agit d'un sommet du joueur \textit{Max} tel que la valeur de $nbrSucc$ n'est pas égale à 1 alors, alors \textit{Max} a plusieurs choix de chemin. Pour maximiser son gain, il ne choisira pas de passer par le successeur $s$ tel que la valeur de $w(v,s) + Val(s)$ est la plus petite. On retire donc la plus petite valeur de $S$, on met à jour la clef de $s$ dans $Q$ et on décrémente $nbrSucc$. Un tel arc $(v,s)$ est alors considéré comme \og bloqué \fg. Ainsi, on sait qu'il y a un successeur de moins à traiter et on ajoute ce successeur à l'ensemble des successeurs déjà traités. En effet, on désire que la dernière valeur restante dans $s.S$ soit celle qui assure la maximisation du gain de \textit{Max}.
 	\end{enumerate}
 	
 	\item[$\bullet$] La \textit{relaxation} des arcs entrants de $s$ consiste en la méthode suivante: pour tout $(p,s)\in E$ on lit le minimum de $s.S$ (qui est en fait $Val(s)$), on calcule la nouvelle estimation de la valeur du sommet $p$. Si $p \in V_{Max}$ on insère cette valeur associée à $s$ dans $p.S$. De plus dans tous les cas, si cette nouvelle valeur est plus petite que $p.d$ on met à jour $p.d$ dans $Q$ et si $p \in V_{Min}$ on met à jour la valeur de la racine du tas $p.S$. 
@@ -143,12 +143,12 @@ De manière similaire à l'algorithme de Dijkstra, la fonction de coût associé
 
 \noindent \textbf{Pseudo-code}\\
 
-Soient $\mathcal{A} = (V, (V_{Min}, V_{Max}), E) $ une arène et $\mathcal{G} = (\mathcal{A}, g, Goal)$ un \og \textit{reachability-prince game} \fg. Nous utilisons les notations suivantes : 
+Soient $\mathcal{A} = (V, (V_{Min}, V_{Max}), E) $ une arène et $\mathcal{G} = (\mathcal{A}, g, Goal)$ un \og \textit{reachability-price game} \fg. Nous utilisons les notations suivantes : 
 \begin{enumerate} 
 	\item[$\bullet$]$Q$ et $S$ sont les tas décrits ci-dessus.
 	\item[$\bullet$]$s.S$  correspond au tas $S$ du sommet $s$.
 	\item[$\bullet$]$T$ est le sous-ensemble de $V$ décrit ci-dessus.
-	\item[$\bullet$]Pour tout $v \in V$, $Pred(v)$ (resp. $Succ(v)$) est l'ensemble des prédécesseurs (resp. successeurs) de $v$.
+	\item[$\bullet$]Pour tout $v \in V$, $Pred(v)$ est l'ensemble des prédécesseurs de $v$.
 	\item[$\bullet$]Pour tout $v \in V$, $v.d$ est l'estimation de $Val(v)$.
 	\item[$\bullet$]Pour tout $v \in V_{Max}$, $v.nbrSucc$ est le nombre de successeurs de $v$ qu'il reste à tester, $v.t$ est l'ensemble des successeurs de $v$ déjà testés.
 \end{enumerate}
@@ -259,14 +259,14 @@ Comme pour l'algorithme de Dijkstra, pour une meilleure complexité les files de
 		\ENSURE / \textbf{\textsc{Effet(s) de bord :}} Ajoute à p.S une valeur pour $p$ et son successeur dans le cas où
 		$p$ est un noeud du jouer $\textit{Max}$ et met à jour la valeur de la racine sinon.
 		
-		\STATE $(sVal,succ)$ $\leftarrow$ \textsc{Lire-Min(s.S)} \label{lalgo:relaxer1}
+		\STATE $(sVal,succ)$ $\leftarrow$ \textsc{Lire-Min}(s.S) \label{lalgo:relaxer1}
 		\STATE $pVal \leftarrow w(p,s) + sVal$	
 		\STATE $old \leftarrow p.S.$\textsc{Lire-Min()} 
 		\STATE $p.S.$\textsc{Insérer}$((pVal,s))$ \label{lalgo:relaxer4}
 		\IF{$pVal < old$} \label{lalgo:relaxer5}
 			\STATE $Q.$\textsc{Décrémenter-Clef}$(p,pVal)$ 
 			\IF{$p \in V_{Min}$} 
-				\STATE $p.S[0] \leftarrow pVal$
+				\STATE $p.S[0] \leftarrow (pVal,s)$
 			\ENDIF 
 		\ENDIF \label{lalgo:relaxer10}
 		
@@ -372,14 +372,14 @@ On remarque que l'algorithme \textsc{DijkstraMinMax}  est un algorithme à effet
 %PREUVE de l'EXACTITUDE de l'algorithme de DijkastraMinMax
 \noindent\textbf{Exactitude de l'algorithme \textsc{DijkstraMinMax}}\\
 
-Notre but maintenant est de montrer que l'algorithme \textsc{DijkstraMinMax} est exact. C'est-à-dire que nous voulons montrer qu'à la fin de l'exécution de cet algorithme, nous connaissant $Val(v)$ pour tout $v\in V$ ainsi qu'une stratégie optimale pour le joueur Min et pour le joueur Max.
+Notre but maintenant est de montrer que l'algorithme \textsc{DijkstraMinMax} est exact. C'est-à-dire que nous voulons montrer qu'à la fin de l'exécution de cet algorithme, nous connaissons $Val(v)$ pour tout $v\in V$ ainsi qu'une stratégie optimale pour le joueur Min et pour le joueur Max.
 Pour ce faire, nous nous inspirons de la preuve effectuée par Simon Olbregts dans le cadre de son projet de 1\up{er} Master en sciences informatiques~\cite{simon}. 
 Pour plus de clarté et de concision nous avons besoin d'introduire quelques notations:\\
 
 \begin{itemize}
-	\item[$\bullet$] Soient $x$ et $y$ des noeuds du graphe, $x \leadsto y$ représente un chemin $x$ à $y$ qui suit des stratégies optimales pour le joueur Min et le joueur Max (\emph{i.e.,}il s'agit d'un \emph{chemin optimal})
+	\item[$\bullet$] Soient $x$ et $y$ des noeuds du graphe, $x \leadsto y$ représente un chemin $x$ à $y$ qui suit des stratégies optimales pour le joueur Min et le joueur Max (\emph{i.e.,}il s'agit d'un \emph{chemin optimal}). Par abus de notation, pour $x \leadsto y$ = $v_0 ...v_n$ on définit $g(x \leadsto y) = \sum_{i=0}^{n-1} w(v_i, v_{i+1})$.
 	\item[$\bullet$] $T_{i}$ est l'ensemble des noeuds traités après la i\up{ème} itération. Un noeud est considéré comme traité quand il est enlevé de $Q$.
-	\item[$\bullet$] $E_i$ est les arêtes du graphe $G$ duquel on a enlevé tous les arcs sortant d'un noeud Max et qu'on ne choisissait pas d'emprunter car il existait un meilleur choix et ce après la i\up{ème} itération. Un tel arc est appelé un \emph{arc bloqué}.
+	\item[$\bullet$] $E_i$ est l'ensemble des arêtes du graphe $G$ duquel on a enlevé tous les arcs sortant d'un noeud Max et qu'on ne choisit pas d'emprunter car il existe un meilleur choix et ce après la i\up{ème} itération. Un tel arc est appelé un \emph{arc bloqué}.
 	\item[$\bullet$] $\rho_i(v) := \min _{v' \in T_i}\{ w(v,v') + Val(v') \} $ où $(v,v')$ est un arc de $G_i$.
 \end{itemize}
 
@@ -396,6 +396,7 @@ $\text{}$\\
 Nous avons : $T_i = \emptyset$ et $E_i = E$ à l'initialisation de l'algorithme. Donc pour tout $v \in V$, nous connaissons $\rho_i(v)$. En effet, si $v$ est un état objectif ($v \in Goal$) alors $\rho_i(v) = 0$ sinon, $\rho_i(v) = + \infty$.\\
 
 \noindent \underline{\textsc{B. En cours d'exécution}}\\
+\begin{comment}
 \todo{ attention dans l'explication de l'algo j'ai mis $\mathbb{R}^{+}$ un poids nul est donc envisageable.}
 
 Commençons par constater que si on considère une fonction de poids de la forme $w: E \rightarrow \mathbb{N}_{0}$ alors, au vu de l'algorithme, les premières itérations de celui-ci traitent les noeuds objectifs. Lors de l'initialisation de l'algorithme les seuls noeuds placés dans $Q$ avec un poids différent de $ + \infty$ sont ceux des noeuds objectifs qui ont un poids de 0. Comme la fonction de poids est une fonction strictement positive lors des relaxations des prédécesseurs des noeuds objectifs, les valeurs présentent dans $Q$ seront toutes strictement plus grande que 0 (sauf pour les noeuds objectifs restant). Cette argumentation nous permet donc d'affirmer que pendant les $|Goal|$ premières itérations, tous les noeuds objectifs sont traités. De ce fait, nous sommes assurés que la valeur des noeuds objectifs est bien 0 et le restera tout au long de l'algorithme.
@@ -405,6 +406,8 @@ Ce problème peut être évité si lors de la relaxation d'un noeud on vérifie 
 \todo{Vérifier que cette solution règle bien le problème et n'en amène pas d'autres.}
 
 \include{fig:dijk1}
+
+\end{comment}
 
 Au préalable, afin de prouver que le premier invariant est correct, nous allons établir la véracité de deux propriétés dont voici les énoncés ainsi que leur preuve.
 
@@ -420,7 +423,7 @@ Au préalable, afin de prouver que le premier invariant est correct, nous allons
 $\text{}$\\
 	Comme nous avons pris $v$ et $u$ sur un chemin optimal cela signifie qu'il existe $(\sigma_1^*, \sigma_2^*) \in \Sigma_{Min} \times \Sigma_{Max}$ des stratégies optimales telles que pour un certain $t \in V$ on ait : $\langle \sigma_1^*, \sigma_2^* \rangle_t = t\ldots vu\ldots$ .
 Nous voulons montrer que si on connait $Val(u)$ alors on a : $Val(v) = \rho_i(v)$.
-On sait, vu que $\sigma_1^*$ $ \sigma_2^*$ sont des stratégies optimales, que:
+On sait, vu que $\sigma_1^*$ et $ \sigma_2^*$ sont des stratégies optimales, que:
 
 \begin{align*}
 Val(v) &= g(\langle \sigma_1^*,\sigma_2^* \rangle_v) \notag \\
@@ -433,9 +436,9 @@ Nous voulons donc établir que:
 $$ w(v,u) + Val(u) = \min_{v' \in T_i, (v,v') \in E_i} \{ w(v,v') + Val(v') \} = \min_{v' \in T_i, (v,v') \in E} \{ w(v,v') + Val(v') \}$$
 
 La deuxième égalité est due au fait qu'on ne bloque pas d'arc issu d'un noeud du joueur Min et que $v\in V_{Min}$.
-De plus, comme le noeud $u$ a déjà été entièrement traité, on connait $Val(u)$ et il a été relaxé. De ce fait, la valeur $w(v,u) + Val(u)$ se trouve dans $v.S$ et calculer $\min_{v' \in T_i, (v,v') \in E} \{ w(v,v') + Val(v') \}$ revient à prendre le minimum du tas $v.S$.
+De plus, comme le noeud $u$ a déjà été entièrement traité, on connait $Val(u)$ et il a été relaxé. Calculer $\min_{v' \in T_i, (v,v') \in E} \{ w(v,v') + Val(v') \}$ revient à prendre la valeur stockée dans $v.S$. Nous voulons donc montrer que $w(v,u) + Val(u)$ est cette valeur.
 
-Par l'absurde, supposons que $ w(v,u) + Val(u)$ ne soit pas le minimum des valeurs stockées dans le tas. De ce fait nous avons :
+Par l'absurde supposons :
 
 \begin{align} \exists t \in T_i \text{ tq } w(v,t) + Val(t) < w(v,u) + Val(u) \label{eq:dijk1} \end{align}
 
@@ -460,7 +463,7 @@ Mais dans ce cas nous aurions que $\rho_i(v)= w(v,t) + Val(t) = w(v,u) + Val(u) 
 	Comme nous avons pris $v$ et $u$ sur un chemin optimal cela signifie qu'il existe $(\sigma_1^*, \sigma_2^*) \in \Sigma_{Min} \times \Sigma_{Max}$ des stratégies optimales telles que pour un certain $t \in V$ on ait : $\langle \sigma_1^*, \sigma_2^* \rangle_t = t\ldots vu\ldots$ .
 Nous voulons montrer que si on connait $Val(u)$ alors on a : $Val(v) \geq \rho_i(v)$.
 
-Supposons au contraire que $ rho_i(v) > Val(v)$. Nous avons alors : 
+Supposons au contraire que $ \rho_i(v) > Val(v)$. Nous avons alors : 
 \begin{equation} \forall t \in T_i \text{ tq } (v,t)\in E_i \,\, w(v,t) + Val(t) > g(\langle \sigma_1^*, \sigma_2^*\rangle_v). \label{eq:dijk2}\end{equation}
 
 De cette relation nous pouvons conclure. En effet, cela signifie que depuis le noeud $v$ le joueur Max possède une déviation profitable qui est d'emprunter un des arcs $(v,t)$ de~\eqref{eq:dijk2}. Ceci contredit le fait que $\sigma_2^*$ est une stratégie optimale.
@@ -470,14 +473,15 @@ De cette relation nous pouvons conclure. En effet, cela signifie que depuis le n
 Maintenant que ces propriétés sont établies, reprenons la preuve d'exactitude de l'algorithme. Supposons que les invariants sont vérifiés jusqu'à l'étape $i$ et montrons qu'ils le sont toujours pour l'étape $i+1$.
 Commençons par le montrer pour le premier invariant.
 
-Soit $u \in T_i$ le noeud lu dans $Q$ (ligne~\ref{lalgo:dijk1} de l'algorithme \verb|DikjstraMinMax|). Comme il s'agit d'un minimum nous avons : $\forall v \in V\backslash \{ T_i \},\, \rho_i(u) \leq \rho_i(v)$. Plusieurs cas sont alors possibles. Pour plus de clarté, séparons ces cas en différents lemmes.
+Soit $u \in T_i$ le noeud lu dans $Q$ (ligne~\ref{lalgo:dijk1} de l'algorithme \verb|DikjstraMinMax|). Comme il s'agit d'un minimum nous avons : $\forall v \in V\backslash \{ T_i \},\, \rho_i(u) \leq \rho_i(v)$. Plusieurs cas sont alors possibles. 
 
 \begin{enumerate}
 	\item \underline{$\rho_i(u) = +\infty$}: Dans ce cas pour tous les noeuds $v \in V\backslash \{ T_i \}$ (\emph{i.e.,} ceux restant dans $Q$) $\rho_i(v) = + \infty$ car $\rho_i(u) = \min _{v \in V\backslash \{ T_i \}} \{\rho_i(v)\}$. S'il s'agit d'un noeud du joueur Max cela signifie qu'il peut choisir un arc tel qu'après cet arc il est assuré que le joueur Min ne pourra pas atteindre un de ses objectifs. S'il s'agit d'un noeud du joueur Min cela signifie qu'à partir de ce noeud il ne pourra jamais atteindre un de ses états objectifs. La stratégie optimale consiste donc à choisir un arc au hasard dans ceux restant $E_i$.
-	\item\underline{$\rho_i(u) < +\infty$ et $u \in Goal$}: Comme il s'agit d'un noeud objectif, on doit avoir que $Val(u) = 0$ ce qui est bien le cas car lors de l'initialisation de l'algorithme la valeur associée à chaque état objectif est 0 et elle ne peut pas être modifiée.
-	\item\underline{$\rho_i(u) < +\infty$ et $u \in V_{Min}$}: Nous devons vérifier que nous pouvons calculer $Val(u)$ et donc que l'on peut rajouter $u$ aux éléments traités. Nous devons donc nous assurer que $Val(u) = \rho_i(u)$.
-	Supposons au contraire que $Val(u) \neq \rho_i(u)$. Nous savons qu'il existe $(\sigma_1^*,\sigma_2^*) \in \Sigma_1 \times \Sigma_2 $ des stratégies optimales. Dès lors on a : $Val(u) = g(\langle \sigma_1^*, \sigma_2^* \rangle_u)$. Soit $\sigma_1$ la stratégie du joueur Min définie de la manière suivante : $$  \sigma(v) = \begin{cases}
-											\displaystyle	\argmin_{v'\in T_i,(v,v')\in E_i} w(v,v') + Val(v') & \text{ si } v = u\\
+	\item\underline{$\rho_i(u) < +\infty$ et $u \in Goal$}: Comme il s'agit d'un noeud objectif, on doit avoir que $Val(u) = 0$ ce qui est bien le cas car lors de l'initialisation de l'algorithme la valeur associée à chaque état objectif est 0 et elle ne peut pas être modifiée. En effet, vu que le poids des arcs est positif, on ne peut pas décrémenter la valeur associée à un noeud object dans $Q$. La décrémentation de cette valeur se fait uniquement dans la méthode \textsc{Bloquer-Max} or, cette méthode n'est jamais appelée pour un noeud objectif.
+	
+	\item\underline{$\rho_i(u) < +\infty$ et $u \in V_{Min}$}: Nous devons vérifier que nous pouvons calculer $Val(u)$ et donc que l'on pouvait bien rajouter $u$ aux éléments traités. Nous devons donc nous assurer que $Val(u) = \rho_i(u)$.
+	Supposons au contraire que $Val(u) \neq \rho_i(u)$. Nous savons qu'il existe $(\sigma_1^*,\sigma_2^*) \in \Sigma_1 \times \Sigma_2 $ des stratégies optimales. Dès lors on a : $Val(u) = g(\langle \sigma_1^*, \sigma_2^* \rangle_u)$. Soit $\sigma_1$ la stratégie du joueur Min définie de la manière suivante : $$  \sigma_1(v) = \begin{cases}
+											\displaystyle	\argmin_{v'\in T_i,(v,v')\in E_i} \{ w(v,v') + Val(v') \} & \text{ si } v = u\\
 												\sigma_1^*(v) &\text{ sinon} \end{cases}$$
 Dès lors, nous avons : 
 
@@ -537,7 +541,7 @@ Nous pouvons donc déjà conclure que si $u' \in T_j$ alors l'inégalité~\eqref
 Intéressons-nous maintenant au cas où $u' \in V \backslash T_j$. Nous savons qu'il existe $(\sigma_1^*, \sigma_2^*) \in \Sigma_1 \times \Sigma_2$ telles que $Val(u') = g( \langle \sigma_1^*, \sigma_2^* \rangle_{u'})$. 
 Soit $x \in \langle \sigma_1^*, \sigma_2^* \rangle_{u'}$ un noeud sur le chemin optimal partant de $u'$ tel que $x \in V\backslash T_j$ et le successeur de $x$ sur ce chemin optimal appartient à $T_j$.
 Alors:
-$$ Val(u') = g( \langle \sigma_1^*, \sigma_2^* \rangle_{u'}) = w(u' \leadsto x) + g( \langle \sigma_1^*, \sigma_2^* \rangle_{x}) $$
+$$ Val(u') = g( \langle \sigma_1^*, \sigma_2^* \rangle_{u'}) = g(u' \leadsto x) + g( \langle \sigma_1^*, \sigma_2^* \rangle_{x}) $$
 Dès lors comme les poids sur les arcs sont positifs:
 
 \begin{equation*}
@@ -565,9 +569,10 @@ Plusieurs cas sont alors à traiter:
 \end{enumerate}
 \end{enumerate}
 
+S'il restait plusieurs successeur possibles, alors dans ce cas, $T_{i+1} = T_i$ et le premier invariant est vérifié.
 Nous avons ainsi terminé la preuve concernant la premier invariant.\\
 
-Pour le second invariant nous pouvons remarquer que pour tout $v \in V$ la valeur de $\rho_i(v)$ est susceptible d'être modifiée uniquement lorsque qu'un noeud est complètement traité et qu'une relaxation a lieu. Ce procédé est aussi bien effectuée pour un noeud du joueur Min que pour un noeud du joueur Max (ligne~\ref{lalgo:dijk2} de l'algorithme~\ref{algo:dijkMinMax}).\\
+Pour le second invariant nous pouvons remarquer que pour tout $v \in V$ la valeur de $\rho_i(v)$ est susceptible d'être modifiée dans deux cas:  lorsque qu'un noeud est complètement traité et qu'une relaxation a lieu ou lorsque qu'un arc est bloqué. Dans un cas comme dans l'autre, soit on décrémente la valeur si nécessaire (dans la relaxation) soit on l'incrémente (lorsque l'on \og bloque \fg~un arc). Le second invariant est donc également vérifié. \\
 
 %PREUVE de la complexité
 \noindent\textbf{Complexité de l'algorithme \textsc{DijkstraMinMax}}\\
