@@ -192,13 +192,13 @@ Afin de pouvoir répondre à cette question nous allons commencer par énoncer e
 Grâce au résultat de la propriété~\ref{prop:question2} nous avons presque répondu à la question~\ref{qst:2}. Pour un outcome donné il suffirait en effet de vérifier que la propriété est vérifiée. Toutefois, l'outcome associé à un profil de stratégies est infini, il faut donc trouver un moyen de le représenter afin qu'un algorithme puisse s'appliquer dessus.
 
 \subsection{Question 3}
-Plutôt que de prouver la propriété~\ref{prop:outEN2} pour $|\Pi|= 2$, nous allons montrer qu'en fait nous pouvons la généralise pour $|\Pi| \geq 2 .$ Pour ce faire, nous avons besoin d'introduire quelques notions préliminaires.
+Plutôt que de prouver la propriété~\ref{prop:outEN2} pour $|\Pi|= 2$, nous allons montrer qu'en fait nous pouvons la généralise pour $|\Pi| \geq 2 .$ La preuve qui suit a été effectuée par nos soins, mais nous faisons remarquer qu'une preuve similaire dans le cas des jeux concurrents à informations parfaites a déjà été effectuée par Haddad~\cite{characNashEq}. Pour ce faire, nous avons besoin d'introduire quelques notions préliminaires.
 
 
 \begin{defi}
 	\label{defi:coalGame}
  Soient $\mathcal{A} = (\Pi, V, (V_{i})_{i\in\Pi}, E)$ une arène et $\mathcal{G} = (\mathcal{A}, (\varphi _{i})_{i\in\Pi}, (Goal_{i})_{i\in\Pi})$ un jeu d'atteignabilité à $|\Pi| \geq 2$ à objectif quantitatif.
-Pour tout joueur $i \in \Pi$, nous pouvons y associer un jeu à somme nulle de type \og reachability-price game \fg~ noté $\mathcal{G}_{i}$.
+Pour tout joueur $i \in \Pi$, nous pouvons y associer un jeu à somme nulle de type \og reachability-price game \fg~noté $\mathcal{G}_{i}$.
 On définit ce jeu de la manière suivante : 
 $$ \displaystyle \mathcal{G}_{i}= (\mathcal{A}_{i}, g , Goal) \text{ où } \mathcal{A}_{i} = (\{i,\Pi\backslash{i}\}, V, (V_{i},V\backslash V_i,E) \text{, } g = \varphi_i \text{ et } Goal = Goal_i$$
 
