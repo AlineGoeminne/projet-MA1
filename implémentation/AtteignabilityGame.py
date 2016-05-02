@@ -4,8 +4,8 @@ class Vertex(object):
         Classe representant un sommet d'un graphe, on considere que ces sommets sont entierement determines par leur
         "nom" qui est en fait un entier.
     """
-    def __init__(self, i, player):
-        self.name = i
+    def __init__(self, id, player):
+        self.id = id
         self.player = player
 
     def __eq__(self, other):
@@ -13,7 +13,7 @@ class Vertex(object):
         if id(self) == id(other):
             return True
         else:
-            return self.name == other.name
+            return self.id == other.name
 
 
 class Graph(object):
