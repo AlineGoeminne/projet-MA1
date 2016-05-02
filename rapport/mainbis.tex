@@ -1,0 +1,122 @@
+\documentclass[12pt,a4paper]{memoire-umons}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[francais]{babel}
+\usepackage{amssymb,amsmath,amsthm}
+
+\usepackage{float}
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{array}
+%\usepackage[in,headings]{fullpage}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{lscape}
+
+
+\usepackage{mathrsfs}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage{amsmath}
+
+\usepackage{tikz}
+\usetikzlibrary{decorations.markings}
+\usetikzlibrary{positioning}
+
+\usepackage{pgf,tikz}
+\usepackage{mathrsfs}
+\usetikzlibrary{arrows}
+
+\usepackage{placeins}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+
+\usepackage{comment}
+
+\hypersetup{
+    colorlinks,
+    linkcolor={black!50!black},
+    citecolor={black!50!black},
+    urlcolor={black!80!black}
+}
+
+%---------------------------------------------------------
+% Personnal commands
+%---------------------------------------------------------
+\newcommand\todo[1]{\textcolor{red}{TODO: #1}\PackageWarning{TODO:}{#1!}}
+
+\definecolor{gris}{gray}{0.60}
+
+\setlength{\parindent}{1cm}
+\newcommand{\textcalli}[1]{{\small{\textbf{$\negmedspace$\calligra #1}}}}
+
+\input{commandesTikzset}
+\input{commandesDefProp}
+\input{commandesAlgo}
+
+\DeclareMathOperator*{\argmin}{arg\,min}
+
+\newcommand{\refrangeconj}[2]{[\ref{#1}--\ref{#2}]}
+
+%\usepackage{hyperref}% hyperliens dans le PDF, pas pour impression
+\title{Objectif d'atteignabilité et équilibres de Nash dans les jeux sur graphe}
+
+\author{Aline \textsc{Goeminne}}
+\date{2015--2016}
+%\directeur{Nom du directeur}
+\directeurs{Brihaye Thomas\\ Mélot Hadrien}
+%\codirecteurs{}
+\service{Service de Mathématiques effectives \\ Service d'Algorithmique}
+%\rapporteurs{
+ % Rapporteur 1\\
+ % Rapporteur 2}
+%\discipline{math\'ematiques}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Vos macros
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Compile uniquement certains morceaux sans perdre les références
+% automatiques et la table des matières des parties déjà compilées :
+%\includeonly{introduction,chapitre1}
+
+\begin{document}
+% Éventuellement utiliser l'environnement « preface » pour avoir une
+% numérotation des pages en chiffres romains.
+\tableofcontents
+
+
+%\input{intro}
+\newpage
+\input{conceptsFondamentaux}
+\newpage
+\input{jeuxAtt}
+\newpage
+\input{ProblemesPoses}
+\newpage
+\input{rechEqPert}
+%\input{conclusion}
+\newpage
+
+
+
+\bibliographystyle{acm}
+\bibliography{biblio}
+\addtocounter{section}{1}
+        \addcontentsline{toc}{section}{\protect\numberline{\thesection} Références}
+%\addcontentsline{toc}{section}{\protect\numberline{\thesection}{biblio}
+\newpage
+
+\input{annexeA}
+
+
+\end{document}
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: t
+%%% TeX-PDF-mode: t
+%%% End: 
