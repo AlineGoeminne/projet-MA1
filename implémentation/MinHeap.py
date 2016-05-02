@@ -19,9 +19,11 @@ Soit n le nombre d'elements du tas,
 
 class MinHeap(object):
 
-    def __init__(self, tab=[], size=0):
-
-        self.tab = tab
+    def __init__(self, tab=None, size=0):
+        if tab is None:
+            self.tab = []
+        else:
+            self.tab = tab
         self.size = size
 
     def __eq__(self, other):
@@ -38,13 +40,25 @@ class MinHeap(object):
             return True
 
     def __repr__(self):
-        result = "[ "
-        for i in range(0,self.size-1):
-            result += repr(self.tab[i]) + ", "
-        return result + repr(self.tab[self.size-1]) + "]"
+
+        if self.size == 0:
+            return "[ ]"
+        else:
+
+            result = "[ "
+            for i in range(0, self.size-1):
+                result += repr(self.tab[i]) + ", "
+            return "Tas: " + result + repr(self.tab[self.size-1]) + "]"
 
     def __sizeof__(self):
         return len(self.tab)
+
+    def is_empty(self):
+
+        if self.size == 0:
+            return True
+        else:
+            return False
 
     def find_index_father(self, i):
 
@@ -77,19 +91,26 @@ class MinHeap(object):
 
     def insertion(self, item, modeInd=False):
 
-        self.tab.append(item)
         i = self.size
-        if (modeInd):
+        self.tab.append(item)
+        self.size += 1
+
+        if modeInd:
             item.index = i
 
         while i >= 1 and self.tab[self.find_index_father(i)] > self.tab[i]:
 
-            (self.tab[self.find_index_father(i)],self.tab[i]) = (self.tab[i], self.tab[self.find_index_father(i)])
-            if (modeInd):
-                (self.tab[i].index, self.tab[self.find_index_father(i)].index) = (self.tab[self.find_index_father(i)].index, self.tab[i].index)
-            i = self.find_index_father(i)
+            f_index = self.find_index_father(i)
+            f_val = self.tab[f_index]
 
-        self.size += 1
+            self.tab[i] = f_val
+            self.tab[f_index] = item
+
+            if (modeInd):
+                self.tab[i].index = i
+                self.tab[f_index].index = f_index
+
+            i = f_index
 
     def heapify(self, i, modeInd=False):
 
@@ -111,23 +132,41 @@ class MinHeap(object):
         if (r <= size -1) and (self.tab[r] < self.tab[smallest]):
             smallest = r
         if i != smallest:
-            (self.tab[i], self.tab[smallest]) = (self.tab[smallest], self.tab[i])
-            if(modeInd):
-                (self.tab[i].index, self.tab[smallest].index) = (self.tab[smallest].index, self.tab[i].index)
+
+            inv1 = self.tab[smallest]
+            inv2 = self.tab[i]
+
+            self.tab[i] = inv1
+            self.tab[smallest] = inv2
+
+            if modeInd:
+                self.tab[i].index = i
+                self.tab[smallest].index = smallest
+
             self.heapify(smallest, modeInd)
 
-    def delete_min(self):
-        #TODO: verifier s il n est pas necessaire de mettre l index de l item a None
-        d = self.tab[0]
-        d.index = None
+    def delete_min(self, modeInd = False):
 
-        self.tab[0] = self.tab[self.size -1]
-        self.size -=1
-        self.heapify(0)
+        d = self.tab[0]
+        if modeInd:
+            d.index = None
+
+        if self.size == 1:
+            self.tab = []
+            self.size -= 1
+
+        else:
+            self.tab[0] = self.tab[self.size -1]
+            if modeInd:
+                self.tab[0].index = 0
+            self.size -= 1
+            del (self.tab[self.size])  #TODO: necessaire?
+
+            self.heapify(0, modeInd)
 
         return d
 
-    def heap_decrease_key(self, i, key, modeInd=False, item=None):
+    def heap_decrease_key(self, i, key, modeInd=False):
 
         """
             A partir de l'indice i d'un item diminue la clef correspondant a cet item.
@@ -135,17 +174,14 @@ class MinHeap(object):
             attribut permettant de stocker sa position dans le tas.
 
         """
-
-        if ((not modeInd) and (key > self.tab[i])) or ((modeInd) and (key > item)):
+        if ((not modeInd) and (key > self.tab[i].key)) or ((modeInd) and (key > self.tab[i].key)):
             raise ValueError("key doit etre plus petit que la valeur sctockee actuellement")
         else:
-            item.key = key.key
-            self.tab[i] = item
+            self.tab[i].key = key
 
             while i > 0 and self.tab[self.find_index_father(i)] > self.tab[i]:
                 pere = self.tab[self.find_index_father(i)]
 
-                #print self.tab[i]
                 if(modeInd):
                     (pere.index,  self.tab[i].index) = (self.tab[i].index ,pere.index)
 
@@ -154,7 +190,7 @@ class MinHeap(object):
                 i = self.find_index_father(i)
 
 
-    def heap_increase_key(self, i, key, modeInd=False, item=None):
+    def heap_increase_key(self, i, key, modeInd=False):
 
         """
             A partir de l'indice i d'un item augmente la clef correspondant a cet item.
@@ -163,13 +199,20 @@ class MinHeap(object):
 
         """
 
-        if ((not modeInd) and (key < self.tab[i])) or ((modeInd) and (key < item)):
+        if ((not modeInd) and (key < self.tab[i].key)) or ((modeInd) and (key < self.tab[i].key)):
             raise ValueError("key doit etre plus grande que la valeur sctockee actuellement")
         else:
-            item.key = key.key
-            self.tab[i] = item
-
+            self.tab[i].key = key
             self.heapify(i, modeInd)
+
+    def sort(self):
+
+        ret = []
+
+        while self.size > 0:
+            ret.append(self.delete_min())
+
+        return ret
 
 
 
@@ -181,15 +224,41 @@ def test():
         filsdroit = tas.find_index_r_son(1)
         #tas.insertion(10)
         min = tas.delete_min()
+        print tas
+        min = tas.delete_min()
+        print tas
+        min = tas.delete_min()
+        print tas
+        min = tas.delete_min()
+        print tas
+        min = tas.delete_min()
+        print tas
+        min = tas.delete_min()
+        print tas
+        min = tas.delete_min()
+        print tas
+        min = tas.delete_min()
+        print tas
+        min = tas.delete_min()
+        print tas
+        print tas.is_empty()
+
         print "min ", min
         print "size ",tas.size
         print tas
 
 
+        tas.insertion(4)
+        print tas
+        tas.insertion(43)
+        print tas
+        tas.delete_min()
+        print tas
+
+
 
 if __name__=='__main__':
-        test()
-
+    test()
 
 
 
