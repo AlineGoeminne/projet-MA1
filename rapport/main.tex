@@ -1,125 +1,131 @@
-%
-%  Projet MA1 info
-%
-%  Created by Aline Goeminne on 2015-12-14.
-%  Copyright (c) 2015 __MyCompanyName__. All rights reserved.
-%
-\documentclass[]{article}
+\documentclass[12pt,a4paper]{memoire-umons}
 
-% Use utf-8 encoding for foreign characters
-\usepackage[utf8]{inputenc}
-
-% Setup for fullpage use
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage[francais]{babel}
-\usepackage{listingsutf8}
- 
+\usepackage{amssymb,amsmath,amsthm}
+
+\usepackage{float}
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{array}
+%\usepackage[in,headings]{fullpage}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{lscape}
+
+
+\usepackage{mathrsfs}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage{amsmath}
+
+\usepackage{tikz}
+\usetikzlibrary{decorations.markings}
+\usetikzlibrary{positioning}
+
+\usepackage{pgf,tikz}
+\usepackage{mathrsfs}
+\usetikzlibrary{arrows}
+
+\usepackage{placeins}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+
+\usepackage{comment}
+\usepackage{adjustbox}
+
+\setcounter{secnumdepth}{3}
+\setcounter{tocdepth}{3}
+
+\hypersetup{
+    colorlinks,
+    linkcolor={black!50!black},
+    citecolor={black!50!black},
+    urlcolor={black!80!black}
+}
 
 %---------------------------------------------------------
-% More symbols
+% Personnal commands
 %---------------------------------------------------------
-%---------------------------------------------------------
-% Begin document
-%---------------------------------------------------------
+\newcommand\todo[1]{\textcolor{red}{TODO: #1}\PackageWarning{TODO:}{#1!}}
+
+\definecolor{gris}{gray}{0.60}
+
+\setlength{\parindent}{1cm}
+\newcommand{\textcalli}[1]{{\small{\textbf{$\negmedspace$\calligra #1}}}}
+
+\input{commandesTikzset}
+\input{commandesDefProp}
+\input{commandesAlgo}
+
+\DeclareMathOperator*{\argmin}{arg\,min}
+
+\newcommand{\refrangeconj}[2]{[\ref{#1}--\ref{#2}]}
+
+%\usepackage{hyperref}% hyperliens dans le PDF, pas pour impression
+\title{Objectif d'atteignabilité et équilibres de Nash dans les jeux sur graphe}
+
+\author{Aline \textsc{Goeminne}}
+\date{2015--2016}
+%\directeur{Nom du directeur}
+\directeurs{Brihaye Thomas\\ Mélot Hadrien}
+%\codirecteurs{}
+\service{Service de Mathématiques effectives \\ Service d'Algorithmique}
+%\rapporteurs{
+ % Rapporteur 1\\
+ % Rapporteur 2}
+%\discipline{math\'ematiques}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Vos macros
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Compile uniquement certains morceaux sans perdre les références
+% automatiques et la table des matières des parties déjà compilées :
+%\includeonly{introduction,chapitre1}
+
 \begin{document}
-
-\begin{titlepage}
-\begin{center}
-
-{\Large Université de Mons}\\[1ex]
-{\Large Faculté des sciences}\\[2.5cm]
-
-\newcommand{\HRule}{\rule{\linewidth}{0.3mm}}
-% Title
-\HRule \\[0.3cm]
-{ \LARGE \bfseries Objectif d'atteignabilité et équilibres de Nash dans les jeux sur graphe \\[0.3cm]}
-\HRule \\[1.5cm]
-
-% Course
-%\begin{center}
-%\emph{Cours:} \\
-%Structures de Données II
-%\end{center}
-
-%Directeurs
-\begin{center}
-	\emph{Directeurs :}\\
-	 Thomas \textsc{Brihaye} \\
-	 Hadrien \textsc{Mélot}
-
-\end{center}
-
-%Rapporteur
-\begin{center}
-	\emph{Rapporteur:}\\
-	Véronique \textsc{Bruyère}
-\end{center}
-
-% Author
-\begin{center}
-\emph{Auteur:} \\
-Aline \textsc{Goeminne}
-\end{center}
-\vfill
-\today
-\vfill
-
-% Bottom of the page
-\begin{center}
-\begin{tabular}[t]{c c c}
-\includegraphics[height=1.5cm]{umons.jpg} &
-\hspace{0.3cm} &
-\includegraphics[height=1.5cm]{fac.jpg}
-\end{tabular}
-\end{center}~\\
-
-{\large Année académique 2015-2016}
-
-\end{center}
-\end{titlepage}
-
-\newpage \thispagestyle{empty}
-\null
-
-\newpage
-
-\setcounter{page}{1}
+% Éventuellement utiliser l'environnement « preface » pour avoir une
+% numérotation des pages en chiffres romains.
 \tableofcontents
-\newpage
-%-------------------------------------
-%Introduction
-%-------------------------------------
 
 
-%\input{intro}
+\input{intro}
 \newpage
 \input{conceptsFondamentaux}
 \newpage
 \input{jeuxAtt}
 \newpage
-\input{ProblemesPoses}
-%\input{conclusion}
+%\input{ProblemesPoses}
+\newpage
+\input{rechEqPert}
+\newpage
+\input{conclusion}
 \newpage
 
 
 
-\bibliographystyle{plain}
+\bibliographystyle{acm}
 \bibliography{biblio}
 \addtocounter{section}{1}
-        \addcontentsline{toc}{section}{\protect\numberline{\thesection} Références}
+        \addcontentsline{toc}{section}{\protect\numberline{\thesection}Références}
+		\addcontentsline{toc}{section}{Annexe A}
+
+
 %\addcontentsline{toc}{section}{\protect\numberline{\thesection}{biblio}
 \newpage
-
+\appendix
 \input{annexeA}
-
-%\input{Suite}
-
-
-
-
-
 
 
 
 \end{document}
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: t
+%%% TeX-PDF-mode: t
+%%% End: 
