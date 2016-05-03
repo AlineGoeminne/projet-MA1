@@ -17,7 +17,8 @@
 % DEFINITION: stratégie gagnante
 	\label{strategieGagnante}
 	\begin{defi}[Stratégie gagnante]
-		Soit $v \in V$, soit $\sigma _{i}$ une stratégie du joueur $i$, on dit que $\sigma _{i}$ est \textit{gagnante pour $J_{i}$} à partir de $v$ si $Outcome(v,(\sigma _{i}, \sigma _{-i})) \subseteq \Omega _{1}$.
+		Soit $v \in V$, soit $\sigma _{i}$ une stratégie du joueur $i$, on dit que $\sigma _{i}$ est \textit{gagnante pour $J_{i}$} à partir de $v$ si 
+		$$Outcome(v,(\sigma _{i}, \sigma _{-i})) \subseteq \Omega _{1}.$$
 	\end{defi}
 	
 	\begin{rem}
@@ -26,9 +27,9 @@
 	
 % DEFINITION: ensemble des états gagnants		
 	
-	\begin{defi}[Ensemble des états gagnants]
+	\begin{defi}[Ensemble des états gagnants]$ $\\
 		Soit $\mathcal{G} = (\Pi,(V,E),(V_{i})_{i \in \Pi}, (Goal_{i})_{i \in \Pi},(\Omega _{i})_{i \in \Pi})$,\\
-		\mbox{$W_{i} = \{ u_{j} |j\in \mathbb{N}$ et il existe une stratégie gagnante $\sigma _{i}$ pour $J_{i}$ à partir de $u_{j}\}$} est \textit{l'ensemble des états gagnants} de $J_{i}$. C'est l'ensemble des sommets de $\mathcal{G}$ à partir desquels $J_{i}$ est assuré de gagner.
+		$W_{i} = \{ u_{j} |j\in \mathbb{N}$ et $\exists \sigma _{i}$ une stratégie gagnantes pour $J_{i}$ à partir de $u_{j}\}$ est \textit{l'ensemble des états gagnants} de $J_{i}$. C'est l'ensemble des sommets de $\mathcal{G}$ à partir desquels $J_{i}$ est assuré de gagner.
 	\end{defi}
 	
 	
@@ -66,13 +67,14 @@
 		 Soit $X \subseteq V$.\\ 
 		Posons $Pre(X) = \{ v \in V_{1}| \exists v'((v,v')\in E) \wedge (v' \in X)\} \cup \{ v \in V_{2}|\forall v' ((v,v')\in E) \Rightarrow (v' \in X)\}$.
 		Définissons $(X_{k})_{k \in \mathbb{N}}$ la suite de sous-ensembles de $V$ suivante: \\
-		
-			$$\left\lbrace
-			  \begin{array}{c}
+		\begin{center}
+			$
+			  \begin{cases}
 			   X_{0} = F \\
 			   X_{k+1} = X_{k} \cup Pre(X_{k})
-		       \end{array}
-			\right. $$
+		       \end{cases}
+			. $
+		\end{center}
 		
 	\end{defi}
 	
@@ -136,7 +138,7 @@
 %EXEMPLE
 
 \begin{exemple}
-Soit $\mathcal{G} = ((V,E),V_{1},V_{2},\Omega _{1}, \Omega _{2},F)$ le jeu d'atteignabilité représenté par le graphe ci-dessous. Pour lequel $V = \{ v_{0},v_{1},v_{2},v_{3},v_{4},v_{5},v_{6},v_{7},v_{8} \}$, $E$ est l'ensemble des arcs représentés sur le graphe, $V_{1}$ est représenté par les sommets de forme ronde, $V_{2}$ est représenté par les sommets de forme carrée et $F$ est l'ensemble des sommets grisés.\\
+Soit $\mathcal{G} = ((V,E),V_{1},V_{2},\Omega _{1}, \Omega _{2},F)$ le jeu d'atteignabilité représenté par le graphe ci-dessous. On a: $V = \{ v_{0},v_{1},v_{2},v_{3},v_{4},v_{5},v_{6},v_{7},v_{8} \}$, $E$ est l'ensemble des arcs représentés sur le graphe, $V_{1}$ est représenté par les sommets de forme ronde, $V_{2}$ est représenté par les sommets de forme carrée et $F$ est l'ensemble des sommets grisés.\\
 Appliquons sur l'exemple ci-dessous, le principe de l'attracteur.
 
 \input{exAtt1}
