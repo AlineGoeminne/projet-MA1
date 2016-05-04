@@ -228,9 +228,7 @@ Nous avons désormais à notre disposition:
 	\item[$\bullet$] Un résultat permettant d'affirmer que nous pouvons nous contenter d'examiner les équilibres de Nash de la forme $\alpha \beta^{\omega}$ où $\alpha$ et $\beta$ sont des éléments de $V^{+}$. De là, nous pouvons appliquer le point précédant sur $\alpha\beta$ et comme ce mot est un mot fini, un algorithme peut effectuer cette tâche.
 	\item[$\bullet$] Un algorithme (\verb|DijkstraMinMax|) qui permet des récupérer les valeurs des joueurs où les joueurs jouent en coalition. Ces valeurs permettent de vérifier si la propriété du point précédent est respectée.
 \end{itemize}
-Il nous reste donc à déterminer un algorithme qui nous permet de trouver rapidement un équilibre de Nash pertinent. Pour ce faire, nous avons décidé d'explorer la piste des \emph{heuristiques} et particulièrement celle de la \emph{recherche locale} via la méthode de \emph{hill-climbing}. La section suivante rappelle ces notions et explicite comment nous désirons les appliquer à notre problématique.
-
-
+Il nous reste donc à déterminer un algorithme qui nous permet de trouver rapidement un équilibre de Nash pertinent. Pour ce faire, nous avons décidé d'explorer la piste des \emph{métaheuristiques} de type \emph{solution unique} et particulièrement celle de la \emph{recherche locale} via la méthode de \emph{hill-climbing}. La section suivante explique ces notions et explicite comment nous désirons les appliquer à notre problématique.
 \include{rechercheLocale}
 \include{conclusionRechLoc}
 
