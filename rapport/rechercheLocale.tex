@@ -2,7 +2,13 @@
 
 \subsection{Recherche locale}
 
+Le but de cette section est de nous intéresser aux notions de \emph{recherche locale} et de \emph{hill-climbing} dont nous présentons les principes ainsi que de nous interroger quant à la façon de les appliquer à notre problème. Pour ce faire nous nous basons sur le livre Russel et Norvig~\cite{artInt}.\\
 
+Dans le cadre d'un problème pour lequel seul la solution nous intéresse et non pas le chemin qui a permis de mener à cette solution les algorithmes de recherche locale sont utilisés. De tels algorithmes utilisent un seul état courant et effectue certaines modifications afin de \og se déplacer \fg~vers des \emph{voisins} de cet état. L'idée est d'améliorer itérativement l'état courant afin de trouver une bonne solution. Ces méthodes utilisent peu de mémoire et peuvent souvent trouver des solutions acceptables dans des \emph{espaces d'états} très larges pour lesquels un \emph{algorithme systématique} n'est pas approprié. De plus, les algorithmes de recherche locale sont utiles afin de résoudre des \emph{problèmes d'optimisation} dont le but est de trouver le meilleur état possible étant donné une certaine fonction objectif.
+
+A la notion de recherche locale est associée celle de \emph{paysage de l'espace d'états} qui a chaque \og localisation \fg~(un état) associe une \og élévation\fg~(donnée par la valeur de la fonction objectif). De ce fait, si les élévations représentent des coûts, alors le but est de trouver la plus petite vallée (un minimum global) dans le paysage.
+
+Le type de recherche locale le plus simple est celui de \emph{recherche Hill-climbing}. Pour illustrer la naïveté de cette méthode, Russel et Norvig~\cite{artInt} utilise la métaphore suivante: \og This ressembles trying to find the top of Mount Everest in a thick fog while suffering from amnesia \fg.
 
 \subsubsection{Hill-climbing}
 \subsubsection{Adaptation au cas présent}
