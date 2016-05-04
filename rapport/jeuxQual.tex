@@ -18,11 +18,11 @@
 	\label{strategieGagnante}
 	\begin{defi}[Stratégie gagnante]
 		Soit $v \in V$, soit $\sigma _{i}$ une stratégie du joueur $i$, on dit que $\sigma _{i}$ est \textit{gagnante pour $J_{i}$} à partir de $v$ si 
-		$$Outcome(v,(\sigma _{i}, \sigma _{-i})) \subseteq \Omega _{1}.$$
+		$$ \langle \sigma_{i}, \sigma_{-i} \rangle_v  \subseteq \Omega_{1}.$$
 	\end{defi}
 	
 	\begin{rem}
-		Dans le cadre de la définition \ref{strategieGagnante} , $Outcome(v,(\sigma _{i}, \sigma _{-i}))$ ne représente pas un seul jeu mais bien un ensemble de jeux. En effet, dans ce cas $\sigma _{-i}$ n'est pas fixé.
+		Dans le cadre de la définition \ref{strategieGagnante} , $ \langle \sigma_{i}, \sigma_{-i} \rangle_v  \subseteq \Omega_{1}$ ne représente pas un seul jeu mais bien un ensemble de jeux. En effet, dans ce cas $\sigma _{-i}$ n'est pas fixé.
 	\end{rem}
 	
 % DEFINITION: ensemble des états gagnants		
@@ -34,7 +34,7 @@
 	
 	
 	
-	Une fois le concept de jeu d'atteignabilité clairement établi, nous pouvons nous poser les questions suivantes : "Quels joueurs peuvent-ils gagner le jeu?" et "Quelle stratégie doivent adopter les joueurs pour atteindre leur objectif quelle que soit la stratégie jouée par les autres joueurs?". \\
+	Une fois le concept de jeu d'atteignabilité clairement établi, nous pouvons nous poser les questions suivantes : "Quels joueurs peuvent gagner le jeu?" et "Quelle stratégie doivent adopter les joueurs pour atteindre leur objectif quelle que soit la stratégie jouée par les autres joueurs?". \\
 	
 	Intéressons nous au cas de ces jeux restreints à deux joueurs.
 %-------------------------------------
@@ -51,9 +51,9 @@
 	\end{propriete}
 	\begin{demonstration}
 		Supposons au contraire que $W_{1}\cap W_{2} \neq \emptyset$. Cela signifie qu'il existe $s \in W_{1}$ tel que $s \in W_{2}$.\\
-		$s \in W_{1}$ si et seulement si il existe $\sigma _{1}$ une stratégie de $J_{1}$ telle que pour toute $\sigma _{2}$ stratégie de $J_{2}$ nous avons : $Outcome(s,(\sigma _{1},\sigma _{2})) \in \Omega _{1}$.\\
-		$s \in W_{2}$ si et seulement si il existe $\tilde{\sigma} _{2}$ une stratégie de $J_{2}$ telle que pour toute $\tilde{\sigma}_{1}$ stratégie de $J_{1}$ nous avons : $Outcome(s,(\tilde{\sigma}_{1},\tilde{\sigma}_{2})) \in \Omega _{2}$.\\
-		Dès lors, on obtient : $Outcome(s,(\sigma _{1},\tilde{\sigma}_{2})) \in \Omega _{1} \cap \Omega _{2}$. Or $\Omega _{1} \cap \Omega _{2} = \emptyset$, ce qui amène la contradiction.\\
+		$s \in W_{1}$ si et seulement si il existe $\sigma _{1}$ une stratégie de $J_{1}$ telle que pour toute $\sigma _{2}$ stratégie de $J_{2}$ nous avons :$ \langle \sigma _{1},\sigma _{2} \rangle_s \in \Omega _{1}$.\\
+		$s \in W_{2}$ si et seulement si il existe $\tilde{\sigma} _{2}$ une stratégie de $J_{2}$ telle que pour toute $\tilde{\sigma}_{1}$ stratégie de $J_{1}$ nous avons :$\langle \tilde{\sigma}_{1},\tilde{\sigma}_{2} \rangle_s \in \Omega _{2}$.\\
+		Dès lors, on obtient : $\langle\sigma _{1},\tilde{\sigma}_{2}\rangle_s \in \Omega _{1} \cap \Omega _{2}$. Or $\Omega _{1} \cap \Omega _{2} = \emptyset$, ce qui amène la contradiction.\\
 	\end{demonstration}
 
 %DEFINITION: jeu déterminé	
@@ -113,17 +113,17 @@
 	\begin{demonstration}
 		Pour prouver ~\eqref{line1} et ~\eqref{line2} nous allons procéder en plusieurs étapes.\\
 		
-		\noindent$\mathbf{Attr(F) \subseteq W_{1}}$: Soit $v \in Attr(F)$ alors par la propriétés \ref{prop:suiteUltConst} on a : $Attr(F) = X_{N}$ pour un certain $N \in \mathbb{N}$. Montrons par récurrence sur $n$ que dans ce cas, pour tout $n \in \mathbb{N}$ tel que $X_{n} \subseteq Attr(F)$ on peut construire une stratégie $\sigma _{1}$ pour $J_{1}$ telle que $Outcome(v,(\sigma _{1},\sigma _{2})) \subseteq \Omega _{1}$.
+		\noindent$\mathbf{Attr(F) \subseteq W_{1}}$: Soit $v \in Attr(F)$ alors par la propriétés \ref{prop:suiteUltConst} on a : $Attr(F) = X_{N}$ pour un certain $N \in \mathbb{N}$. Montrons par récurrence sur $n$ que dans ce cas, pour tout $n \in \mathbb{N}$ tel que $X_{n} \subseteq Attr(F)$ on peut construire une stratégie $\sigma _{1}$ pour $J_{1}$ telle que $\langle \sigma _{1},\sigma _{2}\rangle_v \subseteq \Omega _{1}$.
 		\begin{enumerate}
 			\item[$\star$] Pour $n=0$: alors $v \in X_{0} = F$ et l'objectif est atteint par $J_{1}$.
 			\item[$\star$] Supposons que la propriété soit vérifiée pour tout $ 0 \leq n \leq k $ et montrons qu'elle est toujours satisfaite pour $n = k + 1 \leq N$. \\
 			Soit $v \in X_{k+1} = X_{k} \cup Pre(X_{k})$. \\
-			Si $v \in X_{k}$ alors par hypothèse de récurrence, il existe $\sigma _{1}$ telle que $Outcome(v,(\sigma _{1},\sigma _{2})) \subseteq \Omega _{1}$.\\
-			Si $v \in Pre(X_{k})$, alors si $v \in V_{1}$ par définition de $Pre(X_{k})$ on sait qu'il existe $v'\in V_{k}$ tel que $(v,v')\in E$. Ainsi, on définit $\sigma _{1}(v) = v'$. Tandis que si $v \in V_{2}$, par définition de $Pre(X)$, quelle que soit la stratégie $\sigma _{2}$ adoptée par $J_{2}$  nous sommes assurés que $\sigma _{2}(v) \in X_{k}$. Dès lors, le résultat $Outcome(v,(\sigma _{1},\sigma _{2})) \subseteq \Omega _{1}$ est assuré.
+			Si $v \in X_{k}$ alors par hypothèse de récurrence, il existe $\sigma _{1}$ telle que $ \langle \sigma _{1},\sigma _{2} \rangle_v \subseteq \Omega _{1}$.\\
+			Si $v \in Pre(X_{k})$, alors si $v \in V_{1}$ par définition de $Pre(X_{k})$ on sait qu'il existe $v'\in V_{k}$ tel que $(v,v')\in E$. Ainsi, on définit $\sigma _{1}(v) = v'$. Tandis que si $v \in V_{2}$, par définition de $Pre(X)$, quelle que soit la stratégie $\sigma _{2}$ adoptée par $J_{2}$  nous sommes assurés que $\sigma _{2}(v) \in X_{k}$. Dès lors, le résultat $ \langle \sigma _{1},\sigma _{2} \rangle_v \subseteq \Omega _{1}$ est assuré.
 		\end{enumerate}
 		Par cette preuve par récurrence, l'assertion est bien vérifiée.\\
 		
-		\noindent$\mathbf{V \backslash Attr(F) \subseteq W_{2}}$: Soit $v \in V \backslash Attr(F)$. Une stratégie gagnante pour $J_{2}$ est une stratégie telle que à chaque tour de jeu le sommet $s$ considéré soit dans l'ensemble $V\backslash Attr(F)$. Sinon, au vu de la preuve précédente, il existerait à partir du sommet $s$ une stratégie gagnante pour $J_{1}$ et $J_{1}$ n'aurait donc qu'à utiliser cette stratégie pour s'assurer la victoire. Donc, si $v \in V_{1}$ par définition de $V \backslash Attr(F)$ on est assuré que pour tout $v'\in V $ tel que $(v,v')\in E$ $v' \in V \backslash Attr(F)$. De plus, si $ v \in V_{2}$ par définition de $V \backslash Attr(F)$ il existe $v' \in V$ tel que $(v,v')\in E$ et $v' \in V \backslash Attr(F)$. La stratégie $\sigma _{2}$ adoptée par $J_{2}$ sera donc $\sigma _{2}(v)= v'$.Procéder de la sorte nous assure $Outcome(v,(\sigma _{1},\sigma _{2})) \subseteq \Omega _{2}$. Ce que nous voulions démontrer.\\
+		\noindent$\mathbf{V \backslash Attr(F) \subseteq W_{2}}$: Soit $v \in V \backslash Attr(F)$. Une stratégie gagnante pour $J_{2}$ est une stratégie telle que à chaque tour de jeu le sommet $s$ considéré soit dans l'ensemble $V\backslash Attr(F)$. Sinon, au vu de la preuve précédente, il existerait à partir du sommet $s$ une stratégie gagnante pour $J_{1}$ et $J_{1}$ n'aurait donc qu'à utiliser cette stratégie pour s'assurer la victoire. Donc, si $v \in V_{1}$ par définition de $V \backslash Attr(F)$ on est assuré que pour tout $v'\in V $ tel que $(v,v')\in E$ $v' \in V \backslash Attr(F)$. De plus, si $ v \in V_{2}$ par définition de $V \backslash Attr(F)$ il existe $v' \in V$ tel que $(v,v')\in E$ et $v' \in V \backslash Attr(F)$. La stratégie $\sigma _{2}$ adoptée par $J_{2}$ sera donc $\sigma _{2}(v)= v'$. Procéder de la sorte nous assure $\langle \sigma _{1},\sigma _{2} \rangle_v \subseteq \Omega _{2}$. Ce que nous voulions démontrer.\\
 		
 		\noindent $\mathbf{W_{1} \subseteq Attr(F)}$: Supposons au contraire : $W_{1} \not\subseteq Attr(F)$. Cela signifie qu'il existe $v \in W_{1}$ tel que $v \notin Attr(F)$. D'où $v \in V\backslash Attr(F)$ et comme $V \backslash Attr(F) \subseteq W_{2}$, on a $v \in W_{2}$. Or par la propriété \ref{Wempty}, $W_{1} \cap W_{2} = \emptyset $ et ici $v \in W_{1}$ et $v \in W_{2}$. Ce qui amène la contradiction.\\
 		
