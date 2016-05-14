@@ -417,7 +417,7 @@ Au préalable, afin de prouver que le premier invariant est correct, nous allons
 
 \begin{propriete}
 	\label{prop:dijk1}
-	Soit $i$ une certaine étape de l'algorithme et $v \in V\backslash \{ T_i \}$ tel que $v$ se trouve sur un chemin optimal et que le successeur de $v$ sur ce chemin, notons-le $u$, ai déjà été traité (\emph{i.e.,} $u \in T_i$) alors:
+	Soit $i$ une certaine étape de l'algorithme et $v \in V\backslash T_i $ tel que $v$ se trouve sur un chemin optimal et que le successeur de $v$ sur ce chemin, notons-le $u$, ai déjà été traité (\emph{i.e.,} $u \in T_i$) alors:
 	$$ v \in V_{Min} \Rightarrow \rho_i(v) = Val(v).$$
 \end{propriete}
 
