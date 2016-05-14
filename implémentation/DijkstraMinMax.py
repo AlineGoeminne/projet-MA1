@@ -116,12 +116,13 @@ def initS(graph, goal):
                 v.S.tab = [Successor(None, float("infinity"))]
                 v.S.size += 1
 
-"""
-Initialise le tas Q de l'algorithme DijkstraMinMax
-"""
 
 
 def initQ(graph, goal):
+
+    """
+    Initialise le tas Q de l'algorithme DijkstraMinMax
+    """
 
     init_tab = [0]*len(graph.vertex)
     Q = MinHeap(init_tab, len(graph.vertex))
