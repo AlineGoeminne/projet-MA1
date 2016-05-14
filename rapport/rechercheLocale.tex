@@ -11,5 +11,35 @@ A la notion de recherche locale est associée celle de \emph{paysage de l'espace
 Le type de recherche locale le plus simple est celui de \emph{recherche Hill-climbing}. Pour illustrer la naïveté de cette méthode, Russel et Norvig~\cite{artInt} utilise la métaphore suivante: \og This ressembles trying to find the top of Mount Everest in a thick fog while suffering from amnesia \fg.
 
 \subsubsection{Hill-climbing}
+
+Le hill-climbing est une métaheuristique de type \emph{S-métaheuristique}. Une S-métaheuristique est une métaheuristique qui travaille sur un état courant unique. 
+
+On peut résumer le déroulement d'une S-métaheuristique par le pseudo code de l'algorithme~\ref{algo:S-meta}. De plus, chaque métaheuristique de ce type doit répondre à trois questions: 
+\begin{itemize}
+	\item[$\bullet$] De quelle manière définissons-nous un \emph{voisinage}?
+	\item[$\bullet$] A partir de quel \emph{état initial} commençons-nous l'exécution de l'algorithme?
+	\item[$\bullet$] De quelle manière \emph{évaluer incrémentalement} un voisinage?
+\end{itemize}
+\todo{Pour l'algo :Celui-là ou plutot celui de la page 75?}
+
+\begin{algorithm}
+	\caption{Déroulement d'une S-métaheuristique}
+	\label{algo:S-meta}
+	\begin{algorithmic}[1]
+		\REQUIRE $probleme$, une représentation du problème
+		\ENSURE un état solution
+		
+		\STATE $courant$ $\leftarrow$ \textsc{Créer-Noeud}($probleme$.\textsc{Etat-Initial})
+		\STATE $t$ $\leftarrow$ 0
+		
+		\WHILE {la condition d'arrêt n'est pas respectée}
+			\STATE $N$ $\leftarrow$ \textsc{Générer-Voisinage}($courant$)
+			\STATE $courant$ $\leftarrow$ \textsc{Sélectionner}($N$)
+			\STATE $t$ $ \leftarrow$ $t+1$
+		\ENDWHILE
+		
+		\RETURN $courant$
+\end{algorithmic}
+\end{algorithm}
 \subsubsection{Adaptation au cas présent}
 \todo{trouver un titre digne de ce nom à cette section}
