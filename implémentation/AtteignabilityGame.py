@@ -26,6 +26,10 @@ class Vertex(object):
             return self.id == other.name
 
 
+# ------------------
+# Class Graph
+# ------------------
+
 class Graph(object):
 
     """
@@ -54,152 +58,197 @@ class Graph(object):
         self.pred = pred
         self.succ = succ
 
+    @staticmethod
+    def generate_complete_graph(nbr_vertex, type, a, b):
 
-class ReachabilityGame(object):
+        """
+        Genere un graphe complet dont les poids sont generes aleatoirement dans l'intervalle [a,b]
 
-    def __init__(self, player, graph, goal, partition):
+        :param nbr_vertex : le nombre d'arc du graphe
+        :type nbr_vertex: int
 
-        self.player = player
-        self.graph = graph
-        self.goal = goal
-        self.part = partition
+        :param type: le type de representation du graphe que l'on souhaite (liste de predecesseurs, liste de sucesseurs,
+        matrice d'adjacence
+        :type  type : string
+
+        :param a : plus petite valeur que peut prendre le poids d'un arc
+        :type a : int
+
+        :param b : la plus grande valeur que peut prendre le poids d'un arc
+        :type b : int
+
+        """
+        res = []
+
+        if type == "matrix":
+
+            for i in range(0, nbr_vertex):
+
+                line = []
+                for j in range(0, nbr_vertex):
+
+                    weight = random.randint(a, b)
+                    weight_decimal = random.random()
+
+                    if i != j:
+                        line.append(weight + weight_decimal)
+                    else:
+                        line.append(0)
+
+                res.append(line)
+            return res
+        if type == "succ":
+
+            for i in range(0, nbr_vertex):
+                new_succ = []
+                for j in range(0, nbr_vertex):
+                    weight = random.randint(a, b)
+                    weight_decimal = random.random()
+
+                    if i != j:
+                        new_succ.append((j, weight + weight_decimal))
+
+                res.append(new_succ)
+            return res
+
+        if type == "pred":
+            for i in range(0, nbr_vertex):
+                new_pred = []
+                for j in range(0, nbr_vertex):
+                    weight = random.randint(a, b)
+                    weight_decimal = random.random()
+
+                    if i != j:
+                        new_pred.append((j, weight + weight_decimal))
+
+                res.append(new_pred)
+            return res
 
 
-def generate_complete_graph(nbr_edge, type, a, b):
+        else:
+            # TODO : est-ce bien un ValueError qui est adequat?
+            raise ValueError()
 
-    """
-    Genere un graphe complet dont les poids sont generes aleatoirement dans l'intervalle [a,b]
 
-    :param nbr_edge : le nombre d'arc du graphe
-    :type nbr_edge: int
+    @staticmethod
+    def matrix_to_list_succ(mat):
 
-    :param type: le type de representation du graphe que l'on souhaite (liste de predecesseurs, liste de sucesseurs,
-    matrice d'adjacence
-    :type  type : string
+        "Transforme une matrice d'adjancence en liste de successeurs"
 
-    :param a : plus petite valeur que peut prendre le poids d'un arc
-    :type a : int
+        if len(mat) != len(mat[0]):
+            raise ArenaError("La matrice d'adjacence n'est pas carree")
 
-    :param b : la plus grande valeur que peut prendre le poids d'un arc
-    :type b : int
+        nbr_edge = len(mat)
 
-    """
-    res = []
-
-    if type == "matrix":
-
-        for i in range(0, nbr_edge):
-
-            line = []
-            for j in range(0, nbr_edge):
-
-                weight = random.randint(a, b)
-                weight_decimal = random.random()
-
-                if i != j:
-                    line.append(weight + weight_decimal)
-                else:
-                    line.append(0)
-
-            res.append(line)
-        return res
-    if type == "succ":
+        list_succ = []
 
         for i in range(0, nbr_edge):
             new_succ = []
+
             for j in range(0, nbr_edge):
-                weight = random.randint(a, b)
-                weight_decimal = random.random()
 
-                if i != j:
-                    new_succ.append((j, weight + weight_decimal))
-                
-            res.append(new_succ)
-        return res
+                weight = mat[i][j]
+                if weight != 0:
+                    new_succ.append((j, weight))
 
-    if type == "pred":
-        for i in range(0, nbr_edge):
-            new_pred = []
-            for j in range(0, nbr_edge):
-                weight = random.randint(a, b)
-                weight_decimal = random.random()
+            list_succ.append(new_succ)
 
-                if i != j:
-                    new_pred.append((j, weight + weight_decimal))
+        return list_succ
 
-            res.append(new_pred)
-        return res
+    @staticmethod
+    def matrix_to_list_pred(mat):
 
+        "Transforme une matrice d'adjancence en liste de predecesseurs"
 
-    else:
-        # TODO : est-ce bien un ValueError qui est adequat?
-        raise ValueError()
+        if len(mat) != len(mat[0]):
+            raise ArenaError("La matrice d'adjacence n'est pas carree")
 
+        nbr_edge = len(mat)
 
-
-def matrix_to_list_succ(mat):
-
-    "Transforme une matrice d'adjancence en liste de successeurs"
-
-    if len(mat) != len(mat[0]):
-        raise ArenaError("La matrice d'adjacence n'est pas carree")
-
-    nbr_edge = len(mat)
-
-    list_succ = []
-
-    for i in range(0, nbr_edge):
-        new_succ = []
+        list_pred = []
 
         for j in range(0, nbr_edge):
+            new_pred = []
 
-            weight = mat[i][j]
-            if weight != 0:
-                new_succ.append((j, weight))
+            for i in range(0, nbr_edge):
 
-        list_succ.append(new_succ)
+                weight = mat[i][j]
+                if weight != 0:
+                    new_pred.append((i, weight))
 
-    return list_succ
+            list_pred.append(new_pred)
 
-def matrix_to_list_pred(mat):
+        return list_pred
 
-    "Transforme une matrice d'adjancence en liste de predecesseurs"
+    @staticmethod
+    def list_pred_to_list_succ(pred):
+        result = []
+        for i in range(0, len(pred)):
+            result.append([])
+        for i in range(0, len(pred)):
+            pred_i = pred[i]
+            for j in range(0, len(pred_i)):
+                (v, w) = pred[i][j]
+                result[v].append((i,w))
 
-    if len(mat) != len(mat[0]):
-        raise ArenaError("La matrice d'adjacence n'est pas carree")
+        return result
 
-    nbr_edge = len(mat)
 
-    list_pred = []
+# ------------------
+# Class ReachabilityGame
+# ------------------
 
-    for j in range(0, nbr_edge):
-        new_pred = []
 
-        for i in range(0, nbr_edge):
+class ReachabilityGame(object):
 
-            weight = mat[i][j]
-            if weight != 0:
-                new_pred.append((i, weight))
+    def __init__(self, player, graph, init, goal, partition):
 
-        list_pred.append(new_pred)
+        self.player = player   # nbr de joueurs
+        self.graph = graph     # graphe represantant le jeu
+        self.init = init       # noeud initial du jeu
+        self.goal = goal       # tab avec pour chaque joueur ensemble des noeuds objectifs
+        self.part = partition  # tab avec pour chaque joueur ensemble des noeuds lui appartenant
 
-    return list_pred
+
+
+    @staticmethod
+    def generate_vertex_player_uniform(nbr_player, nbr_vertex):
+
+        player_univers = range(1,nbr_player+1)
+        vertex = []
+
+        for i in range(0, nbr_vertex):
+            v = Vertex(i, random.choice(player_univers))
+            vertex.append(v)
+
+        return vertex
+
+    @staticmethod
+    def generate_game(nbr_player, nbr_vertex):
+        return 0
+
 
 if __name__ == '__main__':
+    # res = generate_complete_graph(4, "matrix", 1, 100)
 
-    #res = generate_complete_graph(4, "matrix", 1, 100)
+    # print res
 
-    #print res
+    # print matrix_to_list_succ(res)
+    # print matrix_to_list_pred(res)
 
-    #print matrix_to_list_succ(res)
-    #print matrix_to_list_pred(res)
+    # res = ReachabilityGame.generate_complete_graph(5, "matrix", 0, 10)
+    # print res
 
-    res = generate_complete_graph(5, "matrix", 0, 10)
-    print res
+    # res1 = ReachabilityGame.generate_complete_graph(5, "pred", 0, 10)
+    # print res1
 
-    res1 = generate_complete_graph(5, "pred", 0, 10)
-    print res1
+    # res2 = ReachabilityGame.generate_complete_graph(5, "succ", 0 , 10)
+    # print res2
 
-    res2 = generate_complete_graph(5, "succ", 0 , 10)
-    print res2
+    pred_0 = [(1, 4), (0, 2)]
+    pred_1 = [(2, 4)]
+    pred_2 = []
 
+    list_pred = [pred_0, pred_1, pred_2]
+    list_succ = Graph.list_pred_to_list_succ(list_pred)
+    print list_succ

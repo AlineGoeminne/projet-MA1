@@ -4,7 +4,7 @@ from MinHeap import MinHeap
 
 class VertexDijk(object):
 
-    def __init__(self, id, player, key = float("infinity"), index=0):
+    def __init__(self, id, player, key=float("infinity"), index=0):
 
         self.id = id        #represente l'ID du sommet
         self.player = player #represente le joueur auquel le noeud appartient
@@ -37,7 +37,7 @@ class VertexDijk(object):
 
 class VertexDijkPlayerMin(VertexDijk):
 
-    def __init__(self, id, player = 1, key =float("infinity"), min = None, index=0 ):
+    def __init__(self, id, player=1, key =float("infinity"), min = None, index=0 ):
 
         VertexDijk.__init__(self, id, player, key, index)
         self.S = min
@@ -45,7 +45,7 @@ class VertexDijkPlayerMin(VertexDijk):
 
 class VertexDijkPlayerMax(VertexDijk):
 
-    def __init__(self, id, nbrSucc, player = 2, key = float("infinity"), heap = None, index = 0):
+    def __init__(self, id, nbrSucc, player=2, key = float("infinity"), heap = None, index = 0):
 
         VertexDijk.__init__(self, id, player, key, index)
         self.S = heap  # represente un tas pour les noeuds du joueur max
@@ -188,6 +188,8 @@ def block_max(s,Q):
 
     # vu que pas besoin de retrouver les strategies optimales dans mon cas, je ne stocke pas les arcs deja bloques
 
+
+
 def convertPred2NbrSucc(pred):
 
     """
@@ -205,9 +207,10 @@ def convertPred2NbrSucc(pred):
 
 
 
-def graph_transformer(graph):
+def graph_transformer(graph, min_player):
+
     """
-    A partir des sommets "normaux" , construit les sommets que nous utiliserons dans l algorithme de Dijkstra
+    A partir d'un graphe, modelise le graphe du jeu min-max tel que le joueur voulant minimiser est min_player
 
     """
 
@@ -218,7 +221,7 @@ def graph_transformer(graph):
 
     for i in range(0, len(vertices)):
         oldVert = vertices[i]
-        if oldVert.player == 1:  # Noeud du joueur Min
+        if oldVert.player == min_player:  # Noeud du joueur Min
 
             dijkVert = VertexDijkPlayerMin(oldVert.id)
 
@@ -227,7 +230,7 @@ def graph_transformer(graph):
 
         newVertices[i] = dijkVert
 
-    return Graph(newVertices,graph.mat, graph.pred, graph.succ)
+    return Graph(newVertices, graph.mat, graph.pred, graph.succ)
 
 
 def dijkstraMinMax(graph, goal):
@@ -280,23 +283,7 @@ def print_result(T, goal):
         if i.player == 1 or i.id in goal:
             print "v"+str(i.id)," --> v"+str(i.S.id)
         else :
-            print "v"+str(i.id)," --> v"+str(i.S.read_min().id)
-    """
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+            print "v"+str(i.id)," --> v"+str(i.S.read_min().id)  """
 
 def test():
 
