@@ -76,14 +76,14 @@ Existe-t'il un équilibre de Nash tel que chaque joueur atteigne son objectif?
 
 \end{qst}
 
-Nous n'avons pas encore de réponse claire à cette question. Toutefois, pour un jeu à $n$ joueurs nous avons une bonne intuition quant à la manière de passer d'un équilibre de Nash où $n-1$ joueurs atteignent leur objectif à un équilibre de Nash où $n$ joueurs atteignent leur objectif.\\
+Nous n'avons pas encore de réponse claire à cette question. Toutefois, pour un jeu à $n$ joueurs nous avons une bonne intuition quant à la manière de passer d'un équilibre de Nash où $n-1$ joueurs atteignent leur objectif à un équilibre de Nash où $n$ joueurs atteignent leur objectif. En effet, à partir du dernier état objectif atteint, si $j$ est le joueur qui n'a pas atteint son objectif, il suffit que tous les joueurs s'allient afin d'atteindre un objectif du joueur $j$.\\
 
-Nous remarquons que si nous répondons positivement à cette question alors nous rentrerons dans les conditions explicitées dans le premier point de la section précédente.
+Nous remarquons que si nous répondons positivement à cette question alors nous rentrons dans les conditions explicitées dans le premier point de la section précédente.
 
 \todo{Que faire?}
 
 
-Maintenant, nous nous demandons s'il existe un processus algorithmique qui permet de déterminer si un outcome particulier correspond à l'outcome d'un équilibre de Nash. Dans le cas échéant, nous désirons expliciter ce procédé. Dans la suite de cette section nous répondons positivement à cette question. Nous énonçons d'abord une propriété (propriété~\ref{prop:rechEqpert1}) qui nous permet de déterminer une condition nécessarire et suffisante pour qu'un outcome soit l'outcome d'un certain équilibre de Nash. Toutefois, pour pouvoir effectuer une procédure algorithmique sur les outcomes, il faut que nous trouvions un moyen de représenter ceux-ci car nous travaillons avec des mots infinis. Nous nous convainquons donc par la suite que nous pouvons nous restreindre à l'étude d'équilibres de Nash dont l'outcome est de la forme $\alpha \beta^{\omega}$ où $\alpha$ et $\beta$ sont des mots finis. 
+Maintenant, nous nous demandons s'il existe un processus algorithmique qui permet de déterminer si un outcome particulier correspond à l'outcome d'un équilibre de Nash. Dans le cas échéant, nous désirons expliciter ce procédé. Dans la suite de cette section nous répondons positivement à cette question. Nous énonçons d'abord une propriété (propriété~\ref{prop:rechEqpert1}) qui nous permet de déterminer une condition nécessaire et suffisante pour qu'un outcome soit l'outcome d'un certain équilibre de Nash. Toutefois, pour pouvoir effectuer une procédure algorithmique sur les outcomes, il faut que nous trouvions un moyen de représenter ceux-ci car nous travaillons avec des mots infinis. Nous nous convainquons donc par la suite que nous pouvons nous restreindre à l'étude d'équilibres de Nash dont l'outcome est de la forme $\alpha \beta^{\omega}$ où $\alpha$ et $\beta$ sont des mots finis. 
 
 Avant de stipuler notre propriété, nous devons aborder quelques notions qui nous sont nécessaires.
 
@@ -116,7 +116,7 @@ Nous sommes maintenant apte à énoncer notre propriété. La preuve de celle-ci
 	
 	Posons $(x_{i})_{i\in\Pi} = (\varphi _{i}(\rho))_{i\in\Pi}$ le profil de paiement associé à la partie $\rho$. Nous définissons pour $v_{k} \in \rho$ ($k \in \mathbb{N}$)  $\varepsilon _{k} := \sum _{n= 0} ^{k-1} w(v_{n},v_{n+1})$ où $w$ est la fonction de poids associée à $G = (V,E)$.
 	
-	\begin{center}Il existe $ (\sigma _{i})_{i\in\Pi} \in \prod_{i\in\Pi} \Sigma _{i}$ un équilibre de Nash dans $(\mathcal{G},v_{0})$ tq $\langle (\sigma _{i})_{i \in \Pi}\rangle_{v_0} = \rho$\\ $\text{}$\\ si et seulement si\\$\text{}$\\  $ \forall k \in \mathbb{N}, \forall j \in \Pi$, $Val_{j}(v_{k}) + \varepsilon _{k} \geq x_j \text{  si } v_{k} \in V_{j}$.\end{center}
+	\begin{center}Le profil de stratégies $ (\sigma _{i})_{i\in\Pi} \in \prod_{i\in\Pi} \Sigma _{i}$ est un équilibre de Nash dans $(\mathcal{G},v_{0})$ tq $\langle (\sigma _{i})_{i \in \Pi}\rangle_{v_0} = \rho$\\ $\text{}$\\ si et seulement si\\$\text{}$\\  $ \forall k \in \mathbb{N}, \forall j \in \Pi$, $Val_{j}(v_{k}) + \varepsilon _{k} \geq x_j \text{  si } v_{k} \in V_{j}$.\end{center}
 	
 \end{propriete}
 
@@ -210,27 +210,31 @@ Nous sommes maintenant apte à énoncer notre propriété. La preuve de celle-ci
 	\end{itemize}
 \end{demonstration}
 
-Dans~\cite{juliePhd}, une procédure est explicitée afin de construire à partir d'un équilibre de Nash un équilibre de Nash du même \emph{type} telles que toutes les stratégies sont à mémoire finie. Le type d'un profil de stratégies est l'ensemble des joueurs qui ont visité leur objectif en suivant cet équilibre. Si le profil de stratégies est $(\sigma_i)_{i \in Pi}$ alors on note le type de ce profil $\type((\sigma_i)_{i\in \Pi})$. Le théorème suivant est donc énoncé:
+Dans sa thèse~\cite{juliePhd}, Julie De Pril explicite une procédure afin de construire à partir d'un équilibre de Nash un équilibre de Nash du même \emph{type} tel que toutes les stratégies sont à mémoire finie. Le type d'un profil de stratégies est l'ensemble des joueurs qui ont visité leur objectif en suivant cet équilibre. Si le profil de stratégies est $(\sigma_i)_{i \in \Pi}$ alors on note le type de ce profil $\type((\sigma_i)_{i\in \Pi})$. Le théorème suivant est donc énoncé:
 
 \begin{thm}
 	Etant donné un équilibre de Nash dans un jeu multijoueur initialisé à objectif quantitatif, il existe un équilibre de Nash du même type
 \end{thm}
 
-Ce procédé consiste en deux étapes. Etant donné un équilibre de Nash, on commence par construire un second équilibre de Nash du même type duquel on a supprimé les cycles inutiles. Un cycle inutile est un cycle tel que lors de son parcourt aucun joueur qui n'avait pas encore visité son objectif n'atteint celui-ci. Ensuite, on construit un équilibre de Nash $(\sigma_i)_{i\in \Pi}$, toujours avec le même type, tel qu'à partir de l'outcome $\langle (\sigma_i)_{i\in \Pi}\rangle_{v_0}$ on puisse identifier un préfixe $\alpha\beta$ tel que l'on puisse répéter infiniment $\beta$.
-Remarquons toutefois que dans le cadre de ces preuves, le fonction de poids $\phi: E \rightarrow \mathbb{R}$ est la fonction telle que pour tout $e \in E$, $\phi(e) = 1$. Les preuves s'adaptent toutefois si la fonction de poids est de la forme $\phi : E \rightarrow \mathbb{R}^{+}$.\\
-\todo{Justifications? $\mathbb{R}^{+}$ ou $\mathbb{N}_{0}$ ???}\\
+Ce procédé consiste en deux étapes. Etant donné un équilibre de Nash, on commence par construire un second équilibre de Nash du même type duquel on a supprimé les cycles inutiles. Un cycle inutile est un cycle tel que lors de son parcourt aucun joueur qui n'avait pas encore visité son objectif n'atteint celui-ci. Ensuite, on construit un équilibre de Nash $(\sigma_i)_{i\in \Pi}$, toujours avec le même type, tel qu'à partir de l'outcome $\langle (\sigma_i)_{i\in \Pi}\rangle_{v_0}$ on puisse identifier un préfixe $\alpha\beta$ tel que l'on puisse répéter infiniment $\beta$. De plus, si nous définissons la notation $\visit(\alpha)$ comme étant l'ensemble des joueurs qui on vu leur objectif atteint lors du parcourt de $\alpha$, nous retrouvons dès lors le résultat suivant:
 
-Nous pouvons donc conclure qu'il est moralement correct de se restreindre à le recherche d'équilibres de cette forme. En effet, vu qu'ils possèdent le même type cela n'influence pas notre désire de maximiser le nombre de joueurs d'atteindre leur objectif. De plus, puisque les poids sur les arcs sont tous des des poids positifs, la suppression des cycles lors de la première étape de la procédure ne fait que potentiellement diminuer le coût des joueurs pour cet équilibre. Cette modification est à notre avantage, en effet, cela diminue la somme des coûts des joueurs. Ce qui est exactement la valeur que nous désirons minimiser pour trouver un équilibre pertinent.\\
+\begin{propriete}
+	Soit $(\sigma_i)_{i\in \Pi}$ un équilibre de Nash dans le jeu d'atteignabilité multijoueur à objectifs quantitatifs et initialisé $(\mathcal{G}, v_0)$, il existe un équilibre de Nash $(\tau_i)_{i\in \Pi}$ avec le même type et tel que $\langle (\tau_i)_{i\in \Pi} \rangle_{v_0} = \alpha \beta^{\omega}$, où $\visit(\alpha) = \type((\sigma_i)_{i \in \Pi})$ et $|\alpha\beta| < (\Pi + 1)\cdot |V|$.
+\end{propriete}
+Remarquons toutefois que dans le cadre de ces preuves, le fonction de poids $\phi: E \rightarrow \mathbb{R}$ est la fonction telle que pour tout $e \in E$, $\phi(e) = 1$. Les preuves s'adaptent toutefois si la fonction de poids est de la forme $\phi : E \rightarrow \mathbb{R}^{+}_{0}$.\\
+\todo{Justifications? $\mathbb{R}^{+}_{0}$ ou $\mathbb{N}_{0}$ ???}\\
+
+Nous pouvons donc conclure qu'il est moralement correct de se restreindre à le recherche d'équilibres de cette forme. En effet, vu qu'ils possèdent le même type cela n'influence pas notre intention de maximiser le nombre de joueurs qui atteignent leur objectif. De plus, puisque les poids sur les arcs sont tous des des poids positifs, la suppression des cycles lors de la première étape de la procédure ne fait que diminuer le coût des joueurs pour cet équilibre si un cycle est présent. Cette modification est à notre avantage, en effet, cela diminue la somme des coûts des joueurs qui est la valeur que nous désirons minimiser pour trouver un équilibre pertinent.\\
 
 Nous avons désormais à notre disposition:
 \begin{itemize}
 	\item[$\bullet$] Une manière de tester si un outcome correspond à l'outcome d'un équilbre de Nash.
-	\item[$\bullet$] Un résultat permettant d'affirmer que nous pouvons nous contenter d'examiner les équilibres de Nash de la forme $\alpha \beta^{\omega}$ où $\alpha$ et $\beta$ sont des éléments de $V^{+}$. De là, nous pouvons appliquer le point précédant sur $\alpha\beta$ et comme ce mot est un mot fini, un algorithme peut effectuer cette tâche.
+	\item[$\bullet$] Un résultat permettant d'affirmer que nous pouvons nous contenter d'examiner les équilibres de Nash de la forme $\alpha \beta^{\omega}$ où $\alpha$ et $\beta$ sont des éléments de $V^{+}$. Nous pouvons donc travailler uniquement à partir de chemins de longueur au plus $\lceil \max_{e \in E} \phi(e) \rceil$. De là, nous pouvons appliquer le point précédant sur $\alpha\beta$ et comme ce mot est un mot fini, un algorithme peut effectuer cette tâche. 
 	\item[$\bullet$] Un algorithme (\verb|DijkstraMinMax|) qui permet des récupérer les valeurs des joueurs où les joueurs jouent en coalition. Ces valeurs permettent de vérifier si la propriété du point précédent est respectée.
 \end{itemize}
-Il nous reste donc à déterminer un algorithme qui nous permet de trouver rapidement un équilibre de Nash pertinent. Pour ce faire, nous avons décidé d'explorer la piste des \emph{métaheuristiques} de type \emph{solution unique} et particulièrement celle de la \emph{recherche locale} via la méthode de \emph{hill-climbing}. La section suivante explique ces notions et explicite comment nous désirons les appliquer à notre problématique.
-\include{rechercheLocale}
-\include{conclusionRechLoc}
+Il nous reste donc à déterminer un algorithme qui nous permet de trouver rapidement un équilibre de Nash pertinent. Pour ce faire, nous avons décidé d'explorer la piste des \emph{métaheuristiques} de type \emph{solution unique} et particulièrement celle de la \emph{recherche locale} via la méthode de \emph{hill-climbing}. La section suivante explique ces notions et explicite comment nous désirons les appliquer à notre problématique.\\
+\input{rechercheLocale}
+\input{conclusionRechLoc}
 
 
 
