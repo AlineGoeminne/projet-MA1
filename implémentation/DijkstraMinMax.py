@@ -285,6 +285,26 @@ def print_result(T, goal):
         else :
             print "v"+str(i.id)," --> v"+str(i.S.read_min().id)  """
 
+
+def set_to_tab_result(T):
+
+    """
+    A partir de l'ensemble des resultats, reconstruit le tableau ID du noeud -> valeur du noeud
+    """
+    tab = [0]*len(T)
+    for i in T:
+        tab[i.id] = i.key
+
+
+
+
+# ******
+# tests
+# ******
+
+
+
+
 def test():
 
     v1 = VertexDijk(1, 1, 4)
