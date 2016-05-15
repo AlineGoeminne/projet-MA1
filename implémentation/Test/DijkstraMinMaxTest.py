@@ -3,8 +3,9 @@ import unittest
 from DijkstraMinMax import convertPred2NbrSucc
 from DijkstraMinMax import dijkstraMinMax
 from DijkstraMinMax import print_result
-from AtteignabilityGame import Graph
-from AtteignabilityGame import Vertex
+from DijkstraMinMax import graph_transformer
+from ReachabilityGame import Graph
+from ReachabilityGame import Vertex
 
 
 
@@ -56,7 +57,7 @@ class TestDijkstraMinMax(unittest.TestCase):
         graph = Graph(vertices, None, list_pred, None)
         goal = set([0])
 
-        T = dijkstraMinMax(graph, goal)
+        T = dijkstraMinMax(graph_transformer(graph,1), goal)
 
         for v in T:
 
@@ -107,7 +108,7 @@ class TestDijkstraMinMax(unittest.TestCase):
         graph = Graph(vertices, None, list_pred, None)
         goal = set([0])
 
-        T = dijkstraMinMax(graph, goal)
+        T = dijkstraMinMax(graph_transformer(graph,1), goal)
 
         for v in T:
 
@@ -158,7 +159,7 @@ class TestDijkstraMinMax(unittest.TestCase):
             graph = Graph(vertices, None, list_pred, None)
             goal = set([0, 7])
 
-            T = dijkstraMinMax(graph, goal)
+            T = dijkstraMinMax(graph_transformer(graph, 1), goal)
             print_result(T,goal)
 
             for v in T:
@@ -186,6 +187,7 @@ class TestDijkstraMinMax(unittest.TestCase):
 
 
     def test_dijkstraMinMax_to_dijkstraNormal(self):
+
         # exemple du rapport
 
         v0 = Vertex(0, 1)
@@ -215,7 +217,7 @@ class TestDijkstraMinMax(unittest.TestCase):
         graph = Graph(vertices, None, list_pred, None)
         goal = set([0])
 
-        T = dijkstraMinMax(graph, goal)
+        T = dijkstraMinMax(graph_transformer(graph, 1), goal)
 
         for v in T:
             key = v.key
@@ -264,7 +266,7 @@ class TestDijkstraMinMax(unittest.TestCase):
         graph = Graph(vertices, None, list_pred, None)
         goal = set([0])
 
-        T = dijkstraMinMax(graph, goal)
+        T = dijkstraMinMax(graph_transformer(graph,1), goal)
 
         for v in T:
 

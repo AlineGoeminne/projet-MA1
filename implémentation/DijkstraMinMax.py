@@ -1,5 +1,3 @@
-from AtteignabilityGame import Vertex,Graph
-
 from MinHeap import MinHeap
 
 class VertexDijk(object):
@@ -207,37 +205,12 @@ def convertPred2NbrSucc(pred):
 
 
 
-def graph_transformer(graph, min_player):
-
-    """
-    A partir d'un graphe, modelise le graphe du jeu min-max tel que le joueur voulant minimiser est min_player
-
-    """
-
-    vertices = graph.vertex
-    newVertices = [0]*len(vertices)
-
-    nbrSucc = convertPred2NbrSucc(graph.pred)
-
-    for i in range(0, len(vertices)):
-        oldVert = vertices[i]
-        if oldVert.player == min_player:  # Noeud du joueur Min
-
-            dijkVert = VertexDijkPlayerMin(oldVert.id)
-
-        else:  # Noeud du joueur Max, il faut aussi recuperer son nombre de sucesseurs
-            dijkVert = VertexDijkPlayerMax(oldVert.id, nbrSucc[oldVert.id])
-
-        newVertices[i] = dijkVert
-
-    return Graph(newVertices, graph.mat, graph.pred, graph.succ)
 
 
 def dijkstraMinMax(graph, goal):
 
-    dijk_graph = graph_transformer(graph)
-    Q = initQ(dijk_graph, goal)
-    initS(dijk_graph, goal)
+    Q = initQ(graph, goal)
+    initS(graph, goal)
 
     T = set()
 
@@ -246,7 +219,7 @@ def dijkstraMinMax(graph, goal):
         min = Q.read_min()
 
         vertex_min_id = min.id
-        val_min = dijk_graph.vertex[vertex_min_id].key
+        val_min = graph.vertex[vertex_min_id].key
 
         if val_min == float("infinity"):
             u = Q.delete_min(True)
@@ -257,10 +230,10 @@ def dijkstraMinMax(graph, goal):
                 s = Q.delete_min(True)
                 T.add(s)
 
-                list_pred = dijk_graph.pred[s.id]
+                list_pred = graph.pred[s.id]
                 for i in range(0,len(list_pred)):
                     (pred, w) = list_pred[i]
-                    relaxation(dijk_graph.vertex[pred], s, w, Q, goal)
+                    relaxation(graph.vertex[pred], s, w, Q, goal)
             else:
                 block_max(min,Q)
 
@@ -294,6 +267,8 @@ def set_to_tab_result(T):
     tab = [0]*len(T)
     for i in T:
         tab[i.id] = i.key
+
+    return tab
 
 
 
