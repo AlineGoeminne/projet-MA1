@@ -5,7 +5,8 @@ from DijkstraMinMax import dijkstraMinMax
 from DijkstraMinMax import VertexDijkPlayerMax
 from DijkstraMinMax import VertexDijkPlayerMin
 from DijkstraMinMax import convertPred2NbrSucc
-from DijkstraMinMax import set_to_tab_result
+from DijkstraMinMax import get_all_values
+from DijkstraMinMax import get_succ_in_opti_strat
 
 class ArenaError(Exception):
     def __init__(self, value):
@@ -210,6 +211,17 @@ class Graph(object):
 
         return weight
 
+    @staticmethod
+    def get_weight_succ(current, succ, list_succ):
+        succ_current = list_succ[current.id]
+        weight = None
+        for i in succ_current:
+            (_succ, w) = i
+            if _succ == succ.id:
+                weight = w
+        return weight
+
+
 
 # ------------------
 # Class ReachabilityGame
@@ -218,13 +230,14 @@ class Graph(object):
 
 class ReachabilityGame(object):
 
-    def __init__(self, player, graph, init, goal, partition):
+    def __init__(self, player, graph, init, goal, partition, dic):
 
         self.player = player   # nbr de joueurs
         self.graph = graph     # graphe represantant le jeu
         self.init = init       # noeud initial du jeu
         self.goal = goal       # tab avec pour chaque joueur ensemble des noeuds objectifs
         self.part = partition  # tab avec pour chaque joueur ensemble des noeuds lui appartenant
+        self.id_to_player = dic #dictionnaire permettant a partir de l ID d un noeud de retrouver son joueur
 
     def get_vertex_player(self, id_player):
 
@@ -234,6 +247,8 @@ class ReachabilityGame(object):
         return self.goal[id_player-1]
 
     def is_a_goal(self, v):
+
+        # TODO : ici je considere que les ensembles objectifs sont disjoints
 
         """
         Teste si le noeud teste correspond a l'objectif recherche.
@@ -252,11 +267,19 @@ class ReachabilityGame(object):
 
 
     @staticmethod
+    def path_vertex_to_path_index(path):
+        res = []
+        for i in path:
+            res.append(i.id)
+        return res
+
+    @staticmethod
     def generate_vertex_player_uniform(nbr_player, nbr_vertex):
 
         player_univers = range(1,nbr_player+1)
         vertex = []
         partition = []
+        id_to_player = {}
 
         for i in range(0, nbr_player):
             partition.append(set())
@@ -265,20 +288,60 @@ class ReachabilityGame(object):
             player = random.choice(player_univers)
             v = Vertex(i, player)
             vertex.append(v)
+            id_to_player[i] = player
             partition[player-1].add(i)
 
-        return vertex, partition
+        return vertex, partition, id_to_player
 
     @staticmethod
     def generate_game(nbr_player, nbr_vertex, init, goal, a, b):
 
         pred = Graph.generate_complete_graph(nbr_vertex, "pred", a, b)
         succ = Graph.list_pred_to_list_succ(pred)
-        (vertex, partition) = ReachabilityGame.generate_vertex_player_uniform(nbr_player, nbr_vertex)
+        (vertex, partition, dic) = ReachabilityGame.generate_vertex_player_uniform(nbr_player, nbr_vertex)
 
         graph = Graph(vertex, None, pred, succ)
 
-        return ReachabilityGame(nbr_player, graph, init, goal, partition)
+        return ReachabilityGame(nbr_player, graph, init, goal, partition, dic)
+
+
+
+
+    def random_path(self, length):
+        """
+        A partir d un jeu, construit un chemin de longueur lenght
+        """
+
+        path = [self.init]
+
+        current = self.init
+        for i in range(0,length - 1):
+            list_succ_current = self.graph.succ[current.id]
+            (succ, weight) = random.choice(list_succ_current)
+            current = Vertex(succ, self.id_to_player[succ])
+            path.append(current)
+        return path
+
+
+
+
+    def test_random_path(self, nbr, length):
+
+        """
+        A partir d'un jeu, construit nbr chemins de longueur length et retient les EN
+        """
+        en_path = []
+        coalitions = {}
+        for i in range(0, nbr):
+            new_path = self.random_path(length)
+            (is_Nash, coalitions) = self.is_a_Nash_equilibrium(new_path, coalitions)
+            if is_Nash:
+                en_path.append(new_path)
+
+        return en_path
+
+
+
 
     @staticmethod
     def graph_transformer(graph, min_player):
@@ -306,30 +369,79 @@ class ReachabilityGame(object):
 
         return Graph(newVertices, graph.mat, graph.pred, graph.succ)
 
+
+    @staticmethod
+    def same_paths(path1, path2):
+        """
+        Teste si deux chemins sont les memes
+        """
+        if id(path1) == id(path2):
+            return True
+
+        if len(path1) != len(path2):
+            return False
+
+        for i in range(0,len(path1)):
+            if path1[i].id != path2[i].id:
+                return False
+        return True
+
     def cost_for_all_players(self, path):
 
         cost = [float("infinity")] * self.player
         weight = 0
 
+        reach_goals_player = set()
         reach_goals = set()
         (goal, player) = self.is_a_goal(path[0])
         if goal:
             cost[player-1] = weight
+            reach_goals_player.add(player)
+            reach_goals.add(path[0].id)
 
-        for i in range(1,len(path)):
+        for i in range(1, len(path)):
 
             v = path[i]
             pred_v = path[i-1]
             weight += Graph.get_weight_pred(v, pred_v, self.graph.pred)
 
-            # on teste si on ne vient pas d atteindre un etat objectif
+            # on teste si on ne vient pas d atteindre un nouvel etat objectif
             if v.id not in reach_goals:
                 (goal, player) = self.is_a_goal(v)
-                if goal:
+                if goal and player not in reach_goals_player:
                     cost[player -1] = weight
+                    reach_goals_player.add(player)
                     reach_goals.add(v.id)
 
         return cost
+
+    def cost_for_one_player(self, path, player):
+
+        cost = float("infinity")
+        weight = 0
+        goal_player = self.goal[player-1]
+
+        if path[0].id in goal_player:
+            cost = 0
+            return cost
+
+        for i in range(1, len(path)):
+
+            v = path[i]
+            pred_v = path[i - 1]
+            weight += Graph.get_weight_pred(v, pred_v, self.graph.pred)
+
+            # on teste si on ne vient pas d atteindre un objectif
+            if v.id in goal_player:
+                return weight
+
+        return cost
+
+
+
+
+
+
 
 
     @staticmethod
@@ -338,7 +450,7 @@ class ReachabilityGame(object):
             return True# on respecte les conditions de la propriete pour etre un EN
 
         else:
-            return False # on ne respcte pas la condition pour au moins un noeud -> pas un EN
+            return False# on ne respcte pas la condition pour au moins un noeud -> pas un EN
 
 
     def is_a_Nash_equilibrium(self, path, coalitions = None):
@@ -359,44 +471,38 @@ class ReachabilityGame(object):
         current = path[ind]
         pred = None
         # dans un premier temps supposons que chaque element du path est un noeud (id,player)
-        while(nash and ind < len(path)):
+        while nash and ind < len(path):
+
             if ind != 0:
                 pred = current
                 current = path[ind]
                 epsilon += Graph.get_weight_pred(current, pred, self.graph.pred)
+
             if current.player in coalitions:  #on a deja calcule les valeurs du jeu ou player joue contre la collation Pi\{player}
                 val = coalitions[current.player][current.id]
 
                 if ReachabilityGame.respect_property(val, epsilon, path_cost[current.player - 1]):
                     ind += 1 # on respecte les conditions de la propriete pour etre un EN
-
                 else:
                     nash = False # on ne respcte pas la condition pour au moins un noeud -> pas un EN
-
             else:  # il faut au prealable calculer les valeurs du jeu min-max associe
 
                 graph_min_max = ReachabilityGame.graph_transformer(self.graph, current.player)
                 result_dijk_min_max = dijkstraMinMax(graph_min_max, self.goal[current.player - 1])
-                tab_result = set_to_tab_result(result_dijk_min_max)
+                tab_result = get_all_values(result_dijk_min_max)
                 coalitions[current.player] = tab_result
 
                 val = coalitions[current.player][current.id]
+
                 if ReachabilityGame.respect_property(val, epsilon, path_cost[current.player - 1]):
                     ind += 1  # on respecte les conditions de la propriete pour etre un EN
+
 
                 else:
                     nash = False  # on ne respcte pas la condition pour au moins un noeud -> pas un EN
 
-        return nash
 
-
-
-
-
-
-
-
-
+        return nash, coalitions
 
 
     def print_partition(self):
@@ -507,15 +613,15 @@ def test_nash_equilibrium():
     goals = [set([3]), set([0])]
     init = 1
 
-    game = ReachabilityGame(2, graph, init, goals, None)
+    game = ReachabilityGame(2, graph, init, goals, None, None)
 
     path1 = [v1, v2, v3, v4, v3, v4, v3, v4] # EN ou J1 voit son objectif
     path2 = [v1, v2, v3, v0, v1, v0 , v1, v0, v1 ] # En ou les deux joueurs voient leur objectif
     path3 = [v1, v2, v4, v2, v4, v2, v4, v2, v4, v2, v4] # pas un EN
 
     print game.is_a_Nash_equilibrium(path1)
-    #print game.is_a_Nash_equilibrium(path2)
-    #print game.is_a_Nash_equilibrium(path3)
+    print game.is_a_Nash_equilibrium(path2)
+    print game.is_a_Nash_equilibrium(path3)
 
 
 
