@@ -504,6 +504,46 @@ class ReachabilityGame(object):
 
         return nash, coalitions
 
+    def is_a_Nash_equilibrium_one_player(self, path, player, coalitions=None):
+
+        """
+        A partir d un chemin (path), determine si la condition d'etre un EN est respectue sur le chemin "path" pour
+        un certain joueur "player".
+        Coalition contient, si elles ont deja ete calculees, les valeurs des noeuds pour les jeux de coalition
+
+        """
+        path_cost = self.cost_for_all_players(path)  # calcule les couts de tous les joueurs
+        if coalitions is None: coalitions = {}
+        if player in coalitions:
+            values_player = coalitions[player]
+        else:
+            graph_min_max = ReachabilityGame.graph_transformer(self.graph, player)
+            result_dijk_min_max = dijkstraMinMax(graph_min_max, self.goal[player - 1])
+            values_player = get_all_values(result_dijk_min_max)
+            coalitions[player] = values_player
+
+        epsilon = 0  # poids du chemin jusqu'au noeud courant
+        nash = True  # le chemin est un equilibre de Nash
+        ind = 0  # indice du noeud courant dans le chemin
+
+        current = path[ind]
+        while nash and ind < len(path):
+
+            if ind != 0:
+                pred = current
+                current = path[ind]
+                epsilon += Graph.get_weight_pred(current, pred, self.graph.pred)
+
+            if current.player == 1 :
+                val = coalitions[current.player][current.id]
+
+                if ReachabilityGame.respect_property(val, epsilon, path_cost[current.player - 1]):
+                    ind += 1  # on respecte les conditions de la propriete pour etre un EN
+                else:
+                    nash = False  # on ne respecte pas la condition pour au moins un noeud -> pas un EN
+            else:
+                ind += 1
+        return nash, coalitions
 
     def print_partition(self):
 

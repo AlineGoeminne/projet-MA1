@@ -158,6 +158,49 @@ class TestReachabilityGame(unittest.TestCase):
         self.assertEqual(float("infinity"), game.cost_for_one_player(path3, 2))
 
 
+    def test_is_Nash_equilibrium_one_player(self):
+        v0 = Vertex(0, 1)
+        v1 = Vertex(1, 1)
+        v2 = Vertex(2, 2)
+        v3 = Vertex(3, 1)
+        v4 = Vertex(4, 1)
+        vertex = [v0, v1, v2, v3, v4]
+
+        pred0 = [(1, 1), (3, 1)]
+        pred1 = [(0, 1)]
+        pred2 = [(1, 1), (4, 2)]
+        pred3 = [(2, 1), (4, 1)]
+        pred4 = [(2, 4), (3, 1)]
+
+        list_pred = [pred0, pred1, pred2, pred3, pred4]
+        list_succ = Graph.list_pred_to_list_succ(list_pred)
+
+        graph = Graph(vertex, None, list_pred, list_succ)
+        goals = [set([3]), set([0])]
+        init = v1
+
+        game = ReachabilityGame(2, graph, init, goals, None, None)
+
+        path1 = [v1, v2, v3, v4, v3, v4, v3, v4]  # En ou le joueur 1 atteint son objectif
+        path2 = [v1, v2, v3, v0, v1, v0, v1, v0, v1]  # En ou les deux joueurs voient leur objectif
+        path3 = [v1, v2, v4, v2, v4, v2, v4, v2, v4, v2, v4]  # pas un EN
+
+        (nash11, coalitions1) = game.is_a_Nash_equilibrium_one_player(path1, 1)
+        self.assertTrue(nash11)
+        (nash12, coalitions1) = game.is_a_Nash_equilibrium_one_player(path1, 2, coalitions1)
+        self.assertTrue(nash12)
+
+        (nash21, coalitions2) = game.is_a_Nash_equilibrium_one_player(path2, 1)
+        (nash22, coalitions2) = game.is_a_Nash_equilibrium_one_player(path2, 2, coalitions2)
+        self.assertTrue(nash21)
+        self.assertTrue(nash22)
+
+        (nash31, coalitions3) = game.is_a_Nash_equilibrium_one_player(path3, 1)
+        (nash32, coalitions3) = game.is_a_Nash_equilibrium_one_player(path3, 2, coalitions3)
+
+        self.assertFalse(nash31)
+        self.assertFalse(nash32)
+
 
 
 
