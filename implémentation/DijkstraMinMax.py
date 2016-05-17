@@ -1,5 +1,6 @@
 from MinHeap import MinHeap
 
+
 class VertexDijk(object):
 
     def __init__(self, id, player, key=float("infinity"), index=0):
@@ -48,6 +49,7 @@ class VertexDijkPlayerMax(VertexDijk):
         VertexDijk.__init__(self, id, player, key, index)
         self.S = heap  # represente un tas pour les noeuds du joueur max
         self.nbrSucc = nbrSucc
+        self.blocked = set()
 
 
 
@@ -178,6 +180,7 @@ def relaxation(p, s, w, Q, goal):
 
 def block_max(s,Q):
 
+    blocked = s.S.read_min()
     s.S.delete_min()
     new_min = s.S.read_min()
 
@@ -186,7 +189,7 @@ def block_max(s,Q):
 
     # vu que pas besoin de retrouver les strategies optimales dans mon cas, je ne stocke pas les arcs deja bloques
 
-
+    s.blocked.add(blocked.id)
 
 def convertPred2NbrSucc(pred):
 
@@ -240,7 +243,7 @@ def dijkstraMinMax(graph, goal):
     return T
 
 
-def print_result(T, goal):
+def print_result(T, goal, succ):
 
     print " -----------------------"
 
@@ -248,18 +251,49 @@ def print_result(T, goal):
 
         print "noeud :", i.id, " valeur : ", i.key
 
-    # TODO: reste a gerer les noeuds qui pointent vers qqc de None
-    """
     print "la strategie a mettre en oeuvre"
-
-    for i in T:
-        if i.player == 1 or i.id in goal:
-            print "v"+str(i.id)," --> v"+str(i.S.id)
-        else :
-            print "v"+str(i.id)," --> v"+str(i.S.read_min().id)  """
+    successors = get_succ_in_opti_strat(T, goal, succ)
+    for i in range(0,len(successors)):
+        print "v"+str(i), "----> v"+str(successors[i])
 
 
-def set_to_tab_result(T):
+
+def get_succ_in_opti_strat(T, goal, succ):
+
+    successor = [0]* len(T)
+
+    for v in T:
+
+        if v.player == 1 or v.id in goal:
+
+            res = v.S.id
+            if res is not None:
+                successor[v.id] = v.S.id
+            else:
+                (res, w) = succ[v.id][0]
+                successor[v.id] = res
+
+
+        else:
+            res = v.S.read_min().id
+            if res is not None:
+                successor[v.id] = res
+            else:
+                blocked = v.blocked
+                list_succ = succ[v.id]
+
+                notFind = True
+                index = 0
+                while(notFind):
+                    (candidate, w) = list_succ[index]
+                    if candidate not in blocked: # l'arc n'avait pas ete bloque
+                        successor[v.id] = candidate
+                        notFind = False
+                    index += 1
+
+    return successor
+
+def get_all_values(T):
 
     """
     A partir de l'ensemble des resultats, reconstruit le tableau ID du noeud -> valeur du noeud
