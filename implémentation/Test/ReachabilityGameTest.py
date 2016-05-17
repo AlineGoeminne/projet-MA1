@@ -34,10 +34,13 @@ class TestReachabilityGame(unittest.TestCase):
         path3 = [v1, v2, v4, v2, v4, v2, v4, v2, v4, v2, v4]  # pas un EN
 
 
+        (nash1, coal1) = game.is_a_Nash_equilibrium(path1)
+        (nash2, coal2) = game.is_a_Nash_equilibrium(path2)
+        (nash3, coal3) = game.is_a_Nash_equilibrium(path3)
 
-        self.assertTrue(game.is_a_Nash_equilibrium(path1))
-        self.assertTrue(game.is_a_Nash_equilibrium(path2))
-        self.assertFalse(game.is_a_Nash_equilibrium(path3))
+        self.assertTrue(nash1)
+        self.assertTrue(nash2)
+        self.assertFalse(nash3)
 
         cost_path1 = game.cost_for_all_players(path1)
 
@@ -84,6 +87,7 @@ class TestReachabilityGame(unittest.TestCase):
 
 
     def test_generate_random_path(self):
+
         v0 = Vertex(0, 1)
         v1 = Vertex(1, 1)
         v2 = Vertex(2, 2)
@@ -110,5 +114,50 @@ class TestReachabilityGame(unittest.TestCase):
 
         en_set = game.test_random_path(50, 10)
 
+        self.assertTrue(len(en_set) <= 50)
+        self.assertEqual(10, len(en_set[0]))
+
         for en in en_set:
             print ReachabilityGame.path_vertex_to_path_index(en)
+
+
+    def test_path_cost_one_player(self):
+        v0 = Vertex(0, 1)
+        v1 = Vertex(1, 1)
+        v2 = Vertex(2, 2)
+        v3 = Vertex(3, 1)
+        v4 = Vertex(4, 1)
+        vertex = [v0, v1, v2, v3, v4]
+
+        pred0 = [(1, 1), (3, 1)]
+        pred1 = [(0, 1)]
+        pred2 = [(1, 1), (4, 2)]
+        pred3 = [(2, 1), (4, 1)]
+        pred4 = [(2, 4), (3, 1)]
+
+        list_pred = [pred0, pred1, pred2, pred3, pred4]
+        list_succ = Graph.list_pred_to_list_succ(list_pred)
+
+        graph = Graph(vertex, None, list_pred, list_succ)
+        goals = [set([3]), set([0])]
+        init = v1
+
+        game = ReachabilityGame(2, graph, init, goals, None, None)
+
+        path1 = [v1, v2, v3, v4, v3, v4, v3, v4] #En ou le joueur 1 atteint son objectif
+        path2 = [v1, v2, v3, v0, v1, v0, v1, v0, v1]  # En ou les deux joueurs voient leur objectif
+        path3 = [v1, v2, v4, v2, v4, v2, v4, v2, v4, v2, v4]  # pas un EN
+
+        self.assertEqual(2, game.cost_for_one_player(path1, 1))
+        self.assertEqual(float("infinity"), game.cost_for_one_player(path1, 2))
+
+        self.assertEqual(2, game.cost_for_one_player(path2, 1))
+        self.assertEqual(3, game.cost_for_one_player(path2, 2))
+
+        self.assertEqual(float("infinity"), game.cost_for_one_player(path3, 1))
+        self.assertEqual(float("infinity"), game.cost_for_one_player(path3, 2))
+
+
+
+
+

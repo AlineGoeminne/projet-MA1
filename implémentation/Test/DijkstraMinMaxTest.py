@@ -53,11 +53,13 @@ class TestDijkstraMinMax(unittest.TestCase):
         pred7 = [(6, 1)]
 
         list_pred = [pred0, pred1, pred2, pred3, pred4, pred5, pred6, pred7]
+        list_succ = Graph.list_pred_to_list_succ(list_pred)
 
-        graph = Graph(vertices, None, list_pred, None)
+        graph = Graph(vertices, None, list_pred, list_succ)
         goal = set([0])
 
         T = dijkstraMinMax(ReachabilityGame.graph_transformer(graph,1), goal)
+        #print_result(T, goal, list_succ)
 
         for v in T:
 
@@ -95,7 +97,7 @@ class TestDijkstraMinMax(unittest.TestCase):
 
         vertices = [v0, v1, v2, v3, v4, v5, v6]
 
-        pred0 = [(1, 1), (2, 9)]
+        pred0 = [(1, 1), (2, 9), (0, 1)]
         pred1 = [(3, 1)]
         pred2 = [(5, 1)]
         pred3 = [(5,3), (2, 1)]
@@ -104,11 +106,13 @@ class TestDijkstraMinMax(unittest.TestCase):
         pred6 = [(5, 2)]
 
         list_pred = [pred0, pred1, pred2, pred3, pred4, pred5, pred6]
+        list_succ = Graph.list_pred_to_list_succ(list_pred)
 
-        graph = Graph(vertices, None, list_pred, None)
+        graph = Graph(vertices, None, list_pred, list_succ)
         goal = set([0])
 
         T = dijkstraMinMax(ReachabilityGame.graph_transformer(graph,1), goal)
+        #print_result(T, goal, list_succ)
 
         for v in T:
 
@@ -130,6 +134,41 @@ class TestDijkstraMinMax(unittest.TestCase):
                 self.assertEqual(key, float("infinity"))
             if id == 6:
                 self.assertEqual(key, float("infinity"))
+
+
+    def test_recherche_valeur3(self):
+
+        v0 = Vertex(0, 1)
+        v1 = Vertex(1, 1)
+        v2 = Vertex(2, 2)
+        v3 = Vertex(3, 1)
+        v4 = Vertex(4, 1)
+        vertex = [v0, v1, v2, v3, v4]
+
+        pred0 = [(1, 1), (3, 1)]
+        pred1 = [(0, 1)]
+        pred2 = [(1, 1), (4, 2)]
+        pred3 = [(2, 1), (4, 1)]
+        pred4 = [(2, 4), (3, 1)]
+
+        list_pred = [pred0, pred1, pred2, pred3, pred4]
+        list_succ = Graph.list_pred_to_list_succ(list_pred)
+
+        graph = Graph(vertex, None, list_pred, list_succ)
+        goals = [set([3]), set([0])]
+
+
+        T1 = dijkstraMinMax(ReachabilityGame.graph_transformer(graph,1), goals[0])
+        T2 = dijkstraMinMax(ReachabilityGame.graph_transformer(graph, 2), goals[1])
+
+        print " J1 contre J2"
+
+        print_result(T1, goals[0], list_succ)
+
+        print " J2 contre J1"
+
+        print_result(T2, goals[1], list_succ)
+
 
 
     def test_recherche_valeurs_2obj(self):
@@ -155,11 +194,14 @@ class TestDijkstraMinMax(unittest.TestCase):
             pred7 = [(6, 1)]
 
             list_pred = [pred0, pred1, pred2, pred3, pred4, pred5, pred6, pred7]
-
             graph = Graph(vertices, None, list_pred, None)
             goal = set([0, 7])
 
             T = dijkstraMinMax(ReachabilityGame.graph_transformer(graph, 1), goal)
+
+
+
+
 
             for v in T:
 
