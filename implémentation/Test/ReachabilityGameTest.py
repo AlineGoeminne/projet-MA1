@@ -256,6 +256,7 @@ class TestReachabilityGame(unittest.TestCase):
         game = ReachabilityGame(2, graph, v0, goal, None, {0: 1, 1:2, 2:1, 3:1})
 
         result = game.parcours_d_arbre(12)
+        print "nombre de resultats", len(result)
         for i in range(0, len(result)):
             (cost, reached) = game.get_info_path(result[i])
             print ReachabilityGame.path_vertex_to_path_index(result[i]), " infos:: cost", cost, " reached", reached
@@ -263,6 +264,50 @@ class TestReachabilityGame(unittest.TestCase):
         best_result = game.filter_best_result(result)
         (cost,reached) = game.get_info_path(best_result)
         print ReachabilityGame.path_vertex_to_path_index(best_result) , "info :: cost", cost, "reached", reached
+
+
+    def test_generate_successor(self):
+
+        v0 = Vertex(0, 1)
+        v1 = Vertex(1, 1)
+        v2 = Vertex(2, 2)
+        v3 = Vertex(3, 1)
+        v4 = Vertex(4, 1)
+        vertex = [v0, v1, v2, v3, v4]
+
+        pred0 = [(1, 1), (3, 1)]
+        pred1 = [(0, 1)]
+        pred2 = [(1, 1), (4, 2)]
+        pred3 = [(2, 1), (4, 1)]
+        pred4 = [(2, 4), (3, 1)]
+
+        list_pred = [pred0, pred1, pred2, pred3, pred4]
+        list_succ = Graph.list_pred_to_list_succ(list_pred)
+
+        graph = Graph(vertex, None, list_pred, list_succ, 4)
+        goals = [set([3]), set([0])]
+        init = v1
+        game = ReachabilityGame(2, graph, init, goals, None, None)
+
+        path = [v0, v1, v2]
+
+        parent = Node([v0, v1], None, 1, {2:0})
+
+        current = Node(path, parent, 2, {2:0}, 3 * 4 * 5)
+        border = []
+
+        print game.goal[0]
+        game.generate_successor(current, border, ReachabilityGame.heuristic)
+
+        print "boum", game.is_a_Nash_equilibrium([v0, v1, v2, v4])
+
+        for elem in border:
+
+            print ReachabilityGame.path_vertex_to_path_index(elem.current)
+
+
+
+
 
     def super_test(self):
 
