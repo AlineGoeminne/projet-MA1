@@ -1,6 +1,7 @@
 
 import random
 import heapq
+import copy
 
 from DijkstraMinMax import dijkstraMinMax
 from DijkstraMinMax import VertexDijkPlayerMax
@@ -15,6 +16,14 @@ class ArenaError(Exception):
 
     def __str__(self):
         return repr(self.value)
+
+class BestFirstSearchError(Exception):
+    def __init__(self, value):
+        self.value = value
+
+    def __str__(self):
+        return repr(self.value)
+
 
 
 class Vertex(object):
@@ -486,62 +495,174 @@ class ReachabilityGame(object):
 
     #test d'un parcours d'arbre un peu plus intelligent
 
-    def best_first_search(self):
-        # todo
+    def best_first_search(self, heuristic):
 
-        pass
+
+        max_path_length = (self.player + 1) * self.graph.max_weight * len(self.graph.vertex)
+
+
+        parent = Node([], None, 0, {}, float("infinity"))
+        current = Node([self.init], parent, 0, {})
+
+        border = []
+        self.generate_successor(current, border, heuristic)
+        exist_candidat = True
+
+        while(exist_candidat):
+            if len(border) == 0:
+                exist_candidat = False
+                raise BestFirstSearchError("Aucun element restant dans la frontiere")
+            else:
+                candidate = heapq.heappop(border)
+
+                print "je teste le candidat:", ReachabilityGame.path_vertex_to_path_index(candidate.current)
+                print " value", candidate.value
+                if ReachabilityGame.same_paths([self.graph.vertex[1], self.graph.vertex[2], self.graph.vertex[3], self.graph.vertex[0]], candidate.current):
+                    print "ICI !!!!!!!!!!!!!!!"
+                #print "COST DU CANDIDAT", candidate.cost
+
+                if len(candidate.cost) == self.player:
+                    return candidate.current
+                else:
+                    (nash, coal) = self.is_a_Nash_equilibrium(candidate.current)
+                    if len(candidate.current) == max_path_length and nash :
+                        return candidate.current
+                    else:
+                        self.generate_successor(candidate, border, heuristic)
+
+
+
+
+
+    def best_first_search_debug(self, heuristic):
+
+        max_length = (self.player + 1) * self.graph.max_weight * len(self.graph.vertex)
+
+        parent = Node([], None, 0, {})
+        initial_node = Node([self.init], parent, 0, {})
+
+        border = []
+        heapq.heappush(border, initial_node)
+
+        while(True):
+
+            if len(border) == 0:
+                raise BestFirstSearchError(" Plus d'elements dans la frontiere")
+
+            candidate_node = heapq.heappop(border)
+            old_path = candidate_node.current
+
+            if len(old_path) < max_length:
+
+                last_vertex = candidate_node.current[-1]
+                succ_last_vertex = self.graph.succ[last_vertex.id]
+
+                for i in range(0, len(succ_last_vertex)):
+
+                    (succ, w) = succ_last_vertex[i]
+
+                    epsilon = candidate_node.eps + w
+
+                    new_path = []
+                    new_path[0 : len(old_path)] = old_path
+
+                    succ_vertex = self.graph.vertex[succ]
+                    new_path.append(succ_vertex)
+
+                    (goal, player) = self.is_a_goal(succ_vertex)
+                    if goal and player not in candidate_node.cost:
+
+                        (nash, coalitions) = self.is_a_Nash_equilibrium_one_player(new_path, player)
+
+                        if nash and len(candidate_node.cost) + 1 == self.player:
+                            return new_path
+                        if nash:
+
+                            new_cost = copy.deepcopy(candidate_node.cost)
+                            new_cost[player] = epsilon
+                            value = heuristic(new_cost, self.player, self.graph.max_weight,
+                                                               len(self.graph.vertex), len(new_path))
+                            new_node = Node(new_path, candidate_node, epsilon, new_cost, value)
+                            heapq.heappush(border, new_node)
+
+                    else:
+
+                        if len(new_path) == max_length:
+                            (nash, coalition) = self.is_a_Nash_equilibrium(new_path)
+                            if nash:
+                                return new_path
+
+                        else:
+                            value = heuristic(candidate_node.cost, self.player, self.graph.max_weight,
+                                                           len(self.graph.vertex), len(new_path))
+                            new_node = Node(new_path, candidate_node, epsilon, candidate_node.cost, value)
+                            heapq.heappush(border, new_node)
+
+
+
+
+
+
+
+
 
     def generate_successor(self, current, border, heuristic):
 
         path = current.current # on recupere le veritable noeud courant
+        #print "path", ReachabilityGame.path_vertex_to_path_index(path)
 
         # on ne continue l'exploration que si on a pas atteint la longueur maximale de chemin sur lequel on veut tester
+
         if len(path) < (self.player +1) * self.graph.max_weight * len(self.graph.vertex):
             last_vertex = path[-1]
 
             list_succ_current = self.graph.succ[last_vertex.id]
+            #print"succ_current", list_succ_current
 
             for i in range(0, len(list_succ_current)):
 
-                cost = current.cost
+                new_cost = copy.deepcopy(current.cost)
                 (succ, w) = list_succ_current[i]
+                #print " on rajoute le successeur ", succ
                 epsilon = current.parent.eps + w
 
                 # on regarde si un joueur a atteint son objectif pour la premiere fois
 
                 succ_vertex = self.graph.vertex[succ]
                 (goal, player) = self.is_a_goal(succ_vertex)
+                new_path = []
+                new_path[0:len(path)] = path
+                new_path.append(succ_vertex)
 
                 if goal and player not in current.cost:
 
-                    cost[player] = epsilon
+                    new_cost[player] = epsilon
 
-                    new_path = []
-                    new_path[0:len(path)] = path
-                    new_path.append(succ_vertex)
+
                     # on teste si jusque la, pour ce joueur la, l outcome correspond a un EN
-                    print "player", player
                     (nash, coalitions) = self.is_a_Nash_equilibrium_one_player(path, player)
 
                     if nash:
-                        value = heuristic(cost, self.player, self.graph.max_weight, len(self.graph.vertex))
-                        new = Node(new_path, current, epsilon, cost, value)
-                        heapq.heappush(border,new)
+                        value = heuristic(new_cost, self.player, self.graph.max_weight, len(self.graph.vertex), len(new_path))
+                        new = Node(new_path, current, epsilon,new_cost, value)
+                        heapq.heappush(border, new)
 
                     #si on rompt deja le critere d'etre un en, alors ca en sert a rien de continuer sur ce chemin
                 else:
                     # on a pas atteint de nouveau objectif, on continue l exploration
 
-                    value = heuristic(cost, self.player, self.graph.max_weight, len(self.graph.vertex))
-                    new = Node(new_path, current, epsilon, cost, value)
+                    value = heuristic(new_cost, self.player, self.graph.max_weight, len(self.graph.vertex),len(new_path))
+                    new = Node(new_path, current, epsilon, new_cost, value)
                     heapq.heappush(border, new)
 
 
+
+
     @staticmethod
-    def heuristic(cost, nb_player, max_weight, nb_vertex):
+    def heuristic(cost, nb_player, max_weight, nb_vertex, length_path):
 
         nb_reached = len(cost)
-        max_length_path = (nb_player + 1) * nb_vertex
+        max_length_path = (nb_player + 1)*max_weight * nb_vertex
 
         value = 0
 
@@ -551,7 +672,8 @@ class ReachabilityGame(object):
             keys = cost.keys()
             for p in keys:
                 value += cost[p]
-            penality = (nb_player - nb_reached)*max_weight * max_length_path
+            penality = (nb_player - nb_reached)*max_weight * (max_length_path - length_path) + length_path
+
             return value + penality
 
 
