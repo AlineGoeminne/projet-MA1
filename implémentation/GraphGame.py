@@ -302,7 +302,7 @@ class ReachabilityGame(object):
 
         graph = Graph(vertex, None, pred, succ)
 
-        return ReachabilityGame(nbr_player, graph, init, goal, partition, dic)
+        return ReachabilityGame(nbr_player, graph, graph.vertex[init], goal, partition, dic)
 
 
 
@@ -386,6 +386,66 @@ class ReachabilityGame(object):
                 return False
         return True
 
+    def parcours_d_arbre(self, deep):
+
+        path_init = [self.init]
+        deep = deep - 1
+        coalitions = {}
+        reach_player = []
+        result = []
+
+        res =  self.parcours_d_arbre_aux(path_init, deep, coalitions, reach_player, result)
+        return res
+    def parcours_d_arbre_aux(self, path, deep, coalitions, reach_player, result):
+
+        """
+        Fonction auxiliaire permettant de parcourir un arbre sur une hauteur de "deep"
+
+        @param path: le chemin courant
+        @param deep: la profondeur maximale de parcourt de l'arbre
+        @param coalitions: dictionnaire (joueur -> tableau de valeurs)
+        @param cost : pour chaque joueur le cout du chemin
+        @param eps: cout du prefixe du chemin
+        @reach_player: ensemble des joueur ayant atteint leur objectif
+        @param result: ensemble des equilibres de Nash retournes
+
+        """
+
+        if deep == 0:
+            (nash, coalitions) = self. is_a_Nash_equilibrium(path,coalitions)
+            if nash:
+                result.append(path)
+            return result
+
+
+        else:
+            last_vertex = path[len(path) - 1]
+            succ_current = self.graph.succ[last_vertex.id]
+            for i in range(0, len(succ_current)):
+
+                (succ, w) = succ_current[i]
+                succ_vertex = self.graph.vertex[succ]
+                new_path = []
+                new_path[0:len(path)] = path
+                new_path.append(succ_vertex)
+                (goal, player_new_goal) = self.is_a_goal(succ_vertex)
+                if goal and player_new_goal not in reach_player:
+                    _reach_player = []
+                    _reach_player[0:len(reach_player)] = reach_player
+                    _reach_player.append(player_new_goal)
+                    (nash, coalitions) = self.is_a_Nash_equilibrium_one_player(new_path, player_new_goal, coalitions)
+                    if nash :
+                        if len(_reach_player) == self.player:
+                            result.append(new_path)
+                            return result
+                        else:
+                            self.parcours_d_arbre_aux(new_path, deep - 1, coalitions, _reach_player, result)
+                    else:
+                        return result
+                else:
+                    self.parcours_d_arbre_aux(new_path, deep - 1 , coalitions, reach_player, result)
+
+            return result
     def cost_for_all_players(self, path):
 
         cost = [float("infinity")] * self.player
@@ -512,7 +572,7 @@ class ReachabilityGame(object):
         Coalition contient, si elles ont deja ete calculees, les valeurs des noeuds pour les jeux de coalition
 
         """
-        path_cost = self.cost_for_all_players(path)  # calcule les couts de tous les joueurs
+        path_cost = self.cost_for_one_player(path, player)  # calcule les couts de tous les joueurs
         if coalitions is None: coalitions = {}
         if player in coalitions:
             values_player = coalitions[player]
@@ -534,10 +594,10 @@ class ReachabilityGame(object):
                 current = path[ind]
                 epsilon += Graph.get_weight_pred(current, pred, self.graph.pred)
 
-            if current.player == 1 :
-                val = coalitions[current.player][current.id]
+            if current.player == player :
+                val = values_player[current.id]
 
-                if ReachabilityGame.respect_property(val, epsilon, path_cost[current.player - 1]):
+                if ReachabilityGame.respect_property(val, epsilon, path_cost):
                     ind += 1  # on respecte les conditions de la propriete pour etre un EN
                 else:
                     nash = False  # on ne respecte pas la condition pour au moins un noeud -> pas un EN
@@ -545,6 +605,74 @@ class ReachabilityGame(object):
                 ind += 1
         return nash, coalitions
 
+    def get_info_path(self, path):
+
+        player_goal = []
+
+        cost = self.cost_for_all_players(path)
+
+        for i in range(len(cost)):
+
+            if cost[i] != float("infinity"):
+                player_goal.append(i+1)
+
+        return (cost, player_goal)
+
+
+    def filter_best_result(self, result):
+
+        best_cost = None
+        value_best_cost = float("infinity")
+        best_reached = None
+        value_best_reached = 0
+        partial_value_best_cost = float("infinity")
+
+        for res in result:
+            (cost, player_goal) = self.get_info_path(res)
+
+            sum_cost = sum(cost)
+
+            if sum_cost != float("infinity") and value_best_cost > sum_cost:
+                best_cost = res
+                value_best_cost = sum_cost
+            else:
+                nb_player_goal = len(player_goal)
+                if value_best_reached < nb_player_goal:
+                    best_reached = res
+                    value_best_reached = best_reached
+                else:
+                    partial_cost = ReachabilityGame.compute_partial_cost(player_goal, cost)
+                    if value_best_reached == nb_player_goal and partial_value_best_cost > partial_cost:
+                        partial_value_best_cost = partial_cost
+                        best_reached = res
+
+
+        if value_best_cost != float("infinity"):
+            return best_cost
+        else:
+            return best_reached
+
+    @staticmethod
+    def compute_partial_cost(player_reached, all_cost):
+
+        cost = 0
+
+        for p in player_reached:
+
+            cost += all_cost[p-1]
+        return cost
+
+
+
+
+
+
+
+
+
+    # *******
+    # afficheurs d'informations
+    # *******
     def print_partition(self):
 
         partition = self.part
@@ -581,6 +709,14 @@ class ReachabilityGame(object):
 
         print "Liste des sucesseurs :"
         self.print_sucesseur()
+
+
+
+
+
+
+
+
 
 
 
