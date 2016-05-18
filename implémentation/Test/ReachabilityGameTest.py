@@ -199,7 +199,85 @@ class TestReachabilityGame(unittest.TestCase):
         (nash32, coalitions3) = game.is_a_Nash_equilibrium_one_player(path3, 2, coalitions3)
 
         self.assertFalse(nash31)
-        self.assertFalse(nash32)
+        self.assertTrue(nash32)
+
+    def test_parcours_d_arbre(self):
+        v0 = Vertex(0, 1)
+        v1 = Vertex(1, 1)
+        v2 = Vertex(2, 2)
+        v3 = Vertex(3, 1)
+        v4 = Vertex(4, 1)
+        vertex = [v0, v1, v2, v3, v4]
+
+        pred0 = [(1, 1), (3, 1)]
+        pred1 = [(0, 1)]
+        pred2 = [(1, 1), (4, 2)]
+        pred3 = [(2, 1), (4, 1)]
+        pred4 = [(2, 4), (3, 1)]
+
+        list_pred = [pred0, pred1, pred2, pred3, pred4]
+        list_succ = Graph.list_pred_to_list_succ(list_pred)
+
+        graph = Graph(vertex, None, list_pred, list_succ)
+        goals = [set([3]), set([0])]
+        init = v1
+        game = ReachabilityGame(2, graph, init, goals, None, None)
+        prof = (game.player +1)*4*len(game.graph.vertex)
+
+        result = game.parcours_d_arbre(prof)
+
+        print "nombre de resultats", len(result)
+        for i in range(0 , len(result)):
+            print ReachabilityGame.path_vertex_to_path_index(result[i])
+
+
+
+    def test_strange_example(self):
+
+        v0 = Vertex(0, 1)
+        v1 = Vertex(1, 2)
+        v2 = Vertex(2, 1)
+        v3 = Vertex(3, 1)
+
+        vertex = [v0, v1, v2, v3]
+
+        pred0 = [(1, 1), (2, 1)]
+        pred1 = [(0, 1), (3, 1)]
+        pred2 = [(0, 1)]
+        pred3 = [(1, 1)]
+
+        pred = [pred0, pred1, pred2, pred3]
+        succ = Graph.list_pred_to_list_succ(pred)
+
+        graph = Graph(vertex, None, pred, succ )
+
+        goal = [set([3]), set([2])]
+
+        game = ReachabilityGame(2, graph, v0, goal, None, {0: 1, 1:2, 2:1, 3:1})
+
+        result = game.parcours_d_arbre(12)
+        for i in range(0, len(result)):
+            (cost, reached) = game.get_info_path(result[i])
+            print ReachabilityGame.path_vertex_to_path_index(result[i]), " infos:: cost", cost, " reached", reached
+
+        best_result = game.filter_best_result(result)
+        (cost,reached) = game.get_info_path(best_result)
+        print ReachabilityGame.path_vertex_to_path_index(best_result) , "info :: cost", cost, "reached", reached
+
+    def super_test(self):
+
+        nb_vertex = 10
+        poids_max = 1
+        game = ReachabilityGame.generate_game(2, nb_vertex, 3, [set([0]), set([3])], 1, poids_max)
+
+        prof = (game.player +1)*poids_max*len(game.graph.vertex)
+        result = game.parcours_d_arbre(prof)
+
+        print "nombre de resultats", len(result)
+        for i in range(0, len(result)):
+            print ReachabilityGame.path_vertex_to_path_index(result[i])
+
+
 
 
 
