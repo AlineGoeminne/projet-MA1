@@ -1,6 +1,8 @@
 %!TEX root=main.tex
 
 \section{Concepts fondamentaux de théorie des jeux}
+\label{section:conceptsFond}
+
 Dans le cadre de notre projet, nous sommes intéressés par les jeux sur graphe où tous les joueurs ont un \textit{objectif d'atteignabilité}.
 Dans cette section, nous abordons la notion de jeux sur graphe de manière générale ainsi que les concepts fondamentaux liés à la théorie des jeux.\\
 Cette section est essentiellement inspirée de l'article de Brihaye \emph{et al.} \cite{DBLP:conf/lfcs/BrihayePS13} ainsi que de la thèse de Julie De~Pril~\cite{juliePhd}.
@@ -26,9 +28,9 @@ Cette section est essentiellement inspirée de l'article de Brihaye \emph{et al.
 	Un \textit{jeu sur graphe}, noté $\mathcal{G}$ est la donnée d'une arène $\mathcal{A}$ et d'un \textit{objectif} pour chaque joueur.
 \end{defi}
 
-\begin{rem}
+
 	Dans le cadre de ce document, les objectifs qui nous intéressent sont les \textit{objectifs d'atteignabilité}. Cette notion est abordée plus amplement dans la section \ref{sect:jeuxAtt}.
-\end{rem}
+
 
 \begin{defi}[Jeu initialisé]\label{sommetInit}
 	Dans certains types de jeux sur graphe, on considère que le jeu commence à partir d'un \textit{sommet initial} donné. On le note communément $v_{0}$. Soit $\mathcal{G}$ un tel jeu, on note alors $(\mathcal{G},v_{0})$ le jeu ayant pour sommet initial $v_{0}$. On appelle $(\mathcal{G},v_{0})$ un \textit{jeu initialisé}.
@@ -45,6 +47,8 @@ Cette section est essentiellement inspirée de l'article de Brihaye \emph{et al.
 	\end{enumerate}
 \end{notations}
 
+Nous pouvons maintenant expliquer comment se déroule une partie dans un jeu sur graphe.\\
+
 %---------------------------------------
 %Déroulement d'une partie d'un jeu sur graphe
 %----------------------------------------
@@ -52,15 +56,13 @@ Cette section est essentiellement inspirée de l'article de Brihaye \emph{et al.
 
 \noindent\textbf{Déroulement d'une partie}\label{derPar}
 
-Nous pouvons imaginer le déroulement d'une partie d'un jeu sur graphe de la manière suivante: pour commencer un jeton est positionné sur un sommet $v_{0}$ du graphe (le sommet initial dans le cas de la remarque \ref{sommetInit}). Ensuite, comme ce sommet appartient à un certain $V_{i}$, le joueur $i$ choisit une arête $(v_{0},v_{1}) \in E$ et fait \og glisser \fg~le jeton le long de l'arc vers le sommet $v_{1}$. Ce sommet $v_{1}$ appartient à un certain $V_{j}$, c'est donc au joueur $j$ de choisir une arête $(v_{1},v_{2})\in E$ du graphe et faire \og glisser\fg le jeton le long de cette arête. Le jeu se poursuit de la sorte infiniment. \\
+Nous pouvons imaginer le déroulement d'une partie d'un jeu sur graphe de la manière suivante: pour commencer un jeton est positionné sur un sommet $v_{0}$ du graphe (le sommet initial dans le cas de la remarque \ref{sommetInit}). Ensuite, comme ce sommet appartient à un certain $V_{i}$, le joueur $i$ choisit une arête $(v_{0},v_{1}) \in E$ et fait \og glisser \fg~le jeton le long de l'arc vers le sommet $v_{1}$. Ce sommet $v_{1}$ appartient à un certain $V_{j}$, c'est donc au joueur $j$ de choisir une arête $(v_{1},v_{2})\in E$ du graphe et faire \og glisser\fg~le jeton le long de cette arête. Le jeu se poursuit de la sorte infiniment. \\
 
+Les glissement successifs du jeton de noeud en noeud décrit un chemin infini dans le graphe du jeu et les choix effectués par chaque joueur quand c'est à leur tour de jouer définit leur stratégie. Définissons formellement ces notions ainsi que certains concepts qui y sont relatifs.
 
 \subsection{Stratégie}
-
-
-
 %--------------------------------------
-%Notions de chemin/jeu
+%Notions de chemin/partie
 %--------------------------------------
 
 \noindent\textbf{Notions de chemin et de jeu}
@@ -69,7 +71,7 @@ Nous pouvons imaginer le déroulement d'une partie d'un jeu sur graphe de la man
 
 \todo{Vérifier que j'utilise bien toutes les notions que je définis.}\\
 
-Un \textit{jeu} $\rho \in V^{\omega}$(respectivement une \textit{histoire} $h \in V^{*}$) dans $\mathcal{A}$ est un chemin infini (respectivement fini) à travers le graphe. Nous notons $\epsilon$ l'histoire vide, \textit{Plays} l'ensemble des jeux dans $\mathcal{A}$ et \textit{Hist} l'ensemble des histoires. Nous utilisons les notations suivantes $\rho = \rho _{0}  \rho _{1} \rho _{2}\rho _{3} \ldots$ (où $\rho _{0},  \rho _{1},\ldots \in V$)  représente un jeu et de manière similaire, pour une histoire $h$, $ h = h_{0} h_{1} h_{2} h_{3} ... h_{k}$ ( pour un certain $k \in \mathbb{N}$) où  $h_{0}, h_{1}, \ldots \in V$.
+Une \textit{partie} $\rho \in V^{\omega}$(respectivement une \textit{histoire} $h \in V^{*}$) dans $\mathcal{A}$ est un chemin infini (respectivement fini) à travers le graphe. Nous notons $\epsilon$ l'histoire vide, \textit{Plays} l'ensemble des jeux dans $\mathcal{A}$ et \textit{Hist} l'ensemble des histoires. Nous utilisons les notations suivantes $\rho = \rho _{0}  \rho _{1} \rho _{2}\rho _{3} \ldots$ (où $\rho _{0},  \rho _{1},\ldots \in V$)  représente un jeu et de manière similaire, pour une histoire $h$, $ h = h_{0} h_{1} h_{2} h_{3} ... h_{k}$ ( pour un certain $k \in \mathbb{N}$) où  $h_{0}, h_{1}, \ldots \in V$.
 Un \textit{préfixe} de longueur $n+1$ (pour un certain $n\in \mathbb{N}$) d'un jeu $\rho = \rho _{0}  \rho _{1} \rho _{2}\rho _{3} \ldots$ est une histoire $\rho _{0}  \rho _{1} \rho _{2}\rho _{3} \ldots \rho _{n}$ et est notée $\rho[0,n]$. Soit $ h = h_{0} h_{1} \ldots h_{k}$ une histoire et soit $v \in V$ tel que $(h_{k},v)\in E$ on note $hv$ l'histoire $h_{0} h_{1} \ldots h_{k}v$. De même, étant donné une histoire $ h = h_{0} h_{1} h_{2} h_{3} ... h_{k}$ et un jeu $\rho = \rho _{0}  \rho _{1} \rho _{2} \ldots$ tels que $(h_{k},\rho_{0})\in E$ on note $h\rho$ le jeu $ h_{0} h_{1} \ldots h_{k}\rho _{0}  \rho _{1} \rho _{2} \ldots$ .
 
 Etant donné une histoire $ h = h_{0} h_{1} h_{2} h_{3} ... h_{k}$,  on définit une fonction \textit{Last} (respectivement \textit{First}) qui prend comme argument l'histoire $h$ et qui retourne le dernier sommet $h_{k}$ (respectivement le premier sommet $h_{0}$). Nous définissons l'ensemble des histoires telles que c'est au tour du joueur $i \in \Pi$ de prendre une décision $Hist_{i} = \{ h \in Hist | Last(h) \in V_{i} \}$.
@@ -97,7 +99,7 @@ Etant donné une histoire $ h = h_{0} h_{1} h_{2} h_{3} ... h_{k}$,  on définit
 \begin{notations}
 	Tout au long de ce document nous utilisons les conventions suivantes:
 	\begin{enumerate}
-		\item[$\bullet$] Un \textit{profil de stratégies} $(\sigma _{i})_{i \in \Pi}$ est un tuple tel que pour tout $i$ $\sigma _{i}$ désigne la stratégie du 	joueur $i$. 
+		\item[$\bullet$] Un \textit{profil de stratégies} $(\sigma _{i})_{i \in \Pi}$ est un tuple tel que pour tout $i$, $\sigma _{i}$ désigne la stratégie du 	joueur $i$. 
 				
 		\item[$\bullet$] Soit  $(\sigma _{i})_{i \in \Pi}$ un profil de stratégies, pour un certain joueur $j\in \Pi $ on note $(\sigma _{i})_{i \in \Pi} = ( \sigma _{j},\sigma _{-j})$ .
 		
