@@ -264,7 +264,12 @@ def get_succ_in_opti_strat(T, goal, succ):
 
     for v in T:
 
+        print " vertex v"+str(v.id)
+        print "joueur ", v.player
+
         if v.player == 1 or v.id in goal:
+
+            print " je passe ici"
 
             res = v.S.id
             if res is not None:
@@ -275,7 +280,12 @@ def get_succ_in_opti_strat(T, goal, succ):
 
 
         else:
+            print "je passe la"
+            print " blou", isinstance(v, VertexDijkPlayerMax)
+            res = v.S
+            print "res", res, isinstance(res, MinHeap)
             res = v.S.read_min().id
+
             if res is not None:
                 successor[v.id] = res
             else:

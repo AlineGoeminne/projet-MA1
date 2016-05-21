@@ -329,3 +329,4 @@ class TestDijkstraMinMax(unittest.TestCase):
             self.assertEqual(key, 11)
         if id == 6:
             self.assertEqual(key, 9)
+

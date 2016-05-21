@@ -331,7 +331,7 @@ class TestReachabilityGame(unittest.TestCase):
 
         game = ReachabilityGame(2, graph, v0, goal, None, {0: 1, 1: 2, 2: 1, 3: 1})
 
-        candidate = game.best_first_search_debug(game.heuristic)
+        candidate = game.best_first_search(game.heuristic)
 
         print ReachabilityGame.path_vertex_to_path_index(candidate)
 
@@ -359,26 +359,129 @@ class TestReachabilityGame(unittest.TestCase):
         init = v1
         game = ReachabilityGame(2, graph, init, goals, None, {0:1, 1:1, 2:2, 3:1, 4:1})
 
-        candidate = game.best_first_search_debug(game.heuristic)
+        candidate = game.best_first_search(game.heuristic)
 
+        result = game.parcours_d_arbre((game.player+1) * 4 * 5)
+
+        print " exhaustif"
+        for res in result:
+            print ReachabilityGame.path_vertex_to_path_index(res)
+            print game.get_info_path(res)
+
+        best =game.filter_best_result(result)
+        print "best", ReachabilityGame.path_vertex_to_path_index(best)
+
+        print " heuristique"
         print ReachabilityGame.path_vertex_to_path_index(candidate)
 
 
+
+    def test_best_first_search3(self):
+
+        # exemple du rapport
+
+        v0 = Vertex(0, 2)
+        v1 = Vertex(1, 1)
+        v2 = Vertex(2, 2)
+        v3 = Vertex(3, 1)
+        v4 = Vertex(4, 1)
+        v5 = Vertex(5, 2)
+        v6 = Vertex(6, 1)
+        v7 = Vertex(7, 2)
+
+        vertices = [v0, v1, v2, v3, v4, v5, v6, v7]
+
+        # pred tableau des pred tq (u,k) u = index du pred, et k = valeur de l'arc
+
+        pred0 = [(1, 1), (2, 1), (3, 5)]
+        pred1 = [ (2, 1)]
+        pred2 = [(0, 1), (3, 1), (4, 5)]
+        pred3 = [(4, 1), (2, 1)]
+        pred4 = [(5, 1), (3, 42)]
+        pred5 = [(4, 1)]
+        pred6 = [(5, 1), (7, 1)]
+        pred7 = [(6, 1)]
+
+        list_pred = [pred0, pred1, pred2, pred3, pred4, pred5, pred6, pred7]
+        list_succ = Graph.list_pred_to_list_succ(list_pred)
+
+        graph = Graph(vertices, None, list_pred, list_succ, 5)
+        goal = [set([0]), set([6])]
+        game = ReachabilityGame(2, graph, v3, goal, None, {0:2 , 1:1, 2:2, 3:1, 4:1, 5:2, 6:1, 7:2})
+
+        heuristic = game.best_first_search(ReachabilityGame.heuristic)
+
+        print ReachabilityGame.path_vertex_to_path_index(heuristic)
+
+        result = game.parcours_d_arbre(3 * 5 * 8)
+        print len(result)
+        for res in result:
+            print ReachabilityGame.path_vertex_to_path_index(res)
+
+    def test_foireux(self):
+
+        # exemple du rapport
+
+        v0 = Vertex(0, 2)
+        v1 = Vertex(1, 1)
+        v2 = Vertex(2, 2)
+        v3 = Vertex(3, 1)
+        v4 = Vertex(4, 1)
+        v5 = Vertex(5, 2)
+        v6 = Vertex(6, 1)
+        v7 = Vertex(7, 2)
+
+        vertices = [v0, v1, v2, v3, v4, v5, v6, v7]
+
+        # pred tableau des pred tq (u,k) u = index du pred, et k = valeur de l'arc
+
+        pred0 = [(1, 1), (2, 1), (3, 5)]
+        pred1 = [(2, 1)]
+        pred2 = [(0, 1), (3, 1), (4, 5)]
+        pred3 = [(4, 1)]
+        pred4 = [(5, 1)]
+        pred5 = []
+        pred6 = [(5, 1), (7, 1)]
+        pred7 = [(6, 1)]
+
+        list_pred = [pred0, pred1, pred2, pred3, pred4, pred5, pred6, pred7]
+        list_succ = Graph.list_pred_to_list_succ(list_pred)
+
+        graph = Graph(vertices, None, list_pred, list_succ, 5)
+        goal = [set([0]), set([6])]
+        dijk_graph2 = ReachabilityGame.graph_transformer(graph, 2)
+        dijk_graph1 = ReachabilityGame.graph_transformer(graph, 1)
+
+        game = ReachabilityGame(2, graph, v1, goal, None, {0:2 , 1:1, 2:2, 3:1, 4:1, 5:2, 6:1, 7:2})
+        T2 = dijkstraMinMax(dijk_graph2, set([6]))
+        T1 = dijkstraMinMax(dijk_graph1, set([0]))
+
+        path = [v3, v0]
+
+        print game.is_a_Nash_equilibrium_one_player(path, 1)
+        print game.get_info_path(path)
+
+        print_result(T1, set([0]), list_succ)
 
 
 
     def super_test(self):
 
-        nb_vertex = 10
-        poids_max = 1
-        game = ReachabilityGame.generate_game(2, nb_vertex, 3, [set([0]), set([3])], 1, poids_max)
+        nb_vertex = 20
+        poids_max = 2
+        game = ReachabilityGame.generate_game(2, nb_vertex, 3, [set([0]), set([1])], 1, poids_max)
+        game.graph.max_weight = poids_max
 
         prof = (game.player +1)*poids_max*len(game.graph.vertex)
-        result = game.parcours_d_arbre(prof)
+        res = game.best_first_search(game.heuristic)
+        #result = game.parcours_d_arbre(prof)
 
-        print "nombre de resultats", len(result)
-        for i in range(0, len(result)):
-            print ReachabilityGame.path_vertex_to_path_index(result[i])
+
+        print "heuristique", ReachabilityGame.path_vertex_to_path_index(res)
+        #print "nombre de resultats", len(result)
+        #for i in range(0, len(result)):
+         #   print ReachabilityGame.path_vertex_to_path_index(result[i])
+
 
 
 
