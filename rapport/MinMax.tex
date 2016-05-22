@@ -5,8 +5,8 @@
 % DEFINITION: jeu Min-Max avec coût
 
 \begin{defi}[Jeu Min-Max avec coût] $\text{ }$\\
-	Soit une arène $\mathcal{A} = (V, (V_{Min}, V_{Max}), E) $
-	Un \textit{jeu Min-Max avec coût} est un tuple $\mathcal{G} = (\mathcal{A}, Cost_{Min}, Gain_{Max})$, où
+	Soit une arène $\mathcal{A} = (V, (V_{Min}, V_{Max}), E) $, 
+	un \textit{jeu Min-Max avec coût} est un tuple $\mathcal{G} = (\mathcal{A}, Cost_{Min}, Gain_{Max})$, où
 	\begin{enumerate}
 		\item[$\bullet$] $Cost_{Min}: Plays \rightarrow \mathbb{R} \cup \{+ \infty, -\infty \}$ est la \textit{fonction de coût} du joueur \textit{Min}.
 		\item[$\bullet$] $Gain_{Max}: Plays \rightarrow \mathbb{R} \cup \{ + \infty, -\infty \}$ est la \textit{fonction de gain} du joueur \textit{Max}.
@@ -18,7 +18,7 @@
 	Dans cette définition, on sous-entend que $\Pi = \{ Min, Max \}$.
 \end{rem}
 
-Pour chaque $\rho \in Plays$, $Cost_{Min}(\rho)$ représente le montant que \textit{Min} perd quand le jeu $\rho$ est joué et $Gain_{Max}(\rho)$ représente le gain que \textit{Max} gagne quand le jeu $\rho$ est joué.
+Pour chaque $\rho \in Plays$, $Cost_{Min}(\rho)$ représente le montant que \textit{Min} doit payer quand la partie $\rho$ est jouée et $Gain_{Max}(\rho)$ représente le gain que \textit{Max} obtient quand la partie $\rho$ est jouée.
 Le but de \textit{Min} (resp. \textit{Max}) est donc de \textbf{minimiser} (resp. \textbf{maximiser}) sa fonction de coût (resp. fonction de gain). Ce qui explique le choix des noms des joueurs.\\
 
 %DEFINITION: jeu Min-Max à somme nulle
