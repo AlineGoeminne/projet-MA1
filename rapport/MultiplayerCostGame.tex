@@ -3,6 +3,9 @@
 
 \subsubsection{Jeux multijoueurs avec coût}
 % DEFINITION: mutliplayer cost game
+Pour finir, nous nous intéressons à des jeux où chaque joueur possède une fonction de coût qui représente pour chaque partie du jeu le montant qu'il doit payer lorsque cette partie est jouée. Le but de chaque joueur est donc de \textbf{minimiser} sa fonction de coût.
+
+De manière formelle, nous définissons les \emph{jeux multijoueurs avec coût}.
 
 \begin{defi}[Jeu multijoueur avec coût]
 	Soit $\mathcal{A} = (\Pi, V, (V_{i})_{i \in \Pi},E)$ une arène,
@@ -14,14 +17,12 @@
 \end{defi}
 
 
-	Pour chaque $\rho \in Plays$, $Cost_{i}(\rho)$ représente le montant que $J_{i}$ perd quand le jeu $\rho$ est joué.
-	Le but de chaque joueur est donc de \textbf{minimiser} sa fonction de coût.
 
 %EXEMPLE: fonctions de coût.
-\begin{exemple}[Fonctions de coût]
-	\label{ex:fonctionsCout}
+
   Dans le cadre de ce projet, nous nous intéressons aux jeux sur graphe tels que l'objectif des joueurs est un objectif quantitatif. De plus, nous souhaitons que l'objectif des joueurs soit atteint le plus rapidement possible. Les fonctions de coût qui nous intéressent sont donc les suivantes: \\
-	
+\begin{exemple}[Fonctions de coût]
+		\label{ex:fonctionsCout}
 	Pour tout  $\rho = \rho _{0} \rho _{1} \rho _{2} \ldots $ où $\rho \in Plays$ on définit:
 	\begin{enumerate}
 	\item $Cost_{i}(\rho) = $ $\begin{cases} 
@@ -40,27 +41,10 @@
 \begin{rem}
 	L'exemple 1 est un cas particulier de l'exemple 2 si l'on prend $w(\rho_{i},\rho_{i+1}) = 1$ pour tout $i$.
 \end{rem}
-%DEFINITION: poids d'un arc
-
-\begin{defi}[Fonction de poids]
-	\label{def:fonctionPoids}
-	A chaque arc d'un graphe $G = (V,E)$ on peut y associer un \textit{poids} (\emph{i.e.,} une valeur chiffrée). On associe donc à $G$ une \textit{fonction de poids}  $w : E \rightarrow \mathbb{R}$. On dit alors que $G$ est un graphe \textit{pondéré}.
-\end{defi}
-\begin{rem}
-	Même si par définition, considérer une fonction de poids à valeurs réelles est correct, dans notre cas nous ne nous intéresserons qu'à des fonctions de poids à valeurs dans $\mathbb{N}_0$.
-\end{rem}
-
-\begin{exemple}
-	Si chaque $v \in V$ représente une ville sur une carte, alors on peut imaginer une fonction de poids représentant une des valeurs suivantes:
-	\begin{enumerate}
-		\item [$\bullet$] le nombre de kilomètres entre deux villes,
-		\item [$\bullet$] le temps pour aller d'une ville à l'autre,
-		\item [$\bullet$] la consommation d'essence pour aller d'une ville à l'autre.
-	\end{enumerate}
-\end{exemple}
-
 
 %DEFINITION: jeu d'atteignabilité multijoueur à objectif quantitatif
+
+Nous pouvons maintenant définir les jeux qui nous intéressent particulièrement et sur lesquels nous portons maintenant notre attention.
 
 \begin{defi}[Jeu d'atteignabilité multijoueur à objectif quantitatif]
 	

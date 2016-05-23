@@ -21,6 +21,29 @@
 Pour chaque $\rho \in Plays$, $Cost_{Min}(\rho)$ représente le montant que \textit{Min} doit payer quand la partie $\rho$ est jouée et $Gain_{Max}(\rho)$ représente le gain que \textit{Max} obtient quand la partie $\rho$ est jouée.
 Le but de \textit{Min} (resp. \textit{Max}) est donc de \textbf{minimiser} (resp. \textbf{maximiser}) sa fonction de coût (resp. fonction de gain). Ce qui explique le choix des noms des joueurs.\\
 
+Afin de pouvoir définir ces fonctions de coût ou de gain, il est souvent utile de définir une fonction de poids sur les arcs du graphe. En d'autres mots, à chaque arc du graphe est associée une valeur chiffrée.
+
+%DEFINITION: poids d'un arc
+
+\begin{defi}[Fonction de poids]
+	\label{def:fonctionPoids}
+	A chaque arc d'un graphe $G = (V,E)$ on peut y associer un \textit{poids} (\emph{i.e.,} une valeur chiffrée). On associe donc à $G$ une \textit{fonction de poids}  $w : E \rightarrow \mathbb{R}$. On dit alors que $G$ est un graphe \textit{pondéré}.
+\end{defi}
+\begin{rem}
+	Même si par définition, considérer une fonction de poids à valeurs réelles est correct, dans notre cas nous ne nous intéresserons qu'à des fonctions de poids à valeurs dans $\mathbb{N}_0$. \todo{Ok ou je considère vraiment $\mathbb{R}^+_0 $?}
+\end{rem}
+
+La fonction de poids que l'on associe à un graphe dépend de la situation qui est modélisée. Voici quelques exemples de fonctions qui peuvent être envisagées:
+\begin{exemple}
+	Si chaque $v \in V$ représente une ville sur une carte, alors on peut imaginer une fonction de poids représentant une des valeurs suivantes:
+	\begin{enumerate}
+		\item [$\bullet$] le nombre de kilomètres entre deux villes,
+		\item [$\bullet$] le temps pour aller d'une ville à l'autre,
+		\item [$\bullet$] la consommation d'essence pour aller d'une ville à l'autre.
+	\end{enumerate}
+\end{exemple}
+
+
 %DEFINITION: jeu Min-Max à somme nulle
 
 \begin{defi}[Jeu à somme nulle]
@@ -35,14 +58,13 @@ Le but de \textit{Min} (resp. \textit{Max}) est donc de \textbf{minimiser} (resp
 	
 	\begin{center}On dit que le joueur \textit{Max} \textit{garantit le paiement} $d \in \mathbb{R}$ dans $(\mathcal{G}, v_{0})$\\ 
 		ssi \\ 
-	$\exists \sigma _{1} \in \Sigma _{Max}$ tq $\forall \sigma _{2} \in \Sigma _{Min}$ $ Gain_{Max}(\rho) \geq d$\\
-	où $ \rho = \langle \sigma _{1},\sigma _{2} \rangle_{v_0}$\end{center}
+	$\exists \sigma _{1} \in \Sigma _{Max}$ tq $\forall \sigma _{2} \in \Sigma _{Min}$ $ Gain_{Max}(\langle \sigma _{1},\sigma _{2} \rangle_{v_0}) \geq d$\\
+\end{center}
 	
 	\begin{center} 
 		On dit que le joueur \textit{Min} \textit{garantit le paiement} $d \in \mathbb{R}$ dans $(\mathcal{G}, v_{0})$\\		
 		ssi	\\
-		$\exists \sigma _{1}\in \Sigma _{Min}$ tq $\forall \sigma _{2} \in \Sigma _{Max}$ $ Cost_{Min}(\rho) \leq d$ \\
-		où $ \rho = \langle \sigma _{1},\sigma _{2}\rangle_{v_0}$
+		$\exists \sigma _{1}\in \Sigma _{Min}$ tq $\forall \sigma _{2} \in \Sigma _{Max}$ $ Cost_{Min}(\langle \sigma _{1},\sigma _{2}\rangle_{v_0}) \leq d$ \\
 		\end{center}
 
 \end{defi}
@@ -54,9 +76,8 @@ Le but de \textit{Min} (resp. \textit{Max}) est donc de \textbf{minimiser} (resp
 	
 	Soit $\mathcal{G}$ un jeu Min-Max avec coût, on définit pour chaque sommet $v \in V$: 
 	\begin{enumerate}
-		\item[$\bullet$]\textit{Valeur supérieure:} $\overline{Val}(v) = \inf\limits_{\sigma _{1} \in \Sigma _{Min}} \sup\limits_{\sigma _{2} \in \Sigma_{Max}} Cost_{Min}(\rho)$ où $\rho = \langle \sigma _{1},\sigma _{2}\rangle_v$
-		
-		\item[$\bullet$]\textit{Valeur inférieure:} $\underline{Val}(v) = \sup\limits_{\sigma _{2} \in \Sigma_{Max}}  \inf\limits_{\sigma _{1} \in \Sigma _{Min}} Gain_{Max}(\rho)$  où $\rho = \langle \sigma _{1},\sigma _{2}\rangle_v$
+		\item[$\bullet$]\textit{Valeur supérieure:} $\overline{Val}(v) = \inf\limits_{\sigma _{1} \in \Sigma _{Min}} \sup\limits_{\sigma _{2} \in \Sigma_{Max}} Cost_{Min}(\langle \sigma _{1},\sigma _{2}\rangle_v)$.		
+		\item[$\bullet$]\textit{Valeur inférieure:} $\underline{Val}(v) = \sup\limits_{\sigma _{2} \in \Sigma_{Max}}  \inf\limits_{\sigma _{1} \in \Sigma _{Min}} Gain_{Max}(\langle \sigma _{1},\sigma _{2}\rangle_v)$.
 	\end{enumerate}
 \end{defi}
 \begin{rem}
@@ -67,7 +88,7 @@ Le but de \textit{Min} (resp. \textit{Max}) est donc de \textbf{minimiser} (resp
 \begin{propriete}
 	Pour tout $v \in V$, on a : $\underline{Val}(v) \leq \overline{Val}(v)$
 \end{propriete}
-
+\todo{Mettre une ref ou faire la preuve}
 %DEFINITION: jeu déterminé et valeur d'un jeu
 
 \begin{defi}[Jeu déterminé et valeur d'un jeu]
@@ -79,13 +100,14 @@ Le but de \textit{Min} (resp. \textit{Max}) est donc de \textbf{minimiser} (resp
 \begin{defi}[Stratégie $\varepsilon$-optimale]
 	Soit $\epsilon > 0$,
 	\begin{enumerate}
-	\item[$\bullet$] $\sigma _{2} \in \Sigma _{Max}$ est une \textit{stratégie $\varepsilon$-optimale} ssi $\forall v \in V $ $ \forall \sigma _{1}\in \Sigma_{Min}$ $ Gain_{Max}(\rho) \geq \underline{Val}(v) - \varepsilon  $\\ où $\rho = \langle \sigma _{1},\sigma _{2} \rangle_v$.
-	\item[$\bullet$] $\sigma _{1} \in \Sigma _{Min}$ est une \textit{stratégie $\varepsilon$-optimale} ssi $\forall v \in V $ $ \forall \sigma _{2}\in \Sigma_{Max}$ $Cost_{Min}(\rho) \leq \overline{Val}(v) + \varepsilon $\\ où $\rho = \langle \sigma _{1},\sigma _{2} \rangle_v$.
+	\item[$\bullet$] $\sigma _{2} \in \Sigma _{Max}$ est une \textit{stratégie $\varepsilon$-optimale} ssi $\forall v \in V $ $ \forall \sigma _{1}\in \Sigma_{Min}$ $ Gain_{Max}(\langle \sigma _{1},\sigma _{2} \rangle_v) \geq \underline{Val}(v) - \varepsilon . $\\ 
+	\item[$\bullet$] $\sigma _{1} \in \Sigma _{Min}$ est une \textit{stratégie $\varepsilon$-optimale} ssi $\forall v \in V $ $ \forall \sigma _{2}\in \Sigma_{Max}$ $Cost_{Min}(\langle \sigma _{1},\sigma _{2} \rangle_v) \leq \overline{Val}(v) + \varepsilon $\\ .
 	\item[$\bullet$] Si $\varepsilon = 0$, on dit que la stratégie $\sigma _{i}$ est \textit{optimale}
 	\end{enumerate}
 \end{defi}
 
 %DEFINITION: reachability-price game
+Dans le cadre de ce travail nous sommes particulièrement intéressés par un certain type de jeu Min-Max à somme nulle : les \og reachability-price games\fg. Ces jeux sont des jeux à deux joueurs tels qu'un joueur tente d'atteindre son objectif le plus efficacement possible (\emph{i.e.,} le poids du chemin pour atteindre son objectif doit être minimal) tandis que l'autre joueur désire l'en empêcher. 
 
 \begin{defi}[Reachability-price game]
 	Soit $\mathcal{A} = (V, (V_{Min}, V_{Max}), E) $, soit $w: E \rightarrow \mathbb{R}$ une fonction de poids,
@@ -101,7 +123,7 @@ Le but de \textit{Min} (resp. \textit{Max}) est donc de \textbf{minimiser} (resp
 \end{defi}
 
 % EXEMPLE : reachability-price game + jeu déterminé + valeur + stratégie optimale
-
+Illustrons sur ce type de jeu, les notions définies précédemment.
 \input{reachPriceGame1}
 
 \subsubsection{Algorithme de Dijkstra pour les jeux Min-Max}
