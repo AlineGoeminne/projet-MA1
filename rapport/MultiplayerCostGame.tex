@@ -19,7 +19,7 @@ De manière formelle, nous définissons les \emph{jeux multijoueurs avec coût}.
 
 
 %EXEMPLE: fonctions de coût.
-
+\setlength{\overfullrule}{0pt}
   Dans le cadre de ce projet, nous nous intéressons aux jeux sur graphe tels que l'objectif des joueurs est un objectif quantitatif. De plus, nous souhaitons que l'objectif des joueurs soit atteint le plus rapidement possible. Les fonctions de coût qui nous intéressent sont donc les suivantes: \\
 \begin{exemple}[Fonctions de coût]
 		\label{ex:fonctionsCout}
@@ -37,7 +37,7 @@ De manière formelle, nous définissons les \emph{jeux multijoueurs avec coût}.
 									où $w$ est une \textit{fonction de poids} (cf. définition \ref{def:fonctionPoids}).
 	\end{enumerate}
 \end{exemple}
-
+\setlength{\overfullrule}{10pt}
 \begin{rem}
 	L'exemple 1 est un cas particulier de l'exemple 2 si l'on prend $w(\rho_{i},\rho_{i+1}) = 1$ pour tout $i$.
 \end{rem}
@@ -67,8 +67,7 @@ Nous pouvons maintenant définir les jeux qui nous intéressent particulièremen
 \begin{defi}[Equilibre de Nash]
 	
 	Soit $(\mathcal{G}, v_{0})$ un \textit{jeu multijoueur avec coût et initialisé}, un profil de stratégie $(\sigma _{i})_{i \in \Pi}$ est un \textit{équilibre de Nash} dans $(\mathcal{G}, v_{0})$ si, pour chaque joueur $j \in \Pi$ et pour chaque stratégie $\tilde{\sigma}_{j}$ du joueur $j$, on a :
-	\begin{center}$ Cost_{j}(\rho) \leq Cost_{j}(\tilde{\rho})$ \end{center}
-	où $\rho = \langle (\sigma _{i})_{i \in \Pi}\rangle_{v_0}$ et $\tilde{\rho} = \langle \tilde{\sigma} _{j} ,\sigma _{-j}\rangle_{v_0}$.
+	\begin{center}$ Cost_{j}(\langle (\sigma _{i})_{i \in \Pi}\rangle_{v_0}) \leq Cost_{j}(\langle \tilde{\sigma} _{j} ,\sigma _{-j}\rangle_{v_0})$ \end{center}
 \end{defi}	
 
 
@@ -77,8 +76,7 @@ Nous pouvons maintenant définir les jeux qui nous intéressent particulièremen
 \begin{defi}[Déviation profitable]
 	
 	Soit $(\mathcal{G}, v_{0})$ un \textit{jeu multijoueur avec coût et initialisé}, soit $(\sigma _{i})_{i \in \Pi}$ un profil de stratégie, $\tilde{\sigma _{j}}$ est une \textit{déviation profitable} pour le joueur $j$ relativement à $(\sigma _{i})_{i \in \Pi}$ si:
-	\begin{center} $ Cost_{j}(\rho) > Cost_{j}(\tilde{\rho})$ \end{center}
-	où $\rho = \langle (\sigma _{i})_{i \in \Pi} \rangle_{v_0}$ et $\tilde{\rho} = \langle \tilde{\sigma} _{j} ,\sigma _{-j} \rangle_{v_0}$. 
+	\begin{center} $ Cost_{j}(\langle (\sigma _{i})_{i \in \Pi} \rangle_{v_0}) > Cost_{j}(\langle \tilde{\sigma} _{j} ,\sigma _{-j} \rangle_{v_0})$ \end{center}
 \end{defi}
 
 %REMARQUE: signification de la def d'EN
@@ -98,4 +96,4 @@ Nous pouvons maintenant définir les jeux qui nous intéressent particulièremen
 	Soient $\mathcal{A} = (\Pi, V, (V_{i})_{i \in \Pi}, E)$ et $\mathcal{G} = (\mathcal{A},(\varphi _{i})_{i \in \Pi}, (Goal_{i})_{i \in \Pi})$ un jeu d'atteignabilité multijoueur à objectif quantitatif, si la fonction de poids associée au graphe du jeu est une fonction positive alors il existe un équilibre de Nash dans tout jeu initialisé ($\mathcal{G},v_{0}$) avec $v_{0}\in V$. De plus, cet équilibre possède une mémoire d'au plus $|V| + |\Pi|$.
 \end{thm}
 
-En d'autres termes, ce théorième signifie que dans de tels jeux il existe un équilibre de Nash $(\sigma_i)_{i\in \Pi}$ tel que pour tout $i \in \Pi$ la taille de la mémoire pour représenter $\sigma_i$ est d'au plus $|\Pi| + |V|$. L'idée de la preuve est de considérer  pour chaque joueur $i \in \Pi$ le jeu Min-Max $\mathcal{G}^i$ associé tel que les autres joueurs jouent en coalition contre le joueur $i$. Du jeu $\mathcal{G}^i$, est extraite une stratégie optimale $\sigma_i^*$ pour chaque joueur et une stratégie de punition pour chaque joueur $j \in \Pi \backslash \{i\}$. L'équilibre de Nash construit est le suivant : chaque joueur suit sa stratégie optimale $\sigma_i^*$ et dès qu'un joueur $j$ dévie de sa stratégie optimale, les autres joueurs jouent selon la stratégie de punition issue du jeu Min-Max $\mathcal{G}^j$. Dès lors, chaque joueur $i$ a besoin de retenir sa stratégie optimale, ainsi que ses stratégies de punition issues des jeux $\mathcal{G}^j$ où $j \neq i$ et la position en laquelle un joueur a dévié pour la première fois. Ceci explique respectivement le terme $|\Pi|$ et $V$ de la taille de mémoire nécessaire.
+En d'autres termes, ce théorème signifie que dans de tels jeux il existe un équilibre de Nash $(\sigma_i)_{i\in \Pi}$ tel que pour tout $i \in \Pi$ la taille de la mémoire pour représenter $\sigma_i$ est d'au plus $|\Pi| + |V|$. L'idée de la preuve est de considérer  pour chaque joueur $i \in \Pi$ le jeu Min-Max $\mathcal{G}^i$ associé tel que les autres joueurs jouent en coalition contre le joueur $i$. Du jeu $\mathcal{G}^i$, est extraite une stratégie optimale $\sigma_i^*$ pour chaque joueur et une stratégie de punition pour chaque joueur $j \in \Pi \backslash \{i\}$. L'équilibre de Nash construit est le suivant : chaque joueur suit sa stratégie optimale $\sigma_i^*$ et dès qu'un joueur $j$ dévie de sa stratégie optimale, les autres joueurs jouent selon la stratégie de punition issue du jeu Min-Max $\mathcal{G}^j$. Dès lors, chaque joueur $i$ a besoin de retenir sa stratégie optimale, ainsi que ses stratégies de punition issues des jeux $\mathcal{G}^j$ où $j \neq i$ et la position en laquelle un joueur a dévié pour la première fois. Ceci explique respectivement le terme $|\Pi|$ et $V$ de la taille de mémoire nécessaire.

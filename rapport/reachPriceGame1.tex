@@ -1,7 +1,7 @@
 %!TEX root=main.tex
 
 \begin{exemple}
-	Soit $\mathcal{G} = (V,(V_{Min},V_{Max}),E,g,Goal)$ le \og\textit{reachability-price game}\fg  décrit par la figure \ref{ex:reachPriceGame1} où les sommets contrôlés par $J_{Min}$ sont les sommets ronds et les sommets contrôlés par $J_{Max}$ sont les sommets carrés et $Goal = \{ v_{3} \}$.
+	Soit $\mathcal{G} = (V,(V_{Min},V_{Max}),E,g,Goal)$ le \og\textit{reachability-price game}\fg~décrit par la figure \ref{ex:reachPriceGame1} où les sommets contrôlés par $J_{Min}$ sont les sommets ronds et les sommets contrôlés par $J_{Max}$ sont les sommets carrés et $Goal = \{ v_{3} \}$ et  $V_{Min} = \{ v_{0}, v_{1}, v_{3}, v_{4} \}$, $V_{Max} = \{ v_{2}\}$ et où la fonction de poids $w$ est représentée sur le graphe. 
 	
 	\begin{figure}[ht!]
 		\centering
@@ -17,13 +17,17 @@
 			\draw[->,>=latex] (v0.north) to [out=95,in= 80] node[midway,above]{$1$}(v1.north);
 			\draw[->,>=latex] (v1) to node[midway,above]{$1$} (v2);
 			\draw[->,>=latex] (v1) to node[midway,above]{$1$} (v0);
-			\draw[->,>=latex] (v2) to node[midway,above]{$1$} (v4);
+			\draw[->,>=latex] (v2) to node[midway,above]{$4$} (v4);
 			
 
 			\draw[->,>=latex] (v2) to node[midway,right]{$1$} (v3);
 			\draw[->,>=latex] (v4) to node[midway,right]{$1$} (v3);
 			
 			\draw[->,>=latex] (v3) to node[midway,above]{$1$} (v0);
+			
+			\draw[->,>=latex] (v3.east) to [out=0,in= 0] node[midway,right]{$1$} (v4.east);
+			\draw[->,>=latex] (v4.north) to [out=95,in= 80] node[midway,above]{$2$} (v2.north);
+			
 
 
 
@@ -38,7 +42,7 @@
 
 	\end{figure}
 	
-Dans un premier temps, montrons que $\mathcal{G}$ est déterminé. Nous avons : $\underline{Val}(v_{0})=\overline{Val}(v_{0})=4$,  $\underline{Val}(v_{1})=\overline{Val}(v_{1}) =3$, $\underline{Val}(v_{2})=\overline{Val}(v_{2})= 2$,  $\underline{Val}(v_{3})=\overline{Val}(v_{3})= 0$, $\underline{Val}(v_{4})=\overline{Val}(v_{4})= 1$.\\
+Dans un premier temps, montrons que $\mathcal{G}$ est déterminé. Nous avons : $\underline{Val}(v_{0})=\overline{Val}(v_{0})= 7$,  $\underline{Val}(v_{1})=\overline{Val}(v_{1}) = 6$, $\underline{Val}(v_{2})=\overline{Val}(v_{2})= 5$,  $\underline{Val}(v_{3})=\overline{Val}(v_{3})= 0$, $\underline{Val}(v_{4})=\overline{Val}(v_{4})= 1$.\\
 
 
 Ensuite, exhibons une stratégie optimale pour le joueur \textit{Min} et une stratégie optimale pour le joueur \textit{Max}.\\

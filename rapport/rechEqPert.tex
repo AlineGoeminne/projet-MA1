@@ -153,14 +153,15 @@ Nous sommes maintenant apte à énoncer notre propriété. La preuve de celle-ci
 		L'idée est la suivante: dans un premier temps tous les joueurs suivent leur stratégie conformément au profil $(\tau_i)_{i \in \Pi}$. Si un des joueurs, notons le $i$,  dévie de sa stratégie alors les autres joueurs se réunissent en une coalition $\Pi\backslash \{ i \}$ et jouent en suivant leur stratégie de punition dans $\mathcal{G}_i$ (\emph{i.e.,} pour tout j $\neq$ i, le joueur $j$ suit la stratégie $\sigma^*_{j,i}$).\\
 		
 	Comme dans le papier \og Multiplayer Cost Games With Simple Nash Equilibria \fg~\cite{DBLP:conf/lfcs/BrihayePS13}, nous définissons une fonction de punition: $P : Hist \rightarrow \Pi\cup \{ \perp \}$ qui permet de définir quel est le premier joueur à avoir dévié du profil de stratégies initial $(\tau_i)_{i\in\Pi}$. Cette fonction est telle que $P(h) = \perp$ si aucun joueur n'a dévié le long de l'histoire $h$ et $P(h) = i$ pour un certain $i \in \Pi$ si le joueur $i$ a dévié le long de l'histoire $h$. Nous pouvons donc définir la fonction $P$ par récurrence sur la longueur des histoires : pour $v_0$, le noeud initial, $P(v_0) = \perp$  et pour $h \in Hist$ et $v\in V$ on a :
-	
+
+\setlength{\overfullrule}{0pt}
 	$$
 	P(hv) = \begin{cases}
 			\perp & \text{ si } P(h) = \perp \text{ et } hv \text{ est un préfixe de } \rho \\
 			i & \text{ si } P(h) = \perp ,\, hv \text{ n'est pas un préfixe de }\rho \text{ et } Last(h)\in V_i\\
 			P(h) & \text{ sinon (\emph{i.e.,}}\, P(h)\neq \perp) \end{cases}
 	$$\\
-	
+\setlength{\overfullrule}{10pt}	
 	Nous pouvons maintenant définir notre équilibre de Nash potentiel dans $\mathcal{G}$. Pour tout $i\in \Pi$ et tout $h\in Hist$ tels que $Last(h)\in V_i$:
 	$$\sigma_i(h)= \begin{cases}
 					\tau_i(h) & \text{ si }P(h)= \perp \text{ ou }i \\

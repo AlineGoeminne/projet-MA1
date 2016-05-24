@@ -412,7 +412,7 @@ $\text{}$\\
 
 \begin{enumerate}
 	\item $\forall v \in T_i$ on connait la valeur $Val(v)$ et la stratégie à adopter en $v$.
-	\item $\forall v \in V \backslash \{ T_i \},$ on connait $\rho_i(v)$.
+	\item $\forall v \in V \backslash T_i,$ on connait $\rho_i(v)$.
 \end{enumerate}
 	
 \noindent \underline{\textsc{A. Avant la première itération}}\\
@@ -499,10 +499,10 @@ De cette relation nous pouvons conclure. En effet, cela signifie que depuis le n
 Maintenant que ces propriétés sont établies, reprenons la preuve d'exactitude de l'algorithme. Supposons que les invariants sont vérifiés jusqu'à l'étape $i$ et montrons qu'ils le sont toujours pour l'étape $i+1$.
 Commençons par le montrer pour le premier invariant.
 
-Soit $u \in T_i$ le noeud lu dans $Q$ (ligne~\ref{lalgo:dijk1} de \verb|DikjstraMinMax|). Comme il s'agit d'un minimum nous avons : $\forall v \in V\backslash \{ T_i \},\, \rho_i(u) \leq \rho_i(v)$. Plusieurs cas sont alors possibles. 
+Soit $u \in T_i$ le noeud lu dans $Q$ (ligne~\ref{lalgo:dijk1} de \verb|DikjstraMinMax|). Comme il s'agit d'un minimum nous avons : $\forall v \in V\backslash T_i,\, \rho_i(u) \leq \rho_i(v)$. Plusieurs cas sont alors possibles. 
 
 \begin{enumerate}
-	\item \underline{$\rho_i(u) = +\infty$}: Dans ce cas pour tous les noeuds $v \in V\backslash \{ T_i \}$ (\emph{i.e.,} ceux restant dans $Q$) $\rho_i(v) = + \infty$ car $\rho_i(u) = \min _{v \in V\backslash \{ T_i \}} \{\rho_i(v)\}$. S'il s'agit d'un noeud du joueur Max cela signifie qu'il peut choisir un arc tel qu'après cet arc il est assuré que le joueur Min ne pourra pas atteindre un de ses objectifs. S'il s'agit d'un noeud du joueur Min cela signifie qu'à partir de ce noeud il ne pourra jamais atteindre un de ses états objectifs. La stratégie optimale consiste donc à choisir un arc au hasard dans ceux restant $E_i$.
+	\item \underline{$\rho_i(u) = +\infty$}: Dans ce cas pour tous les noeuds $v \in V\backslash  T_i $ (\emph{i.e.,} ceux restant dans $Q$) $\rho_i(v) = + \infty$ car $\rho_i(u) = \min _{v \in V\backslash T_i } \{\rho_i(v)\}$. S'il s'agit d'un noeud du joueur Max cela signifie qu'il peut choisir un arc tel qu'après cet arc il est assuré que le joueur Min ne pourra pas atteindre un de ses objectifs. S'il s'agit d'un noeud du joueur Min cela signifie qu'à partir de ce noeud il ne pourra jamais atteindre un de ses états objectifs. La stratégie optimale consiste donc à choisir un arc au hasard dans ceux restant $E_i$.
 	\item\underline{$\rho_i(u) < +\infty$ et $u \in Goal$}: Comme il s'agit d'un noeud objectif, on doit avoir que $Val(u) = 0$ ce qui est bien le cas car lors de l'initialisation de l'algorithme la valeur associée à chaque état objectif est 0 et elle ne peut pas être modifiée. En effet, vu que le poids des arcs est positif, on ne peut pas décrémenter la valeur associée à un noeud object dans $Q$. La décrémentation de cette valeur se fait uniquement dans la méthode \textsc{Bloquer-Max} or, cette méthode n'est jamais appelée pour un noeud objectif.
 	
 	\item\underline{$\rho_i(u) < +\infty$ et $u \in V_{Min}$}: Nous devons vérifier que nous pouvons calculer $Val(u)$ et donc que l'on pouvait bien rajouter $u$ aux éléments traités. Nous devons donc nous assurer que $Val(u) = \rho_i(u)$.
@@ -517,7 +517,7 @@ Mais comme nous avons supposé que $Val(u) \neq \rho_i(u)$, il en découle :
 
 \begin{equation} g(\langle \sigma_1^*, \sigma_2^* \rangle_u) < \rho_i(u).\label{eq:dijk3}\end{equation}
 
-De plus, nous pouvons écrire: $\langle \sigma_1^*, \sigma_2^* \rangle_u = u \ldots xy \ldots$ où $x \in V\backslash \{ T_i \}$ et $y \in T_i$.
+De plus, nous pouvons écrire: $\langle \sigma_1^*, \sigma_2^* \rangle_u = u \ldots xy \ldots$ où $x \in V\backslash  T_i $ et $y \in T_i$.
 
 L'équation~\eqref{eq:dijk3} peut alors se réécrire: 
 
