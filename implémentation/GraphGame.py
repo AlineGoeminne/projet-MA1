@@ -2,14 +2,15 @@
 import random
 import heapq
 import copy
+import time
 
 from DijkstraMinMax import dijkstraMinMax
 from DijkstraMinMax import VertexDijkPlayerMax
 from DijkstraMinMax import VertexDijkPlayerMin
 from DijkstraMinMax import convertPred2NbrSucc
 from DijkstraMinMax import get_all_values
+from DijkstraMinMax import print_result
 from DijkstraMinMax import get_succ_in_opti_strat
-
 class ArenaError(Exception):
     def __init__(self, value):
         self.value = value
@@ -41,6 +42,10 @@ class Vertex(object):
             return True
         else:
             return self.id == other.name
+
+    def __repr__(self):
+        str = "v"+repr(self.id)
+        return str
 
 
 class Graph(object):
@@ -102,7 +107,8 @@ class Graph(object):
                 for j in range(0, nbr_vertex):
 
                     weight = random.randint(a, b)
-                    weight_decimal = random.random()
+                    #weight_decimal = random.random()
+                    weight_decimal = 0
 
                     if i != j:
                         line.append(weight + weight_decimal)
@@ -117,7 +123,9 @@ class Graph(object):
                 new_succ = []
                 for j in range(0, nbr_vertex):
                     weight = random.randint(a, b)
-                    weight_decimal = random.random()
+                    #weight_decimal = random.random()
+                    weight_decimal = 0
+
 
                     if i != j:
                         new_succ.append((j, weight + weight_decimal))
@@ -130,7 +138,9 @@ class Graph(object):
                 new_pred = []
                 for j in range(0, nbr_vertex):
                     weight = random.randint(a, b)
-                    weight_decimal = random.random()
+                    #weight_decimal = random.random()
+                    weight_decimal = 0
+
 
                     if i != j:
                         new_pred.append((j, weight + weight_decimal))
@@ -208,6 +218,21 @@ class Graph(object):
         return result
 
     @staticmethod
+
+    def list_succ_to_mat(list_succ):
+        mat = []
+
+        for i in range(0, len(list_succ)):
+            succ_i = list_succ[i]
+            line = [0] * len(list_succ)
+            for j in range(0, len(succ_i)):
+                (succ,w) = succ_i[j]
+                line[succ] = w
+            mat.append(line)
+
+        return mat
+
+    @staticmethod
     def get_weight_pred(current, pred, list_pred):
 
         """ Etant donne un noeud courant, un certain predecesseur et la liste des predecesseurs, donne le poids entre
@@ -231,6 +256,16 @@ class Graph(object):
             if _succ == succ.id:
                 weight = w
         return weight
+
+    @staticmethod
+    def mat_to_string(mat):
+        string = ""
+        nb_vertex = len(mat)
+
+        for i in range(0, nb_vertex):
+            string = string + str(mat[i]) + "\n"
+        return string
+
 
 
 
@@ -264,6 +299,18 @@ class Node(object):
 
     def __lt__(self, other):
         return self.value < other.value
+
+    def __repr__(self):
+        str = ""+repr(self.current)+" ; "+ repr(self.value)
+        return str
+
+
+class Node_restart_search(Node):
+
+    def __init__(self, current, parent, eps, cost, value = float("infinity"), blocked = set([])):
+
+        Node.__init__(self, current, parent, eps, cost, value)
+        self.blocked = blocked
 
 
 
@@ -412,8 +459,22 @@ class ReachabilityGame(object):
             newVertices[i] = dijkVert
 
         return Graph(newVertices, graph.mat, graph.pred, graph.succ)
+    @staticmethod
+    def graph_transformer_real_dijkstra(graph):
+        """
+         A partir d'un graphe, modelise le graphe du jeu min-max tel que le joueur voulant minimiser est min_player
 
+        """
 
+        vertices = graph.vertex
+        newVertices = [0] * len(vertices)
+
+        for i in range(0, len(vertices)):
+            oldVert = vertices[i]
+            dijkVert = VertexDijkPlayerMin(oldVert.id)
+            newVertices[i] = dijkVert
+
+        return Graph(newVertices, graph.mat, graph.pred, graph.succ)
     @staticmethod
     def same_paths(path1, path2):
         """
@@ -508,27 +569,54 @@ class ReachabilityGame(object):
     #test d'un parcours d'arbre un peu plus intelligent
 
 
-    def best_first_search(self, heuristic):
+    def best_first_search(self, heuristic, border = None, allowed_time = float("infinity")):
 
         mon_fichier = open("test.txt", "w")
+        mon_fichier.write("************************** \n")
         parcours = open("parcours_best.txt", "w")
+        result = open("result_best_first_search.txt", "w")
+        result.write("info sur le jeu : \n")
+        result.write(Graph.mat_to_string(Graph.list_succ_to_mat(self.graph.succ)))
+        result.write("\n")
+        result.write("nombres de noeuds :" +repr(len(self.graph.vertex)))
+        result.write("\n")
+        result.write("noeud initial : v" + repr(self.init.id))
+        result.write("\n")
+        result.write("objectifs :" + repr(self.goal))
+        result.write("\n")
+        result.write("partitions :" + repr(self.part))
+        result.write("\n")
+        result.write("temps permis: " +repr(allowed_time))
+
+        result.write("\n")
+        result.write("\n")
+
+
+        start = time.time()
+
+
 
         max_length = (self.player + 1) * self.graph.max_weight * len(self.graph.vertex)
 
-        parent = Node([], None, 0, {})
-        initial_node = Node([self.init], parent, 0, {})
 
-        (goal, player) = self.is_a_goal(self.init)
+        if border is None:
+            parent = Node([], None, 0, {})
+            initial_node = Node([self.init], parent, 0, {})
 
-        if goal:
-            (nash, coalitions) = self.is_a_Nash_equilibrium_one_player([self.init], player)
-            if nash:
-                initial_node.cost[player] = 0
+            (goal, player) = self.is_a_goal(self.init)
 
-        border = []
-        heapq.heappush(border, initial_node)
+            if goal:
+                (nash, coalitions) = self.is_a_Nash_equilibrium_one_player([self.init], player)
+                if nash:
+                    initial_node.cost[player] = 0
+            value = heuristic(self, initial_node.cost, 1, self.init)
+            initial_node.value = value
+            border = []
+            heapq.heappush(border, initial_node)
 
-        while(True):
+
+
+        while(True and time.time() - start < allowed_time):
 
             if len(border) == 0:
                 mon_fichier.close()
@@ -536,6 +624,10 @@ class ReachabilityGame(object):
 
             candidate_node = heapq.heappop(border)
             old_path = candidate_node.current
+            mon_fichier.write("pop : ")
+            mon_fichier.write(str(ReachabilityGame.path_vertex_to_path_index(old_path)))
+            mon_fichier.write("\n")
+
             parcours.write(str(ReachabilityGame.path_vertex_to_path_index(old_path)))
             parcours.write("------->")
             parcours.write(str(candidate_node.value))
@@ -545,6 +637,7 @@ class ReachabilityGame(object):
 
                 last_vertex = candidate_node.current[-1]
                 succ_last_vertex = self.graph.succ[last_vertex.id]
+                random.shuffle(succ_last_vertex)
 
                 for i in range(0, len(succ_last_vertex)):
 
@@ -560,17 +653,16 @@ class ReachabilityGame(object):
                     mon_fichier.write(str(ReachabilityGame.path_vertex_to_path_index(new_path)))
 
                     (goal, player) = self.is_a_goal(succ_vertex)
-                    mon_fichier.write("goals "+ str(self.goal))
-                    mon_fichier.write("\n")
                     mon_fichier.write("vertex teste :" + str(succ_vertex.id))
                     mon_fichier.write("\n")
 
 
                     if goal and player not in candidate_node.cost:
                         mon_fichier.write("nouvel objectif atteint pour "+str(player))
-
+                        mon_fichier.write("\n")
 
                         (nash, coalitions) = self.is_a_Nash_equilibrium_one_player(new_path, player)
+
 
                         mon_fichier.write("pour le moment je respecte les conditions d' etre un EN :")
 
@@ -579,20 +671,34 @@ class ReachabilityGame(object):
 
                         if nash and len(candidate_node.cost) + 1 == self.player:
                             mon_fichier.write("tous les candidats ont atteints leur obj et c'est un EN")
+                            mon_fichier.write("\n")
                             mon_fichier.close()
                             parcours.close()
+                            result.write("Equilibre de Nash trouve :" + str(
+                            ReachabilityGame.path_vertex_to_path_index(new_path)))
+                            result.write("\n")
+                            result.write("**********************")
+                            result.close()
                             return new_path
                         if nash:
 
                             new_cost = copy.deepcopy(candidate_node.cost)
                             new_cost[player] = epsilon
-                            value = heuristic(new_cost, self.player, self.graph.max_weight,
-                                                               len(self.graph.vertex), len(new_path))
+                            #value = heuristic(new_cost, self.player, self.graph.max_weight,len(self.graph.vertex), len(new_path))
+
+                            value = heuristic(self, new_cost,epsilon, len(new_path), succ_vertex)
+
+                            mon_fichier.write("valeur du nouveau chemin :")
                             mon_fichier.write(str(value))
                             mon_fichier.write("\n")
 
+
                             new_node = Node(new_path, candidate_node, epsilon, new_cost, value)
+
                             heapq.heappush(border, new_node)
+                            mon_fichier.write("border :")
+                            mon_fichier.write(str(border))
+                            mon_fichier.write("\n")
 
                     else:
 
@@ -601,22 +707,216 @@ class ReachabilityGame(object):
                             if nash:
                                 mon_fichier.close()
                                 parcours.close()
+                                result.write("Equilibre de Nash trouve :" +str(ReachabilityGame.path_vertex_to_path_index(new_path)))
+                                result.write("\n")
+                                result.write("**********************")
+                                result.close()
+
                                 return new_path
 
                         else:
-                            value = heuristic(candidate_node.cost, self.player, self.graph.max_weight,
-                                                           len(self.graph.vertex), len(new_path))
-
+                            #value = self.heuristic(candidate_node.cost, self.player, self.graph.max_weight,len(self.graph.vertex), len(new_path))
+                            value = heuristic(self, candidate_node.cost,epsilon, len(new_path), succ_vertex)
+                            mon_fichier.write("valeur du chemin : ")
                             mon_fichier.write(str(value))
                             mon_fichier.write("\n")
 
                             new_node = Node(new_path, candidate_node, epsilon, candidate_node.cost, value)
                             heapq.heappush(border, new_node)
+                            mon_fichier.write("border :")
+                            mon_fichier.write(str(border))
+                            mon_fichier.write("\n")
+
+        mon_fichier.close()
+        parcours.close()
+        result.write("Calcul stoppe")
+        result.write("\n")
+        result.write("**********************")
+        result.close()
+        return
+
+    def restart_best_first_search_aux(self, heuristic, border=None, allowed_time=float("infinity")):
+
+
+        pop = open("pop_restart_best_first_search.txt", "a")
+        pop.write("**************** \n")
+        pop.write("nouvelle tentative \n")
+
+        only_pop = open("only_pop.txt", "a")
+        only_pop.write("**************** \n")
+        only_pop.write("nouvelle tentative \n")
+
+        result = open("result_restart.txt", "w")
+        result.write("info sur le jeu : \n")
+        result.write(Graph.mat_to_string(Graph.list_succ_to_mat(self.graph.succ)))
+        result.write("\n")
+        result.write("nombres de noeuds :" + repr(len(self.graph.vertex)))
+        result.write("\n")
+        result.write("noeud initial : v" + repr(self.init.id))
+        result.write("\n")
+        result.write("objectifs :" + repr(self.goal))
+        result.write("\n")
+        result.write("partitions :" + repr(self.part))
+        result.write("\n")
+        result.write("temps permis: " + repr(allowed_time))
+
+        result.write("\n")
+        result.write("\n")
+
+        start = time.time()
+
+
+        max_length = (self.player + 1) * self.graph.max_weight * len(self.graph.vertex)
+
+        if border is None :
+            cost = {}
+            (goal, player) = self.is_a_goal(self.init)
+            if goal:
+                cost[player] = 0
+
+            value = heuristic(self, cost,0, 1, self.init)
+            initial_node = Node_restart_search([self.init], Node([],None, 0, {}, float("infinity")), 0, cost, value, set([]))
+            border = [initial_node]
+
+        returned_border = border
+        returned_candidate = border[0]
+        returned_succ = None
+
+        returned = False
+
+
+        while(len(border) != 0 and time.time() - start <= allowed_time):
+
+            candidate = heapq.heappop(border)
+
+            pop.write( "POP :")
+            pop.write(str(candidate.current))
+            pop.write("\n")
+
+            only_pop.write("POP :")
+            only_pop.write(str(candidate.current))
+            only_pop.write("\n")
+
+
+            last_vertex = candidate.current[-1]
+            list_succ = self.graph.succ[last_vertex.id]
+
+            random.shuffle(list_succ)
+
+            actual_border = copy.copy(border)
+            actual_candidate = candidate
+
+            for i in range(0, len(list_succ)):
+
+                (succ, w) = list_succ[i]
+                succ_vertex = self.graph.vertex[succ]
+
+                pop.write("blocked : ")
+                pop.write(str(candidate.blocked))
+                pop.write("\n")
+
+                if succ not in candidate.blocked:
+
+                    new_path = []
+                    new_path[0 : len(candidate.current)] = candidate.current
+                    new_path.append(succ_vertex)
+
+                    pop.write("on rajoute : ")
+                    pop.write(str(new_path))
+                    pop.write("\n")
+
+                    epsilon = candidate.eps + w
+
+                    (goal, player) = self.is_a_goal(succ_vertex)
+
+                    if goal and player not in candidate.cost:
+
+                        pop.write(" un nouvel objectif est atteint :" + str(goal) + "pour le joueur :" + str(player))
+                        pop.write("\n")
+
+                        if not returned:
+                            returned_border = copy.copy(actual_border)
+                            returned_candidate = actual_candidate
+                            returned_succ = succ
+                            returned = True
+
+                        new_cost = copy.copy(candidate.cost)
+                        new_cost[player] = epsilon
+
+                        (nash, coalition) = self.is_a_Nash_equilibrium_one_player(new_path, player)
+                        if nash:
+                            pop.write("on respecte les conditions d'en :")
+                            pop.write(str(nash))
+                            pop.write("\n")
+
+                            if len(new_cost) == self.player or len(new_path) == max_length:
+
+                                pop.write("j ai trouve un EN :")
+                                pop.write(str(new_path))
+                                pop.write("\n")
+                                pop.close()
+                                only_pop.close()
+                                return False, new_path, None, None
+
+                            value = heuristic(self, new_cost,epsilon, len(new_path), succ_vertex)
+                            new_node = Node_restart_search(new_path,candidate, epsilon, new_cost, value, set([]))
+                            heapq.heappush(border, new_node)
+
+                            pop.write("border :")
+                            pop.write(str(border))
+                            pop.write("\n")
+
+
+                    else:
+                        value = heuristic(self, candidate.cost, epsilon, len(new_path), succ_vertex)
+                        new_node = Node_restart_search(new_path, candidate, epsilon, candidate.cost, value, set([]))
+                        heapq.heappush(border, new_node)
+
+                        pop.write("border :")
+                        pop.write(str(border))
+                        pop.write("\n")
+
+        pop.close()
+        only_pop.close()
+        return True, returned_candidate, returned_border, returned_succ
+
+
+    def restart_best_first_search(self, heuristic, allowed_time = float("infinity")):
+
+        (fail, candidate, border, succ) = self.restart_best_first_search_aux(heuristic, None, allowed_time)
+        nash_found = not fail
+        attempt = 5
+
+        if not fail:
+            return candidate
+        else:
+            while not nash_found and attempt >= 0:
+                print "je repars de:", str(candidate.current)
+
+
+                if succ is not None:
+                    candidate.blocked.add(succ)
+                print "et je ne plus aller vers", str(candidate.blocked)
+                candidate.value = - float("infinity")
+                heapq.heappush(border, candidate)
+
+                (fail, candidate, border, succ) = self.restart_best_first_search_aux(heuristic, border, allowed_time)
+
+                if not fail:
+                    return candidate
+                attempt -= 1
+
+
+
+
 
 
     @staticmethod
-    def heuristic(cost, nb_player, max_weight, nb_vertex, length_path):
+    def heuristic(game, cost, epsilon, length_path, last_vertex = None):
 
+        nb_player = game.player
+        max_weight = game.graph.max_weight
+        nb_vertex = len(game.graph.vertex)
         nb_reached = len(cost)
         max_length_path = (nb_player + 1)*max_weight * nb_vertex
 
@@ -628,17 +928,124 @@ class ReachabilityGame(object):
             keys = cost.keys()
             for p in keys:
                 value += cost[p]
-            penality = (nb_player - nb_reached)*max_weight * (max_length_path - length_path) + length_path*100
+            penality = (nb_player - nb_reached)*(max_weight + epsilon) * (max_length_path - length_path) + length_path
 
             return value + penality
 
+    @staticmethod
+    def heuristic_short_path(game, cost, length_path, last_vertex = None):
+
+
+
+        nb_player = game.player
+        max_weight = game.graph.max_weight
+        nb_vertex = len(game.graph.vertex)
+        nb_reached = len(cost)
+        max_length_path = (nb_player + 1) * max_weight * nb_vertex
+
+        value = 0
+
+        graph_real_dijk = ReachabilityGame.graph_transformer_real_dijkstra(game.graph)
+        union_goal = game.goal[0]
+        for i in range(1, len(game.goal)):
+            union_goal = union_goal.union(game.goal[i])
+        T = dijkstraMinMax(graph_real_dijk, union_goal)
+        tab_result = get_all_values(T)
+        if nb_reached == 0:
+            return max_length_path * nb_player*max_weight + tab_result[last_vertex.id]
+        else:
+            keys = cost.keys()
+            for p in keys:
+                value += cost[p]
+            penality = (nb_player - nb_reached) * max_weight * (max_length_path - length_path) + length_path
+
+            return value + penality + tab_result[last_vertex.id]
 
 
 
 
-    def cost_for_all_players(self, path):
+    def init_search(self):
 
-        cost = [float("infinity")] * self.player
+        """
+        On va tester le chemin du noeud initial -> l'objectif le plus proche, si cela respecte tjs les conditions pour
+        etre un EN , on continue la recherche a partir de ce chemin
+
+        """
+        doc = open("init_search.txt", "w")
+        graph_dijk = ReachabilityGame.graph_transformer_real_dijkstra(self.graph)
+
+        union_goal = self.goal[0]
+        for i in range(1, len(self.goal)):
+            union_goal = union_goal.union(self.goal[i])
+
+        T = dijkstraMinMax(graph_dijk, union_goal)
+        successor = get_succ_in_opti_strat(T, union_goal, self.graph.succ)
+
+        path = [self.init]
+        goal_is_reached = False
+        (goal, player) = self.is_a_goal(self.init)
+        if goal:
+            return path, player
+        else:
+
+            while not goal_is_reached:
+                succ = self.graph.vertex[successor[path[-1].id]]
+                path.append(succ)
+                doc.write(str(ReachabilityGame.path_vertex_to_path_index(path)))
+                doc.write("\n")
+
+                (goal, player) = self.is_a_goal(succ)
+                doc.write("c est un objectif :" + str(goal))
+
+                if goal:
+                    goal_is_reached = True
+
+            doc.close()
+            return path, player
+
+
+    def best_first_search_with_init_path(self, heuristic, allowed_time = float("infinity")):
+
+        (path, player) = self.init_search()
+
+        (nash, coalition) = self.is_a_Nash_equilibrium_one_player(path, player)
+
+        if nash:
+            cost = self.cost_for_all_players(path,True)
+            epsilon = self.compute_epsilon(path)
+            value = heuristic(self, cost, epsilon, len(path), path[-1])
+            eps = self.compute_epsilon(path)
+            node = Node(path, Node([], None, 0, cost, value), eps, cost, value)
+            border = [node]
+
+            res = self.best_first_search(heuristic, border, allowed_time)
+            return res
+
+        else:
+            return None
+
+
+
+    def compute_epsilon(self, path):
+
+        eps = 0
+
+        for i in range(1, len(path)):
+
+            v = path[i]
+            pred_v = path[i - 1]
+            eps += Graph.get_weight_pred(v, pred_v, self.graph.pred)
+
+        return eps
+
+
+
+
+
+
+    def cost_for_all_players(self, path, only_reached=False):
+
+        cost = {}
         weight = 0
 
         reach_goals_player = set()
@@ -659,9 +1066,14 @@ class ReachabilityGame(object):
             if v.id not in reach_goals:
                 (goal, player) = self.is_a_goal(v)
                 if goal and player not in reach_goals_player:
-                    cost[player -1] = weight
+                    cost[player] = weight
                     reach_goals_player.add(player)
                     reach_goals.add(v.id)
+
+        if( not only_reached):
+            for p in range(1, self.player + 1):
+                if p not in cost:
+                    cost[p] = float("infinity")
 
         return cost
 
@@ -731,7 +1143,7 @@ class ReachabilityGame(object):
             if current.player in coalitions:  #on a deja calcule les valeurs du jeu ou player joue contre la collation Pi\{player}
                 val = coalitions[current.player][current.id]
 
-                if ReachabilityGame.respect_property(val, epsilon, path_cost[current.player - 1]):
+                if ReachabilityGame.respect_property(val, epsilon, path_cost[current.player]):
                     ind += 1 # on respecte les conditions de la propriete pour etre un EN
                 else:
                     nash = False # on ne respcte pas la condition pour au moins un noeud -> pas un EN
@@ -744,7 +1156,7 @@ class ReachabilityGame(object):
 
                 val = coalitions[current.player][current.id]
 
-                if ReachabilityGame.respect_property(val, epsilon, path_cost[current.player - 1]):
+                if ReachabilityGame.respect_property(val, epsilon, path_cost[current.player]):
                     ind += 1  # on respecte les conditions de la propriete pour etre un EN
 
 
@@ -771,7 +1183,6 @@ class ReachabilityGame(object):
             result_dijk_min_max = dijkstraMinMax(graph_min_max, self.goal[player - 1])
             values_player = get_all_values(result_dijk_min_max)
             coalitions[player] = values_player
-
         epsilon = 0  # poids du chemin jusqu'au noeud courant
         nash = True  # le chemin est un equilibre de Nash
         ind = 0  # indice du noeud courant dans le chemin
@@ -801,7 +1212,7 @@ class ReachabilityGame(object):
 
         cost = self.cost_for_all_players(path)
 
-        for i in range(len(cost)):
+        for i in cost.keys():
 
             if cost[i] != float("infinity"):
                 player_goal.append(i+1)
@@ -820,7 +1231,10 @@ class ReachabilityGame(object):
         for res in result:
             (cost, player_goal) = self.get_info_path(res)
 
-            sum_cost = sum(cost)
+            sum_cost = 0
+
+            for c in cost.values():
+                sum_cost += c
 
             if sum_cost != float("infinity") and value_best_cost > sum_cost:
                 best_cost = res
@@ -849,7 +1263,7 @@ class ReachabilityGame(object):
 
         for p in player_reached:
 
-            cost += all_cost[p-1]
+            cost += all_cost[p]
         return cost
 
 
@@ -899,6 +1313,13 @@ class ReachabilityGame(object):
 
         print "Liste des sucesseurs :"
         self.print_sucesseur()
+
+        print "Matrice d'adjacence"
+        mat = Graph.list_succ_to_mat()
+        string = Graph.mat_to_string(mat)
+        print mat
+
+
 
 
 
@@ -991,6 +1412,128 @@ def test_nash_equilibrium():
 
 
 
+def test_real_dijkstra():
+    v0 = Vertex(0, 1)
+    v1 = Vertex(1, 2)
+    v2 = Vertex(2, 1)
+    v3 = Vertex(3, 1)
+    v4 = Vertex(4, 2)
+    v5 = Vertex(5, 2)
+    v6 = Vertex(6, 1)
+
+    vertices = [v0, v1, v2, v3, v4, v5, v6]
+
+    pred0 = [(1, 1), (2, 9), (0, 1)]
+    pred1 = [(3, 1)]
+    pred2 = [(5, 1)]
+    pred3 = [(5, 3), (2, 1)]
+    pred4 = [(6, 1)]
+    pred5 = [(4, 4)]
+    pred6 = [(5, 2)]
+
+    list_pred = [pred0, pred1, pred2, pred3, pred4, pred5, pred6]
+    list_succ = Graph.list_pred_to_list_succ(list_pred)
+
+    graph = Graph(vertices, None, list_pred, list_succ)
+    graph_real_dijk = ReachabilityGame.graph_transformer_real_dijkstra(graph)
+    goal = set([0])
+
+    T = dijkstraMinMax(graph_real_dijk, goal)
+
+    print_result(T, goal, list_succ)
+
+def test_succ_to_mat():
+    pred0 = [(1, 1), (2, 9), (0, 1)]
+    pred1 = [(3, 1)]
+    pred2 = [(5, 1)]
+    pred3 = [(5, 3), (2, 1)]
+    pred4 = [(6, 1)]
+    pred5 = [(4, 4)]
+    pred6 = [(5, 2)]
+
+    list_pred = [pred0, pred1, pred2, pred3, pred4, pred5, pred6]
+    list_succ = Graph.list_pred_to_list_succ(list_pred)
+
+    mat = Graph.list_succ_to_mat(list_succ)
+    string = Graph.mat_to_string(mat)
+
+    print string
+
+def test_restart():
+    mat = [[0, 6, 4, 4, 5],[7, 0, 4, 1, 10],[5, 1, 0, 3, 10],[7, 1, 1, 0, 8],[6, 3, 1, 4, 0]]
+
+    list_pred = Graph.matrix_to_list_pred(mat)
+    list_succ = Graph.list_pred_to_list_succ(list_pred)
+
+    v0 = Vertex(0, 2)
+    v1 = Vertex(1, 2)
+    v2 = Vertex(2, 1)
+    v3 = Vertex(3, 1)
+    v4 = Vertex(4, 1)
+
+    vertex = [v0, v1, v2, v3, v4]
+
+    graph = Graph(vertex, mat, list_pred, list_succ, 10)
+
+    goals = [set([4]), set([0])]
+
+    game = ReachabilityGame(2, graph, v3, goals, None, {0:2, 1:2, 2:1, 3:1, 4:1})
+
+    res = game.restart_best_first_search(ReachabilityGame.heuristic, 5)
+
+    res2 = game.best_first_search_with_init_path(ReachabilityGame.heuristic, 5)
+
+    result = game.test_random_path(100, (game.player + 1) * game.graph.max_weight * len(game.graph.vertex))
+
+    print  str(res)
+    print "  "
+    print str(res2)
+    print "  "
+
+
+    for r in result:
+        print r
+
+def test_restart_2():
+    mat = [ [0, 2, 3, 5, 5],[2, 0, 7, 7, 2],[10, 6, 0, 1, 9],[9, 3, 2, 0, 7], [10, 6, 8, 5, 0]]
+    list_pred = Graph.matrix_to_list_pred(mat)
+    list_succ = Graph.list_pred_to_list_succ(list_pred)
+
+    v0 = Vertex(0, 1)
+    v1 = Vertex(1, 1)
+    v2 = Vertex(2, 1)
+    v3 = Vertex(3, 1)
+    v4 = Vertex(4, 1)
+
+    vertex = [v0, v1, v2, v3, v4]
+
+    graph = Graph(vertex, mat, list_pred, list_succ, 10)
+
+    goals = [set([0]), set([4])]
+
+    game = ReachabilityGame(2, graph, v3, goals, None, {0: 1, 1: 1, 2: 1, 3: 1, 4: 1})
+
+    res = game.restart_best_first_search(ReachabilityGame.heuristic, 5)
+
+    #res2 = game.best_first_search_with_init_path(ReachabilityGame.heuristic, 5)
+
+    #result = game.test_random_path(100, (game.player + 1) * game.graph.max_weight * len(game.graph.vertex))
+
+
+
+    #print game.is_a_Nash_equilibrium(path)
+
+    print  str(res)
+    print "  "
+    #print str(res2)
+    print "  "
+
+
+
+
+
+
+
 
 
 
@@ -1000,4 +1543,8 @@ if __name__ == '__main__':
 
     #test_path_cost()
 
-    test_nash_equilibrium()
+    #test_nash_equilibrium()
+
+    #test_real_dijkstra()
+
+    test_restart_2()

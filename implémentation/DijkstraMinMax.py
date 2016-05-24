@@ -1,6 +1,7 @@
 from MinHeap import MinHeap
 
 
+
 class VertexDijk(object):
 
     def __init__(self, id, player, key=float("infinity"), index=0):
@@ -264,12 +265,9 @@ def get_succ_in_opti_strat(T, goal, succ):
 
     for v in T:
 
-        print " vertex v"+str(v.id)
-        print "joueur ", v.player
 
         if v.player == 1 or v.id in goal:
 
-            print " je passe ici"
 
             res = v.S.id
             if res is not None:
@@ -280,10 +278,7 @@ def get_succ_in_opti_strat(T, goal, succ):
 
 
         else:
-            print "je passe la"
-            print " blou", isinstance(v, VertexDijkPlayerMax)
-            res = v.S
-            print "res", res, isinstance(res, MinHeap)
+
             res = v.S.read_min().id
 
             if res is not None:
@@ -313,6 +308,7 @@ def get_all_values(T):
         tab[i.id] = i.key
 
     return tab
+
 
 
 
@@ -453,6 +449,9 @@ def test3(): # comportement bizarre avec ou sans none , si je mets tab = []
     print v0.S
     print v1.S.tab
     print v1.S
+
+
+
 
 if __name__ == "__main__":
     test3()
