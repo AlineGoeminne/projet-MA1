@@ -23,7 +23,6 @@ Nous nous attardons dans un premier temps sur les \emph{jeux d'atteignabilité �
 		$$ \forall \sigma_{-i}, \, \langle \sigma_i, \sigma_{-i} \rangle_v \in \Omega_i.$$
 	\end{defi}
 	
-	\todo{ vérifier si cette définition est correcte}
 % DEFINITION: ensemble des états gagnants		
 	
 	\begin{defi}
@@ -86,10 +85,11 @@ Cette première propriété signifie simplement qu'un noeud du jeu ne peut pas �
 %PROPRIETE
 	
 	\begin{propriete}
-		\label{prop:suiteUltConst}
-		La suite $(X_{k})_{k \in \mathbb{N}}$ est ultimement constante. 
+		\label{prop:suiteUltConst}$ $\\
+		La suite $(X_{k})_{k \in \mathbb{N}}$ est ultimement constante (\emph{i.e.,} $\exists n \in \mathbb{N} \, \forall n \geq n X_k = X_n$). 
 	\end{propriete}
 	\begin{demonstration}
+		
 		Premièrement, nous avons clairement que  $\forall k \in \mathbb{N}, X_{k} \subseteq X_{k+1}$.\\
 		Deuxièmement, nous avons : $\forall k \in \mathbb{N}, |X_{k}| \leq |V| $.\\
 		Dès lors, vu que la suite $(X_{k})_{k \in \mathbb{N}}$ est une suite croissante dont la cardinalité des ensembles est bornée par celle de $V$, elle est ultimement constante.\\
@@ -100,10 +100,9 @@ Cette première propriété signifie simplement qu'un noeud du jeu ne peut pas �
 % DEFINITION: attracteur
 	
 	\begin{defi}
-		La limite de la suite $(X_{k})_{k \in \mathbb{N}}$ est appelée \textit{attracteur de F} et est notée $Attr(F)$ (\emph{i.e.,} $Attr(F)$ $:=$ $\lim \limits _{k \rightarrow \infty} X_k$).
+	 L'\textit{attracteur de F} , noté $Attr(F)$, est défini de la manière suivante :$Attr(F) = \bigcup_{k \in \mathbb{N}} X_k$.
 	\end{defi}
 	
-	\todo{ regarder à cette histoire de limite pour un ensemble -> louche. Limite de l'union?}
 	
 	$Pre(X)$ est l'ensemble des noeuds à partir desquels $J_1$ est certain d'atteindre un élément de $X$ en une étape (en empruntant un arc du graphe). Calculer $X_k$ revient donc à déterminer à partir de quels états $J_1$ est assuré d'atteindre son objectif en au plus $k$ étapes. Dès lors, comme $Attr(F)$ est la limite de la suite $(X_k)_{k \in \mathbb{N}}$, trouver $Attr(F)$ revient à trouver $W_1$. C'est le résultat que nous énonçons et démontrons ci-dessous.
 	
@@ -137,15 +136,10 @@ Cette première propriété signifie simplement qu'un noeud du jeu ne peut pas �
 		\end{enumerate}
 		Par cette preuve par récurrence, l'assertion est bien vérifiée.\\
 		
-		\noindent$\mathbf{V \backslash Attr(F) \subseteq W_{2}}$: Soit $v \in V \backslash Attr(F)$. Une stratégie gagnante pour $J_{2}$ est une stratégie telle que à chaque tour de jeu le sommet $s$ considéré soit dans l'ensemble $V\backslash Attr(F)$. Sinon, au vu de la preuve précédente, il existerait à partir du sommet $s$ une stratégie gagnante pour $J_{1}$ et $J_{1}$ n'aurait donc qu'à utiliser cette stratégie pour s'assurer la victoire. \\
+		\noindent$\mathbf{V \backslash Attr(F) \subseteq W_{2}}$: Soit $v \in V \backslash Attr(F)$. Une stratégie gagnante pour $J_{2}$ est une stratégie telle que à chaque tour de jeu le sommet $s$ considéré soit dans l'ensemble $V\backslash Attr(F)$. En effet, puisque $F \subseteq Attr(F)$, en s'assurant de rester en dehors de l'attracteur on est certain de ne pas atteindre un élément de $F$.\\
 		
-		Explicitons la construction de la stratégie de $J_2$ qui lui assure la victoire à partir du noeud $v$. On sait que $Attr(F) = X_N$ pour un certain $N \in \mathbb{N}$. Dès lors, si $v \notin Attr(F)$ alors pour tout $ 0 \leq k \leq N$ on a que $v \notin X_k$.
+		Si $v \in V_1$ alors cela signifie que $\forall v'$ tel que $(v,v') \in E$ on a $v' \in V\backslash Attr(F)$. Tandis que si $v \in V_2$ alors $ \exists v'$ tel que $ (v, v') \in E$ et $ v' \in V\backslash Attr(F)$. On définit donc $\sigma_2(v) = v'$. Pour construire la stratégie gagnante $\sigma_2$ de $J_2$, on réitère cet argument.\\
 		
-Première étape: on sait que $v \notin X_N$, si $v \in V_2$ alors il existe $v'$ tel que $(v,v') \in E$ et $v' \notin X_{N-1}$ alors on pose $\sigma_2(v) = v'$. Par contre, si $v \in V_1$, on sait que pour tout $v'$ on a soit $(v,v') \notin E$, soit $v' \notin X_{n-1}$. Dès lors, on est certain qu'à partir de $v$ soit le $J_2$ peut atteindre un $v' \notin X_{N-1}$, soit quelle que soit la stratégie de $J_1$ on atteint un $v' \notin X_{N-1}$. 
-
-Deuxième étape: on réitère le même argument que ci-dessus à partir de $v'$.
-\todo{refaire la preuve!!!}
-Fin de la construction: la construction s'achève lors du traitement d'un certain $v \notin X_1$. De même que ci-dessus nous avons alors deux cas: soit $v \in V_2$ alors il existe $v'$ tel que $(v,v') \in E$ et $v' \notin F$. On a ainsi construit une stratégie $\sigma_2 \in \Sigma_2$ telle que pour tout $\sigma_1 \in \Sigma_1$ on ait : $\langle \sigma_1, \sigma_2 \rangle_v \in \Omega_2.$ Notons toutefois, que lors de la construction ci-dessus il se peut que $\sigma_2$ ne soit pas définie sur tout $v\in V_2$. A ces noeuds pour lesquels $\sigma_2$ n'a pas été définie on associe n'importe quel successeur. 
 		
 		\noindent $\mathbf{W_{1} \subseteq Attr(F)}$: Supposons au contraire : $W_{1} \not\subseteq Attr(F)$. Cela signifie qu'il existe $v \in W_{1}$ tel que $v \notin Attr(F)$. D'où $v \in V\backslash Attr(F)$ et comme $V \backslash Attr(F) \subseteq W_{2}$, on a $v \in W_{2}$. Or par la propriété \ref{Wempty}, $W_{1} \cap W_{2} = \emptyset $ et ici $v \in W_{1}$ et $v \in W_{2}$. Ce qui amène la contradiction.\\
 		
