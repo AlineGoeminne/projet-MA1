@@ -11,6 +11,8 @@
 		\item[$\bullet$] $Cost_{Min}: Plays \rightarrow \mathbb{R} \cup \{+ \infty, -\infty \}$ est la \textit{fonction de coût} du joueur \textit{Min}.
 		\item[$\bullet$] $Gain_{Max}: Plays \rightarrow \mathbb{R} \cup \{ + \infty, -\infty \}$ est la \textit{fonction de gain} du joueur \textit{Max}.
 	\end{enumerate}
+	
+De plus, $Cost_{Min}(\rho) \geq Gain_{Max}(\rho)$ pour tout $\rho \in Plays$.
 		
 \end{defi}
 
@@ -88,7 +90,33 @@ La fonction de poids que l'on associe à un graphe dépend de la situation qui e
 \begin{propriete}
 	Pour tout $v \in V$, on a : $\underline{Val}(v) \leq \overline{Val}(v)$
 \end{propriete}
-\todo{Mettre une ref ou faire la preuve}
+\setlength{\overfullrule}{0pt}
+
+\begin{demonstration}
+	Par hypothèse, nous savons : 
+	
+	$$ \forall v \in V \, \forall \sigma_{1} \in \Sigma_{Min} \, \forall \sigma_{2} \in \Sigma_{Max}\, Gain_{Max}(\langle \sigma_1, \sigma_2 \rangle_v) \leq Cost_{Min}(\langle \sigma_1, \sigma_2 \rangle_v)$$
+	Dès lors, l'assertion suivante est également vérifiée.
+	
+	
+	$$ \forall v \in V \, \forall \sigma_{1} \in \Sigma_{Min} \, \forall \sigma_{2}\in \Sigma_{Max}\, \inf_{\tilde{\sigma_1} \in \Sigma_{Min}}Gain_{Max}(\langle \tilde{\sigma}_1, \sigma_2 \rangle_v) \leq Cost_{Min}(\langle \sigma_1, \sigma_2 \rangle_v)$$
+	En passant au suprémum sur les deux membres de l'inégalité, nous obtenons:
+	
+	$$ \forall v \in V \, \forall \sigma_1 \in \Sigma_{Min} \,\sup_{\sigma_2 \in \Sigma_{Max}}\inf_{\tilde{\sigma_1} \in \Sigma_{Min}}Gain_{Max}(\langle \tilde{\sigma}_1, \sigma_2 \rangle_v) \leq \sup_{\sigma_2 \in \Sigma_{Max}}Cost_{Min}(\langle \sigma_1, \sigma_2 \rangle_v)$$
+	
+	De plus, en passant cette fois à l'infimum sur les deux membres de l'inégalité:
+	
+		$$ \forall v \in V \, \inf_{\sigma_1 \in \Sigma_{Min}}\sup_{\sigma_2 \in \Sigma_{Max}}\inf_{\tilde{\sigma_1} \in \Sigma_1}Gain_{Max}(\langle \tilde{\sigma}_1, \sigma_2 \rangle_v) \leq \inf_{\sigma_1 \in \Sigma_{Min}}\sup_{\sigma_2 \in \Sigma_{Max}}Cost_{Min}(\langle \sigma_1, \sigma_2 \rangle_v)$$
+		
+		Mais le terme $sup_{\sigma_2 \in \Sigma_{Max}}\inf_{\tilde{\sigma_1} \in \Sigma_{Min}}Gain_{Max}(\langle \tilde{\sigma}_1, \sigma_2 \rangle_v)$ n'ayant pas de dépendance en $\sigma_1$, nous pouvons réécrire l'inégalité précédente de la manière suivante:
+		
+		$$ \forall v \in V \,\sup_{\sigma_2 \in \Sigma_{Max}}\inf_{\sigma_1 \in \Sigma_{Min}}Gain_{Max}(\langle \sigma_1, \sigma_2 \rangle_v) \leq \inf_{\sigma_1 \in \Sigma_{Min}}\sup_{\sigma_2 \in \Sigma_{Max}}Cost_{Min}(\langle \sigma_1, \sigma_2 \rangle_v)$$
+		
+		Ce qui est bien ce qu'il fallait démontrer.
+\end{demonstration}
+
+\setlength{\overfullrule}{10pt}
+
 %DEFINITION: jeu déterminé et valeur d'un jeu
 
 \begin{defi}[Jeu déterminé et valeur d'un jeu]
@@ -227,15 +255,17 @@ Comme pour l'algorithme de Dijkstra, pour une meilleure complexité les files de
 	 \label{algo:initS}
 	\begin{algorithmic}[1]
 		\REQUIRE $G$ un graphe orienté pondéré et l'ensemble des objectifs $Goal$.
-		\ENSURE / \textbf{\textsc{Effet(s) de bord :}} initialise les files de priorité de tous les sommets.
+		\ENSURE / \textbf{\textsc{Effet(s) de bord :}} initialise les files de priorité de tous les sommets du joueur Max ainsi que le champ correspondant à la plus petite valeur calculée pour le joueur Min.
 		
 		\FORALL{$o \in Goal$}
 			\STATE $S \leftarrow$ nouveau tas
 			\STATE $o.S \leftarrow S$
 			\STATE $o.S.$\textsc{Insérer}$(0, NULL)$
 		\ENDFOR
-		
-		\FORALL{$v \in G.V\backslash \{ Goal \}$}
+		\FORALL{$v \in G.V_{1}\backslash \{ Goal \}$}
+			\STATE $v.S \leftarrow (+\infty, NULL)$
+		\ENDFOR
+		\FORALL{$v \in G.V_{2}\backslash \{ Goal \}$}
 			\STATE $S \leftarrow$ nouveau tas
 			\STATE $v.S \leftarrow S$
 			\STATE $v.S.$\textsc{Insérer}$(+\infty, NULL)$
