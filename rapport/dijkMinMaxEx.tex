@@ -2,7 +2,7 @@
 
 \begin{exemple}
 
-	Soient $\mathcal{A} = (V, (V_{Min}, V_{Max}), E) $, $w: E \rightarrow \mathbb{R}$ une fonction de poids et $\mathcal{G} = (\mathcal{A}, g, Goal)$ le \og \textit{reachability-price game}\fg~associé, l'arène et la fonction de poids sont représentés sur le graphe de la figure~\ref{ex:reachPrice1} et $V_{Min}$ (resp. $V_{Max}$) est représenté par les sommets ronds (resp. les sommets carrés). $Goal =\{ v_{0} \}$. Pour les figures [9-15] , les états grisés représentent les états entièrement traités (\emph{i.e.,} les états dans $T$) et à l'intérieur de ceux-ci se trouve la valeur associée à l'état. De plus la table~\ref{tab:filePrior} (p.~\pageref{tab:filePrior}) reprend pour chaque étape et chaque noeud le contenu de la file de priorité $S$.
+	Soient $\mathcal{A} = (V, (V_{Min}, V_{Max}), E) $, $w: E \rightarrow \mathbb{R}$ une fonction de poids et $\mathcal{G} = (\mathcal{A}, g, Goal)$ le \og \textit{reachability-price game}\fg~associé, l'arène et la fonction de poids sont représentés sur le graphe de la figure~\ref{ex:reachPrice1} et $V_{Min}$ (resp. $V_{Max}$) est représenté par les sommets ronds (resp. les sommets carrés). $Goal =\{ v_{0} \}$. Pour les figures [9-15] , les états grisés représentent les états entièrement traités (\emph{i.e.,} les états dans $T$) et à l'intérieur de ceux-ci se trouve la valeur associée à l'état. De plus la table~\ref{tab:filePrior} (p.~\pageref{tab:filePrior}) reprend pour chaque étape et chaque noeud le contenu du champ $S$ (une file de priorité pour le jouer Max et un 2-uplet pour le joueur Min).
 	
 	\begin{figure}[ht!]
 		\centering
@@ -345,34 +345,34 @@
 
 	
 %Tableau des files de priorités$
-\begin{landscape}
+\setlength{\overfullrule}{0pt}
 
 \begin{table}[]
 	
-\caption{Sommets associés à leur file de priorité $S$ pour chaque étape de l'algorithme}
+\caption{Donnée stockée dans le champ $S$ pour chaque sommet et chaque étape de l'algorithme}
 \label{tab:filePrior}
 
 \begin{tabular}{l|l|l|l|l|l|l|l|l|}
 \cline{2-5}
                                & Sommets &    &    &      \\ \hline
 \multicolumn{1}{|l|}{}         & $v_{0}$ &$v_{1}$  & $v_{2}$ &$v_{3}$  \\ \hline
-\multicolumn{1}{|l|}{Etape 1:} & $(0,null),(1,v_{0})$   &$(+\infty,null),(1,v_{0})$     &$(+\infty,null),(1,v_{0})$    &$(+\infty,null),(5,v_{0})$    \\ \hline
-\multicolumn{1}{|l|}{Etape 2:} &$(0,null),(1,v_{0})$         &$(+\infty,null),(1,v_{0})$    &$(+\infty,null)$    &$(+\infty,null),(5,v_{0})$     \\ \hline
-\multicolumn{1}{|l|}{Etape 3:} &$(0,null),(1,v_{0})$         &$(+\infty,null),(1,v_{0})$    &$(+\infty,null),(2,v_{1})$    &$(+\infty,null),(5,v_{0})$  \\ \hline
-\multicolumn{1}{|l|}{Etape 4:} &$(0,null),(1,v_{0})$         &$(+\infty,null),(1,v_{0})$    &$(+\infty,null),(2,v_{1})$    &$(+\infty,null),(5,v_{0}),(3,v_{2})$   \\ \hline
-\multicolumn{1}{|l|}{Etape 5:}   &$(0,null),(1,v_{0})$         &$(+\infty,null),(1,v_{0})$    &$(+\infty,null),(2,v_{1})$    &$(+\infty,null),(5,v_{0}),(3,v_{2})$    \\ \hline 
-\multicolumn{1}{|l|}{Etape 6:}   &$(0,null),(1,v_{0})$         &$(+\infty,null),(1,v_{0})$    &$(+\infty,null),(2,v_{1})$    &$(+\infty,null),(5,v_{0}),(3,v_{2})$     \\ \hline
-\multicolumn{1}{|l|}{Etape 7:}   &$(0,null),(1,v_{0})$         &$(+\infty,null),(1,v_{0})$    &$(+\infty,null),(2,v_{1})$    &$(+\infty,null),(5,v_{0}),(3,v_{2})$   \\ \hline
+\multicolumn{1}{|l|}{Etape 1:} & $(0,null)$   &$(1,v_{0})$     &$(+\infty,null),(1,v_{0})$        &$(5,v_{0})$    \\ \hline
+\multicolumn{1}{|l|}{Etape 2:} &$(0,null)$         &$(1,v_{0})$    &$(+\infty,null)$              &$(5,v_{0})$     \\ \hline
+\multicolumn{1}{|l|}{Etape 3:} &$(0,null)$         &$(1,v_{0})$    &$(+\infty,null),(2,v_{1})$    &$(5,v_{0})$  \\ \hline
+\multicolumn{1}{|l|}{Etape 4:} &$(0,null)$         &$(1,v_{0})$    &$(+\infty,null),(2,v_{1})$    &$(3,v_{2})$   \\ \hline
+\multicolumn{1}{|l|}{Etape 5:}   &$(0, null)$         &$(1,v_{0})$    &$(+\infty,null),(2,v_{1})$    &$(3,v_{2})$    \\ \hline 
+\multicolumn{1}{|l|}{Etape 6:}   &$(0,null)$         &$(1,v_{0})$    &$(+\infty,null),(2,v_{1})$    &$(3,v_{2})$     \\ \hline
+\multicolumn{1}{|l|}{Etape 7:}   &$(0, null)$         &$(1,v_{0})$    &$(+\infty,null),(2,v_{1})$    &$(3,v_{2})$   \\ \hline
 
 \multicolumn{1}{|l|}{}  		&  &    &    &      \\ \hline
 \multicolumn{1}{|l|}{}         & $v_{4}$ &$v_{5}$  & $v_{6}$ &$v_{7}$  \\ \hline
 \multicolumn{1}{|l|}{Etape 1:} & $(+\infty,null)$   &$(+\infty,null)$     &$(+\infty,null)$    &$(+\infty,null)$    \\ \hline
 \multicolumn{1}{|l|}{Etape 2:} &$(+\infty,null)$    &$(+\infty,null)$    &$(+\infty,null)$    &$(+\infty,null)$    \\ \hline
 \multicolumn{1}{|l|}{Etape 3:} &$(+\infty,null)$    &$(+\infty,null)$    &$(+\infty,null)$    &$(+\infty,null)$    \\ \hline
-\multicolumn{1}{|l|}{Etape 4:} &$(+\infty,null),(7,v_{2})$    &$(+\infty,null)$    &$(+\infty,null)$    &$(+\infty,null)$    \\ \hline
-\multicolumn{1}{|l|}{Etape 5:} &$(+\infty,null),(7,v_{2}),(4,v_{3})$    &$(+\infty,null)$    &$(+\infty,null)$    &$(+\infty,null)$    \\ \hline
-\multicolumn{1}{|l|}{Etape 6:} &$(+\infty,null),(7,v_{2}),(4,v_{3})$     &$(+\infty,null),(5,v_{4})$    &$(+\infty,null)$    &$(+\infty,null)$    \\ \hline
-\multicolumn{1}{|l|}{Etape 7:} &$(+\infty,null),(7,v_{2}),(4,v_{3})$     &$(+\infty,null)$    &$(+\infty,null)$    &$(+\infty,null)$    \\ \hline
+\multicolumn{1}{|l|}{Etape 4:} &$(7,v_{2})$    &$(+\infty,null)$    &$(+\infty,null)$    &$(+\infty,null)$    \\ \hline
+\multicolumn{1}{|l|}{Etape 5:} &$(4,v_{3})$    &$(+\infty,null)$    &$(+\infty,null)$    &$(+\infty,null)$    \\ \hline
+\multicolumn{1}{|l|}{Etape 6:} &$(4,v_{3})$     &$(+\infty,null),(5,v_{4})$    &$(+\infty,null)$    &$(+\infty,null)$    \\ \hline
+\multicolumn{1}{|l|}{Etape 7:} &$(4,v_{3})$     &$(+\infty,null)$    &$(+\infty,null)$    &$(+\infty,null)$    \\ \hline
 
 \end{tabular}
 
@@ -380,8 +380,8 @@
 
 
 \end{table}
-\end{landscape}
-	
+\setlength{\overfullrule}{10pt}
+
 \end{exemple}	 
 
 \clearpage
