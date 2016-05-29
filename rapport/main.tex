@@ -17,6 +17,7 @@
 
 
 \usepackage{mathrsfs}
+\usepackage{multirow}
 
 \usepackage{pgf,tikz}
 \usepackage{mathrsfs}
@@ -91,7 +92,24 @@
 \begin{document}
 % Éventuellement utiliser l'environnement « preface » pour avoir une
 % numérotation des pages en chiffres romains.
+
+\newpage \thispagestyle{empty}
+\null
+\newpage\thispagestyle{empty}
+\null
+\newpage\thispagestyle{empty}
+\null
+
+
+\input{remerciements}
+\newpage \thispagestyle{empty}
+\null
+
+\setcounter{page}{0}
+
 \tableofcontents
+\newpage\thispagestyle{empty}
+\null
 
 
 \input{intro}
