@@ -6,17 +6,49 @@
 	 \begin{minipage}[c]{0.4\linewidth}Soit $\sigma _{1}(v) =\begin{cases}
 						 v_{1} & \text{ si } v = v_{0}\\
 						 v_{2} & \text{ si } v = v_{1}\\
-						 v_{0} & \text{ si } v = v_{3}
+						 v_{0} & \text{ si } v = v_{3}\\
+						v_{3} & \text{ si } v = v_4
 						\end{cases}$ \end{minipage} \hfill
 	\begin{minipage}[c]{0.1\linewidth}\center{et}\end{minipage} \hfill \begin{minipage}[c]{0.30\linewidth}	\center{$\sigma _{2}(v) = v_{3}$ si $v = v_{2}$} \end{minipage} \newline
 		
 \noindent	(rem: ces deux stratégies sont des stratégies sans mémoire), $(\sigma _{1}, \sigma _{2})$ est un équilibre de Nash de $(\mathcal{G}, v_{0})$. De plus, soit $\rho = \langle \sigma _{1},\sigma _{2} \rangle_{v_0}$ nous avons : $Cost_{1}(\rho) = 3$ et $Cost_{2}(\rho) = 0$.\\
-	Les seules déviations à considérer sont celles quand $J_{1}$ est en $v_{1}$ car il a le choix de se rendre en $v_{0}$ ou en $v_{2}$.\\ Considérons $\tilde{\sigma _{1}}(v) = $ $\begin{cases}
+	Montrons que $J_1$ ne possède pas de déviations profitables. Nous devrions pour cela le montrer pour toutes les stratégies possibles pour $J_1$. Nous nous contentons de le montrer pour les stratégies sans mémoire. \\
+	 Considérons $\tilde{\sigma _{1}}(v) = $ $\begin{cases}
 						 v_{1} & \text{ si } v = v_{0}\\
 						 v_{0} & \text{ si } v = v_{1}\\
-						 v_{0} & \text{ si } v = v_{3}
-						\end{cases}$ .
-Dans ce cas, soit $\tilde{\rho} = \langle \tilde{\sigma _{1}},\sigma _{2} \rangle_{v_0}$, nous avons : \mbox{$Cost_{1}(\tilde{\rho}) = + \infty$}. Ce n'est donc pas une déviation profitable.\\
+						 v_{0} & \text{ si } v = v_{3}\\
+						v_{3} & \text{ si } v = v_4						
+						\end{cases}$ .\\
+Dans ce cas, nous avons : \mbox{$Cost_{1}(\langle \tilde{\sigma _{1}},\sigma _{2} \rangle_{v_0}) = + \infty$}. C'est en fait le cas pour toutes les déviations $\tilde{\sigma_1}$ telles que $\tilde{\sigma_1}(v_1) = v_0$.  Ce ne sont donc pas des déviations profitables.\\
+Considérons maintenant $\tilde{\sigma _{1}}(v) = $ $\begin{cases}
+					 v_{1} & \text{ si } v = v_{0}\\
+					 v_{2} & \text{ si } v = v_{1}\\
+					 v_{0} & \text{ si } v = v_{3}\\
+					v_{2} & \text{ si } v = v_4						
+					\end{cases}$.\\
+On a alors \mbox{$Cost_{1}(\langle \tilde{\sigma _{1}},\sigma _{2} \rangle_{v_0}) = 3 = Cost_1(\langle \sigma _{1},\sigma _{2}\rangle_{v_0})$}. Ce n'est donc pas non plus une déviation profitable.
+Les déviations ci-dessous ont également un coût de 3 et ne sont pas des déviations profitables.
+\begin{figure}[!h]
+   \begin{minipage}[c]{.46\linewidth}
+	$\tilde{\sigma _{1}}(v) = $ $\begin{cases}
+						 v_{1} & \text{ si } v = v_{0}\\
+						 v_{2} & \text{ si } v = v_{1}\\
+						 v_{4} & \text{ si } v = v_{3}\\
+						v_{3} & \text{ si } v = v_4						
+						\end{cases}$.\\   \end{minipage} \hfill
+   \begin{minipage}[c]{.46\linewidth}
+	$\tilde{\sigma _{1}}(v) = $ $\begin{cases}
+						 v_{1} & \text{ si } v = v_{0}\\
+						 v_{2} & \text{ si } v = v_{1}\\
+						 v_{4} & \text{ si } v = v_{3}\\
+						v_{2} & \text{ si } v = v_4						
+						\end{cases}$.\\   \end{minipage}
+\end{figure}
+
+Nous avons ainsi testés toutes les déviations sans mémoire pour le $J_1$.
+
+De plus, comme le jeu est initialisé en $v_0$ et qu'il s'agit de l'objectif du second joueur, celui-ci a un coût de 0 quelle que soit la stratégie qu'il adopte. $J_2$ n'a donc pas non plus de déviation profitable. Nous pouvons dès lors conclure que $(\sigma_1, \sigma_2)$ est un équilibre Nash.
+\begin{comment}
 Considérons maintenant la famille $(\sigma _{1}^{n})_{n \in \mathbb{N}}$ de stratégie de $J_{1}$ qui décrit le fait que $J_{1}$ fait passer $n$ fois le \og jeton \fg~par l'état $v_{1}$ avant de le faire glisser vers l'état $v_{2}$. \\
 
 $\sigma _{1}^{n}(h) = $ $\begin{cases}
@@ -30,7 +62,7 @@ $\sigma _{1}^{n}(h) = $ $\begin{cases}
 \noindent Nous avons alors: soit $ p = \langle \sigma _{1}^{n},\sigma _{2} \rangle_{v_0}$, $Cost_{1}(p) = 2n+1$. Et pour tout $n > 1$, on a que: \\\mbox{$3=Cost_{1}(\rho)~< Cost_{1}(p)~= 2n +1$. $\sigma _{1}^{n}$} n'est donc pas une déviation profitable pour $J_{1}$ et ce pour tout $n \in  \mathbb{N}$.\\
 
 Comme $\sigma _{2}$ est la seule stratégie possible pour $J_{2}$, nous pouvons déduire qu'aucun des deux joueurs n'a de déviation profitable. Donc $(\sigma _{1}, \sigma _{2})$ est un équilibre de Nash de $(\mathcal{G},v_{0})$.
-
+\end{comment}
 \end{exemple}
 
 
