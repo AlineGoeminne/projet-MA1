@@ -24,7 +24,7 @@ class TestReachabilityGame(unittest.TestCase):
         list_succ = Graph.list_pred_to_list_succ(list_pred)
 
         graph = Graph(vertex, None, list_pred, list_succ)
-        goals = [set([3]), set([0])]
+        goals = [{3}, {0}]
         init = v1
 
         game = ReachabilityGame(2, graph, init, goals, None, None)
@@ -56,6 +56,8 @@ class TestReachabilityGame(unittest.TestCase):
 
         self.assertEqual(float("infinity"), cost_path3[1])
         self.assertEqual(float("infinity"), cost_path3[2])
+
+        self.assertTrue(game.is_a_Nash_equilibrium(path2, {2}))
 
 
     def test_is_nash_equilibrium2(self):
@@ -356,9 +358,11 @@ class TestReachabilityGame(unittest.TestCase):
 
         game = ReachabilityGame(2, graph, v0, goal, None, {0: 1, 1: 2, 2: 1, 3: 1})
 
-        candidate = game.best_first_search(game.heuristic)
+        candidate = game.best_first_search(ReachabilityGame.heuristic)
+        candidate_a_star = game.best_first_search(ReachabilityGame.a_star, None, 5)
 
         print ReachabilityGame.path_vertex_to_path_index(candidate)
+        print "a_star ", str(candidate_a_star)
 
     def test_best_first_search_2(self):
 
@@ -423,40 +427,68 @@ class TestReachabilityGame(unittest.TestCase):
 
         # pred tableau des pred tq (u,k) u = index du pred, et k = valeur de l'arc
 
-        pred0 = [(1, 1), (2, 1), (3, 5)]
+        pred0 = [(1, 1), (2, 4), (3, 5)]
         pred1 = [ (2, 1)]
-        pred2 = [(0, 1), (3, 1), (4, 5)]
+        pred2 = [(0, 1), (3, 4), (4, 5)]
         pred3 = [(4, 1), (2, 1)]
-        pred4 = [(5, 1), (3, 42)]
-        pred5 = [(4, 1)]
+        pred4 = [(5, 1), (3, 1)]
+        pred5 = [(4, 1), (6,2)]
         pred6 = [(5, 1), (7, 1)]
         pred7 = [(6, 1)]
 
         list_pred = [pred0, pred1, pred2, pred3, pred4, pred5, pred6, pred7]
         list_succ = Graph.list_pred_to_list_succ(list_pred)
 
+        print "list_succ", list_succ
+
         graph = Graph(vertices, None, list_pred, list_succ, 5)
-        goal = [set([0]), set([6])]
+        goal = [{6}, {0}]
         game = ReachabilityGame(2, graph, v3, goal, None, {0:2 , 1:1, 2:2, 3:1, 4:1, 5:2, 6:1, 7:2})
 
-        heuristic = game.best_first_search(ReachabilityGame.heuristic)
-        heuristic2 = game.best_first_search(ReachabilityGame.heuristic_short_path)
-        heuristic3 = game.best_first_search_with_init_path(ReachabilityGame.heuristic)
+        #heuristic = game.best_first_search(ReachabilityGame.heuristic ,None, 5)
+        print "done"
+        #heuristic2 = game.best_first_search(ReachabilityGame.heuristic_short_path, None,5)
+        print"done"
+        #heuristic3 = game.best_first_search_with_init_path(ReachabilityGame.heuristic, 5)
+        print "done"
+        #heuristic4 = game.restart_best_first_search(ReachabilityGame.heuristic, 5)
+        #prof = game.restart_best_first_search(ReachabilityGame.profondeur, 5)
+        a_star = game.best_first_search(ReachabilityGame.a_star, None, 5)
+
+        both_two = game.best_first_search_with_init_path_both_two(ReachabilityGame.heuristic_short_path, 5)
+        print "both_two"
+        print str(both_two)
 
         print "heuristic 1"
-        print ReachabilityGame.path_vertex_to_path_index(heuristic)
+        #print repr(heuristic)
         print "heuristic 2"
-        print ReachabilityGame.path_vertex_to_path_index(heuristic2)
+        #print repr(heuristic2)
         print "heuristic 3"
-        print ReachabilityGame.path_vertex_to_path_index(heuristic3)
+        #print repr(heuristic3)
+        print "heuristic 4"
+        #print repr(heuristic4)
+        print "prof"
+        #print repr(prof)
+        #print game.is_a_Nash_equilibrium(prof)
+        print "a_star"
+        print str(a_star)
+        print game.get_info_path(a_star)
 
-        print game.is_a_Nash_equilibrium(heuristic3)
+        #path = [v3, v2, v1, v0, v2, v3, v4, v5, v6]
+        #print str(path)
+        #print game.is_a_Nash_equilibrium(path)
+        #print game.get_info_path(path)
 
 
-        #result = game.parcours_d_arbre(3 * 5 * 8)
+
+
+        #result = game.test_random_path(100, 3*5*8)
+
+        #res = game.filter_best_result(result)
         #print len(result)
         #for res in result:
-         #   print ReachabilityGame.path_vertex_to_path_index(res)
+         #  print ReachabilityGame.path_vertex_to_path_index(res)
+        #print res
 
     def test_foireux(self):
 
@@ -508,22 +540,60 @@ class TestReachabilityGame(unittest.TestCase):
     def super_test(self):
 
         nb_vertex = 10
-        poids_max = 10
-        game = ReachabilityGame.generate_game(2, nb_vertex, 3, [set([0]), set([4])], 1, poids_max)
+        poids_max = 100
+        allowed_time = 30
+
+        possible_goal = range(0, nb_vertex)
+        random.shuffle(possible_goal)
+        goal_1 = possible_goal.pop()
+        goal_2 = possible_goal.pop()
+
+        possible_init = range(0, nb_vertex)
+        random.shuffle(possible_init)
+        init = possible_init.pop()
+        print "init v"+str(init)
+
+        print "goal : joueur 1: v"+str(goal_1)+" joueur 2: v"+str(goal_2)
+        game = ReachabilityGame.generate_game(2, nb_vertex, init,[{goal_1}, {goal_2}], 1, poids_max)
         game.graph.max_weight = poids_max
 
-        prof = (game.player +1)*poids_max*len(game.graph.vertex)
-        res4 = game.restart_best_first_search(ReachabilityGame.heuristic, 5)
-        if res4 is not None:
-            print "heuristique4", ReachabilityGame.path_vertex_to_path_index(res4)
-            print "En?:", game.is_a_Nash_equilibrium(res4)
-            print "info", game.get_info_path(res4)
 
-        res3 = game.best_first_search_with_init_path( ReachabilityGame.heuristic, 5)
-        if res3 is not None :
-            print "heuristique3", ReachabilityGame.path_vertex_to_path_index(res3)
-            print "En?: ", game.is_a_Nash_equilibrium(res3)
-            print "info", game.get_info_path(res3)
+
+        #prof = game.best_first_search(ReachabilityGame.profondeur,None, 5)
+        #if prof is not None:
+        #    print "prof", repr(prof)
+        #    print "EN?", game.is_a_Nash_equilibrium(prof)
+        #else:
+        #    print "prof a echoue"
+
+        #res3 = game.best_first_search_with_init_path(ReachabilityGame.heuristic, 5)
+        #res4 = game.restart_best_first_search(ReachabilityGame.heuristic, 5)
+        #if res4 is not None:
+          #  print "heuristique4", ReachabilityGame.path_vertex_to_path_index(res4)
+          #  print "En?:", game.is_a_Nash_equilibrium(res4)
+          #  print "info", game.get_info_path(res4)
+
+        #res5 = game.best_first_search_with_init_path_both_two(ReachabilityGame.a_star, allowed_time)
+        #if res5 is not None:
+            #print "init_both_two", ReachabilityGame.path_vertex_to_path_index(res5)
+            #print "En?:", game.is_a_Nash_equilibrium(res5)
+        #else:
+            #print "both_two a echoue"
+
+        res6 = game.best_first_search(ReachabilityGame.a_star,None, allowed_time)
+        if res6 is not None:
+            print "a_star", ReachabilityGame.path_vertex_to_path_index(res6)
+            print "En?:", game.is_a_Nash_equilibrium(res6)
+        else:
+            print "a_star a echoue"
+
+
+
+
+        #if res3 is not None :
+         #   print "heuristique3", ReachabilityGame.path_vertex_to_path_index(res3)
+         #   print "En?: ", game.is_a_Nash_equilibrium(res3)
+         #   print "info", game.get_info_path(res3)
 
         #res1 = game.best_first_search(game.heuristic, None, 5)
         #if res1 is not None:
@@ -537,10 +607,10 @@ class TestReachabilityGame(unittest.TestCase):
             #print "En?: ", game.is_a_Nash_equilibrium(res2)
 
 
-        result = game.test_random_path(100, (game.player + 1) * game.graph.max_weight * len(game.graph.vertex))
+        #result = game.test_random_path(100, (game.player + 1) * game.graph.max_weight * len(game.graph.vertex))
 
-        for res in result:
-            print str(res)
+        #for res in result:
+            #print str(res)
 
 
 
