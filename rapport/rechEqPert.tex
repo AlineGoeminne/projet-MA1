@@ -3,7 +3,7 @@
 \section{Recherche d'équilibres de Nash pertinents}
 \label{section:equilibrePert}
 
-Le background sur les jeux d'atteignabilité ayant été clairement expliqué, nous nous intéressons à la recherche - de manière algorithmique - d'équilibres de Nash \og pertinents \fg. Dans un premier temps, nous définissons clairement l'objectif que nous désirons atteindre ainsi que ce signifie pour nous des équilibres de Nash pertinents. Ensuite, nous établissons quelques remarques et propriétés qui nous sont utiles afin de mener à bien notre raisonnement. Enfin, nous expliquons de quelle manière nous désirons mettre en oeuvre des procédés permettant de résoudre cette problématique.
+Les prérequis sur les jeux d'atteignabilité ayant été clairement expliqué, nous nous intéressons à la recherche - de manière algorithmique - d'équilibres de Nash \og pertinents \fg. Dans un premier temps, nous définissons clairement l'objectif que nous désirons atteindre ainsi que ce signifie pour nous des équilibres de Nash pertinents. Ensuite, nous établissons quelques remarques et propriétés qui nous sont utiles afin de mener à bien notre raisonnement. Enfin, nous expliquons de quelle manière nous désirons mettre en oeuvre des procédés permettant de résoudre cette problématique.
 
 \subsection{Définition du problème et des équilibres pertinents}
 
@@ -56,12 +56,12 @@ Soit $\sigma _{1}(v) =$ $\begin{cases}
 						
 \noindent et soit $\sigma _{2}(v) = v_{1}$ alors $(\sigma _{1},\sigma _{2})$ est un équilibre de Nash du jeu $(\mathcal{G},v_{1})$ dont l'outcome est $(v_{1}v_{2})^{\omega}$. Nous remarquons qu'avec cet équilibre de Nash aucun des deux joueurs n'atteint son objectif. Nous pouvons également observer que si les deux joueurs coopéraient, ils pourraient tous deux minimiser leur coût. En effet, si les deux joueurs suivaient un profil de stratégie ayant comme outcome $\rho = v_{1}v_{0}v_{1}(v_{2}v_{3})^{\omega} $ nous aurions $Cost_{1}(\rho) = 4$ et $Cost_{2}(\rho) = 1$.
 
-La question que nous nous posons alors est la suivante : \og Etant donné un jeu d'atteignabilité à objectifs quantitatif et multijoueur, nous souhaitons trouver de manière rapide un équilibre de Nash pertinent \fg. Nous avons donc dû nous interroger au sens à donner au concept d'équilibre de Nash pertinent.
+La question que nous nous posons alors est la suivante : \og Etant donné un jeu d'atteignabilité à objectifs quantitatifs et multijoueur, nous souhaitons trouver de manière rapide un équilibre de Nash pertinent \fg. Nous avons donc dû nous interroger au sens à donner au concept d'équilibre de Nash pertinent.
 
 Au vu de l'exemple ci-dessus, nous avons mis en lumière le fait que pour certains équilibres de Nash, aucun joueur ne voyait son objectif atteint. Dès lors nous pouvons établir qu'un équilibre de Nash pertinent vérifie:
 
 \begin{itemize}
-	\item[$\bullet$] Si on est dans un type de jeu tel qu'il existe (au moins) un équilibre de Nash tel que tous les joueurs voient leur objectif atteint alors on souhaite que si $\rho$ est l'outcome de l'équilibre de Nash trouvé on ait que:
+	\item[$\bullet$] Si on est dans un type de jeu tel qu'il existe (au moins) un équilibre de Nash tel que tous les joueurs voient leur objectif atteint alors on souhaite que si $\rho$ est l'outcome de l'équilibre de Nash trouvé on ait que
 	$ \sum_{i \in \Pi} Cost_i(\rho)$ soit \textbf{minimale}.
 	\item[$\bullet$]S'il n'est pas certain qu'il existe un équilibre de Nash du type de celui décrit ci-dessus alors on désire \textbf{maximiser} le nombre de joueurs qui atteignent leur objectif, notons cet ensemble de joueurs $A$. De plus, on souhaite \textbf{minimiser} $\sum_{i \in A} Cost_i(\rho)$.
 \end{itemize}
@@ -81,18 +81,18 @@ Nous n'avons pas encore de réponse claire à cette question. Toutefois, pour un
 
 Nous remarquons que si nous répondons positivement à cette question alors nous rentrons dans les conditions explicitées dans le premier point de la section précédente.
 
-\todo{Que faire?}
+\todo{?}
 
 
 Maintenant, nous nous demandons s'il existe un processus algorithmique qui permet de déterminer si un outcome particulier correspond à l'outcome d'un équilibre de Nash. Dans le cas échéant, nous désirons expliciter ce procédé. Dans la suite de cette section nous répondons positivement à cette question. Nous énonçons d'abord une propriété (propriété~\ref{prop:rechEqpert1}) qui nous permet de déterminer une condition nécessaire et suffisante pour qu'un outcome soit l'outcome d'un certain équilibre de Nash. Toutefois, pour pouvoir effectuer une procédure algorithmique sur les outcomes, il faut que nous trouvions un moyen de représenter ceux-ci car nous travaillons avec des mots infinis. Nous nous convainquons donc par la suite que nous pouvons nous restreindre à l'étude d'équilibres de Nash dont l'outcome est de la forme $\alpha \beta^{\omega}$ où $\alpha$ et $\beta$ sont des mots finis. 
 
-Avant de stipuler notre propriété, nous devons aborder quelques notions qui nous sont nécessaires.
+Avant de formuler notre propriété, nous devons aborder quelques notions qui nous sont nécessaires.
 
 
 \begin{defi}
 	\label{defi:coalGame}
  Soient $\mathcal{A} = (\Pi, V, (V_{i})_{i\in\Pi}, E)$ une arène,\\
-et $\mathcal{G} = (\mathcal{A}, (\varphi _{i})_{i\in\Pi}, (Goal_{i})_{i\in\Pi})$ un jeu d'atteignabilité à $|\Pi| \geq 2$ à objectif quantitatif.
+et $\mathcal{G} = (\mathcal{A}, (\varphi _{i})_{i\in\Pi}, (Goal_{i})_{i\in\Pi})$ un jeu d'atteignabilité où $|\Pi| \geq 2$ à objectif quantitatif.
 Pour tout joueur $i \in \Pi$, nous pouvons y associer un jeu à somme nulle de type \og reachability-price game \fg~noté $\mathcal{G}_{i}$.
 On définit ce jeu de la manière suivante : 
 $ \displaystyle \mathcal{G}_{i}= (\mathcal{A}_{i}, g , Goal) \text{ où }$:
@@ -108,16 +108,13 @@ $ \displaystyle \mathcal{G}_{i}= (\mathcal{A}_{i}, g , Goal) \text{ où }$:
 En d'autres mots, $G_i$ correspond au jeu où le joueur $i$ (joueur Min) joue contre la coalition $\Pi\backslash\{ i \}$ (joueur Max). Cela signifie que le joueur $i$ tente d'atteindre son objectif le plus rapidement possible tandis que tous les autres joueurs veulent l'en empêcher (ou tout du moins maximiser son gain). Nous avons vu précédemment qu'un tel jeu est déterminé et que les deux joueurs possèdent une stratégie optimale ($\sigma^*_i$ et $\sigma^*_{-i}$) telles que:
 $$ \inf_{\sigma _{i\in \Sigma _{Min}}} \varphi_i(\langle \sigma_i,\sigma^*_{-i}\rangle_v)= Val_i(v) = \sup _{\sigma_{-i}\in \Sigma_{Max}} \varphi_i(\langle \sigma^*_i, \sigma_{-i}\rangle_v).$$ De plus, de la stratégie optimale $\sigma^*_{-i}$ nous pouvons dériver une stratégie pour tout joueur $j \neq i$ que nous notons $\sigma_{j,i}$.\\
 
-Nous sommes maintenant apte à énoncer notre propriété. La preuve de celle-ci a été effectuée par nos soins, mais nous faisons remarquer qu'une preuve similaire dans le cas des jeux concurrents à informations parfaites a déjà été effectuée par Haddad~\cite{characNashEq}. Pour ce faire, nous avons besoin d'introduire quelques notions préliminaires.
+Nous sommes maintenant aptes à énoncer notre propriété. La preuve de celle-ci a été effectuée par nos soins, mais nous faisons remarquer qu'une preuve similaire dans le cas des jeux concurrents à informations parfaites a déjà été effectuée par Haddad~\cite{characNashEq}. 
 
 \begin{propriete}
 	\label{prop:rechEqpert1}
-	Soit $|\Pi| = n \geq 2$,
-	soient $\mathcal{A} = (\Pi, V, (V_{i})_{i\in\Pi}, E)$ une arène et $\mathcal{G} = (\mathcal{A}, (\varphi _{i})_{i\in\Pi}, (Goal_{i})_{i\in\Pi})$ un jeu d'atteignabilité à $n$ joueurs à objectif quantitatif, soit $(\mathcal{G}, v_{0})$ le jeu initialisé pour un certain $v_{0} \in V $ et soit $\rho = v_{0}v_{1}... \in Plays$. 
+	Soient $|\Pi| = n \geq 2$, $\mathcal{A} = (\Pi, V, (V_{i})_{i\in\Pi}, E)$ une arène et $\mathcal{G} = (\mathcal{A}, (\varphi _{i})_{i\in\Pi}, (Goal_{i})_{i\in\Pi})$ un jeu d'atteignabilité à $n$ joueurs à objectif quantitatif, on considère $(\mathcal{G}, v_{0})$ le jeu initialisé pour un certain $v_{0} \in V $.\\ Soit \ $\rho = v_{0}v_{1}... \in Plays$, posons $(x_{i})_{i\in\Pi} = (\varphi _{i}(\rho))_{i\in\Pi}$ le profil de paiements associé à la partie $\rho$. Nous définissons pour $v_{k} \in \rho$: $\varepsilon _{k} := \sum _{n= 0} ^{k-1} w(v_{n},v_{n+1})$ où $w$ est la fonction de poids associée à $G = (V,E)$.
 	
-	Posons $(x_{i})_{i\in\Pi} = (\varphi _{i}(\rho))_{i\in\Pi}$ le profil de paiement associé à la partie $\rho$. Nous définissons pour $v_{k} \in \rho$ ($k \in \mathbb{N}$)  $\varepsilon _{k} := \sum _{n= 0} ^{k-1} w(v_{n},v_{n+1})$ où $w$ est la fonction de poids associée à $G = (V,E)$.
-	
-	\begin{center}Il existe un  profil de stratégies $ (\sigma _{i})_{i\in\Pi} \in \prod_{i\in\Pi} \Sigma _{i}$ est un équilibre de Nash dans $(\mathcal{G},v_{0})$ tq $\langle (\sigma _{i})_{i \in \Pi}\rangle_{v_0} = \rho$\\ $\text{}$\\ si et seulement si\\$\text{}$\\  $ \forall k \in \mathbb{N}, \forall j \in \Pi$, $Val_{j}(v_{k}) + \varepsilon _{k} \geq x_j \text{  si } v_{k} \in V_{j}$.\end{center}
+	\begin{center}Il existe un  profil de stratégies $ (\sigma _{i})_{i\in\Pi} \in \prod_{i\in\Pi} \Sigma _{i}$ qui est un équilibre de Nash dans $(\mathcal{G},v_{0})$ et tel que $\langle (\sigma _{i})_{i \in \Pi}\rangle_{v_0} = \rho$\\ $\text{}$\\ si et seulement si\\$\text{}$\\  $ \forall k \in \mathbb{N}, \forall j \in \Pi$, $Val_{j}(v_{k}) + \varepsilon _{k} \geq x_j \text{  si } v_{k} \in V_{j}$.\end{center}
 	
 \end{propriete}
 
@@ -129,7 +126,7 @@ Nous sommes maintenant apte à énoncer notre propriété. La preuve de celle-ci
 		\item[$(\Downarrow)$] Supposons au contraire qu'il existe $k\in \mathbb{N}$ et $j\in\Pi$ tels que $Val_j(v_k) + \varepsilon_k < x_j$,
 		\begin{equation}
 			\label{eq:questEq1}
-			i.e., Val_j(v_k) < x_j + \varepsilon_k = \varphi_j(\langle (\sigma_i)_{i \in \Pi}\rangle_{v_k})
+			i.e., Val_j(v_k) < x_j - \varepsilon_k = \varphi_j(\langle (\sigma_i)_{i \in \Pi}\rangle_{v_k})
 		\end{equation}
 		où $\varphi_j(\langle (\sigma_i)_{i \in \Pi}\rangle_{v_k})$ est le coût de la partie pour le joueur $j$ si elle avait commencé en $v_k$.
 		De plus, on a : 
@@ -152,25 +149,28 @@ Nous sommes maintenant apte à énoncer notre propriété. La preuve de celle-ci
 		A partir de $(\tau_i)_{i\in \Pi}$ nous désirons construire un équilibre de Nash ayant le même outcome (et donc le même profil de coût).
 		L'idée est la suivante: dans un premier temps tous les joueurs suivent leur stratégie conformément au profil $(\tau_i)_{i \in \Pi}$. Si un des joueurs, notons le $i$,  dévie de sa stratégie alors les autres joueurs se réunissent en une coalition $\Pi\backslash \{ i \}$ et jouent en suivant leur stratégie de punition dans $\mathcal{G}_i$ (\emph{i.e.,} pour tout j $\neq$ i, le joueur $j$ suit la stratégie $\sigma^*_{j,i}$).\\
 		
-	Comme dans le papier \og Multiplayer Cost Games With Simple Nash Equilibria \fg~\cite{DBLP:conf/lfcs/BrihayePS13}, nous définissons une fonction de punition: $P : Hist \rightarrow \Pi\cup \{ \perp \}$ qui permet de définir quel est le premier joueur à avoir dévié du profil de stratégies initial $(\tau_i)_{i\in\Pi}$. Cette fonction est telle que $P(h) = \perp$ si aucun joueur n'a dévié le long de l'histoire $h$ et $P(h) = i$ pour un certain $i \in \Pi$ si le joueur $i$ a dévié le long de l'histoire $h$. Nous pouvons donc définir la fonction $P$ par récurrence sur la longueur des histoires : pour $v_0$, le noeud initial, $P(v_0) = \perp$  et pour $h \in Hist$ et $v\in V$ on a :
+	Comme dans le papier \og Multiplayer Cost Games With Simple Nash Equilibria \fg~\cite{DBLP:conf/lfcs/BrihayePS13}, nous définissons une fonction de punition \linebreak\mbox{$P:Hist \rightarrow \Pi\cup \{ \perp \}$} qui permet de définir quel est le premier joueur à avoir dévié du profil de stratégies initial $(\tau_i)_{i\in\Pi}$. Cette fonction est telle que $P(h) = \perp$ si aucun joueur n'a dévié le long de l'histoire $h$ et $P(h) = i$ pour un certain $i \in \Pi$ si le joueur $i$ a dévié le long de l'histoire $h$. Nous pouvons donc définir la fonction $P$ par récurrence sur la longueur des histoires : pour $v_0$, le noeud initial, $P(v_0) = \perp$  et pour $h \in Hist$ et $v\in V$ on a :
 
 \setlength{\overfullrule}{0pt}
 	$$
 	P(hv) = \begin{cases}
 			\perp & \text{ si } P(h) = \perp \text{ et } hv \text{ est un préfixe de } \rho \\
-			i & \text{ si } P(h) = \perp ,\, hv \text{ n'est pas un préfixe de }\rho \text{ et } Last(h)\in V_i\\
+			\multirow{2}{*}{$i$} & \text{ si } P(h) = \perp ,\, hv \text{ n'est pas un préfixe de }\rho \\
+			                   & \text{ et } Last(h)\in V_i \\
 			P(h) & \text{ sinon (\emph{i.e.,}}\, P(h)\neq \perp) \end{cases}
 	$$\\
+	
+	
 \setlength{\overfullrule}{10pt}	
 	Nous pouvons maintenant définir notre équilibre de Nash potentiel dans $\mathcal{G}$. Pour tout $i\in \Pi$ et tout $h\in Hist$ tels que $Last(h)\in V_i$:
 	$$\sigma_i(h)= \begin{cases}
 					\tau_i(h) & \text{ si }P(h)= \perp \text{ ou }i \\
 					\sigma^*_{i,P(h)}(h) & \text{ sinon }\end{cases}$$\\
 					
-	Nous devons maintenant montrer que le profil de stratégies $(\sigma_i)_{i\in\Pi}$ ainsi défini est un équilibre de Nash d'outcome $\rho$.\\
+	Nous devons désormais montrer que le profil de stratégies $(\sigma_i)_{i\in\Pi}$ ainsi défini est un équilibre de Nash d'outcome $\rho$.\\
 	Il est clair que $\langle (\sigma_i)_{i\in\Pi} \rangle_{v_0} = \rho$.\\
 	Montrons maintenant qu'il s'agit bien d'un équilibre de Nash.\\
-	\noindent Supposons au contraire que ce ne soit pas le cas. Cela signifie qu'il existe une déviation profitable ( $\tilde{\sigma}_j$) pour un certain joueur $j \in\Pi$.\\ 
+	\noindent Supposons au contraire que ce ne soit pas le cas. Cela signifie qu'il existe une déviation profitable (notons-la $\tilde{\sigma}_j$) pour un certain joueur $j \in\Pi$.\\ 
 		\noindent Soit $\tilde{\rho} = \langle \tilde{\sigma}_j , (\sigma_i)_{i \in \Pi \backslash \{j \}} \rangle_{v_0}$ l'outcome tel que le joueur $j$ joue sa déviation profitable et où les autres joueurs jouent conformément à leur ancienne stratégie.
 		Puisque $\tilde{\sigma}_j$ est une déviation profitable nous avons: 
 		\begin{equation}
@@ -218,23 +218,58 @@ Dans sa thèse~\cite{juliePhd}, Julie De Pril explicite une procédure afin de c
 	Etant donné un équilibre de Nash dans un jeu multijoueur initialisé à objectif quantitatif, il existe un équilibre de Nash du même type
 \end{thm}
 
-Ce procédé consiste en deux étapes. Etant donné un équilibre de Nash, on commence par construire un second équilibre de Nash du même type duquel on a supprimé les cycles inutiles. Un cycle inutile est un cycle tel que lors de son parcourt aucun joueur qui n'avait pas encore visité son objectif n'atteint celui-ci. Ensuite, on construit un équilibre de Nash $(\sigma_i)_{i\in \Pi}$, toujours avec le même type, tel qu'à partir de l'outcome $\langle (\sigma_i)_{i\in \Pi}\rangle_{v_0}$ on puisse identifier un préfixe $\alpha\beta$ tel que l'on puisse répéter infiniment $\beta$. De plus, si nous définissons la notation $\visit(\alpha)$ comme étant l'ensemble des joueurs qui on vu leur objectif atteint lors du parcourt de $\alpha$, nous retrouvons dès lors le résultat suivant:
+Ce procédé consiste en deux étapes. Etant donné un équilibre de Nash, on commence par construire un second équilibre de Nash du même type duquel on a supprimé les cycles inutiles. Un cycle inutile est un cycle tel que lors de son parcourt aucun joueur qui n'avait pas encore visité son objectif n'atteint celui-ci. Ensuite, on construit un équilibre de Nash $(\sigma_i)_{i\in \Pi}$, toujours avec le même type, tel qu'à partir de l'outcome $\langle (\sigma_i)_{i\in \Pi}\rangle_{v_0}$ on puisse identifier un préfixe $\alpha\beta$ pour lequel on peut répéter infiniment $\beta$. De plus, si nous définissons la notation $\visit(\alpha)$ comme étant l'ensemble des joueurs qui on vu leur objectif atteint lors du parcourt de $\alpha$, nous retrouvons dès lors le résultat suivant:
 
 \begin{propriete}
-	Soit $(\sigma_i)_{i\in \Pi}$ un équilibre de Nash dans le jeu d'atteignabilité multijoueur à objectifs quantitatifs et initialisé $(\mathcal{G}, v_0)$, il existe un équilibre de Nash $(\tau_i)_{i\in \Pi}$ avec le même type et tel que $\langle (\tau_i)_{i\in \Pi} \rangle_{v_0} = \alpha \beta^{\omega}$, où $\visit(\alpha) = \type((\sigma_i)_{i \in \Pi})$ et $|\alpha\beta| < (\Pi + 1)\cdot |V|$.
+	Soit $(\sigma_i)_{i\in \Pi}$ un équilibre de Nash dans le jeu d'atteignabilité multijoueur à objectifs quantitatifs et initialisé $(\mathcal{G}, v_0)$, il existe un équilibre de Nash $(\tau_i)_{i\in \Pi}$ avec le même type et tel que $\langle (\tau_i)_{i\in \Pi} \rangle_{v_0} = \alpha \beta^{\omega}$, où \linebreak $\visit(\alpha) = \type((\sigma_i)_{i \in \Pi})$ et $|\alpha\beta| < (\Pi + 1)\cdot |V|$.
 \end{propriete}
-Remarquons toutefois que dans le cadre de ces preuves, le fonction de poids $\phi: E \rightarrow \mathbb{R}$ est la fonction telle que pour tout $e \in E$, $\phi(e) = 1$. Les preuves s'adaptent toutefois si la fonction de poids est de la forme $\phi : E \rightarrow \mathbb{R}^{+}_{0}$.\\
-\todo{Justifications? $\mathbb{R}^{+}_{0}$ ou $\mathbb{N}_{0}$ ???}\\
+Remarquons toutefois que dans le cadre de ces preuves, le fonction de poids $\phi: E \rightarrow \mathbb{R}$ est la fonction telle que pour tout $e \in E$, $\phi(e) = 1$. Les preuves s'adaptent toutefois si la fonction de poids est de la forme \linebreak $\phi : E \rightarrow \mathbb{N}_{0}$. En effet, s'il existe un arc $(v,v')$ tel que $\phi(v,v') = c$ pour un certain $c \in \mathbb{N}_{0}$, il suffit de rajouter autant d'arc de poids 1 qu'il est nécessaire pour que la somme de ces poids vaille $c$ (cf. figure~\ref{fig:transfoGraphPoids} avec $c = 4$).\\
+\todo{?}\\
+\begin{figure}[!h]
+	\centering
+	\begin{tikzpicture}
+		\node[nR] (v) at (0,0){$v$};
+		\node[nR] (v') at (2,0){$v'$};
+		\node[nR] (0) at (6,0){$v$};
+		\node[nR] (1) at (7.5,0){};
+		\node[nR] (2) at (9,0){};
+		\node[nR] (3) at (10.5,0){};
+		\node[nR] (4) at (12,0){$v'$};
+		
+		
+		
+		
+		
 
-Nous pouvons donc conclure qu'il est moralement correct de se restreindre à le recherche d'équilibres de cette forme. En effet, vu qu'ils possèdent le même type cela n'influence pas notre intention de maximiser le nombre de joueurs qui atteignent leur objectif. De plus, puisque les poids sur les arcs sont tous des des poids positifs, la suppression des cycles lors de la première étape de la procédure ne fait que diminuer le coût des joueurs pour cet équilibre si un cycle est présent. Cette modification est à notre avantage, en effet, cela diminue la somme des coûts des joueurs qui est la valeur que nous désirons minimiser pour trouver un équilibre pertinent.\\
+		\draw[->,>=latex] (v) to node[midway,above]{$4$} (v');
+		\draw[-latex] (3,0) -- (5,0);
+		\draw[->,>=latex] (0) to node[midway,above]{$1$} (1);
+		\draw[->,>=latex] (1) to node[midway,above]{$1$} (2);
+		\draw[->,>=latex] (2) to node[midway,above]{$1$} (3);
+		\draw[->,>=latex] (3) to node[midway,above]{$1$} (4);
+		
+		
+		
+		
+		
+	\end{tikzpicture}
+	\caption{Transformation d'une arête de poids différent de 1.}
+	\label{fig:transfoGraphPoids}
+\end{figure}
+
+Nous pouvons donc conclure qu'il est correct de se restreindre à le recherche d'équilibres dont l'outcome est de cette forme. En effet, vu qu'ils possèdent le même type cela n'influence pas notre intention de maximiser le nombre de joueurs qui atteignent leur objectif. De plus, puisque les poids sur les arcs sont tous des poids positifs, la suppression des cycles lors de la première étape de la procédure ne fait que diminuer le coût des joueurs pour cet équilibre si un cycle est présent. Cette modification est à notre avantage, en effet, cela diminue la somme des coûts des joueurs qui est la valeur que nous désirons minimiser pour trouver un équilibre pertinent.\\
 
 Nous avons désormais à notre disposition:
 \begin{itemize}
-	\item[$\bullet$] Une manière de tester si un outcome correspond à l'outcome d'un équilbre de Nash.
-	\item[$\bullet$] Un résultat permettant d'affirmer que nous pouvons nous contenter d'examiner les équilibres de Nash de la forme $\alpha \beta^{\omega}$ où $\alpha$ et $\beta$ sont des éléments de $V^{+}$. Nous pouvons donc travailler uniquement à partir de chemins de longueur au plus $\lceil \max_{e \in E} \phi(e) \rceil$. De là, nous pouvons appliquer le point précédant sur $\alpha\beta$ et comme ce mot est un mot fini, un algorithme peut effectuer cette tâche. 
-	\item[$\bullet$] Un algorithme (\verb|DijkstraMinMax|) qui permet des récupérer les valeurs des joueurs où les joueurs jouent en coalition. Ces valeurs permettent de vérifier si la propriété du point précédent est respectée.
+	\item[$\bullet$] Une manière de tester si un outcome correspond à l'outcome d'un équilibre de Nash.
+	\item[$\bullet$] Un résultat permettant d'affirmer que nous pouvons nous contenter d'examiner les équilibres de Nash de la forme $\alpha \beta^{\omega}$ où $\alpha$ et $\beta$ sont des éléments de $V^{+}$. Nous pouvons donc travailler uniquement à partir de chemins de longueur au plus $|V|. (\max_{e \in E} \phi(e) -1). |E|$. De là, nous pouvons appliquer le point précédant sur $\alpha\beta$ et comme ce mot est un mot fini, un algorithme peut effectuer cette tâche. 
+	\item[$\bullet$] Un algorithme (\verb|DijkstraMinMax|) qui permet des récupérer les valeurs de chaque noeud pour tous les jeux  où un joueur joue contre la coalition des autres joueurs. Ces valeurs permettent de vérifier si la propriété du point précédent est respectée.
 \end{itemize}
-Il nous reste donc à déterminer un algorithme qui nous permet de trouver rapidement un équilibre de Nash pertinent. Pour ce faire, nous avons décidé d'explorer la piste des \emph{métaheuristiques} de type \emph{solution unique} et particulièrement celle de la \emph{recherche locale} via la méthode de \emph{hill-climbing}. La section suivante explique ces notions et explicite comment nous désirons les appliquer à notre problématique.\\
+\smallskip
+\indent Il nous reste donc à déterminer un algorithme qui nous permet de trouver rapidement un équilibre de Nash pertinent. La phase d'implémentation de ce projet ayant commencé relativement tard les méthodes testées restent naïves et peu efficaces. Avant d'aborder ces dernières avec plus de précisions, nous expliquons un type de recherche du quel nous nous sommes inspirés : le \og best-first-search \fg.
+
+\subsection{Best-first-search}
+
 
 
 
