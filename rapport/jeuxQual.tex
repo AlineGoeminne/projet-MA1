@@ -122,7 +122,7 @@ Cette première propriété signifie simplement qu'un noeud du jeu ne peut pas �
 		Pour prouver ~\eqref{line1} et ~\eqref{line2} nous allons procéder en plusieurs étapes en prouvant chaque inclusion séparément.
 		Nous commençons par montrer que $Attr(F) \subseteq W_{1}$ puis que $V \backslash Attr(F) \subseteq W_{2}$ et enfin nous concluons en prouvant que $W_{1} \subseteq Attr(F)$ et $W_{2} \subseteq V\backslash Attr(F)$. De ces quatre inclusions nous pouvons alors conclure les égalités recherchées. \\
 		
-		\noindent$\mathbf{Attr(F) \subseteq W_{1}}$: Soit $v \in Attr(F)$ alors par la propriété \ref{prop:suiteUltConst} on a : $Attr(F) = X_{N}$ pour un certain $N \in \mathbb{N}$. Montrons par récurrence sur $n$ que dans ce cas, pour tout $n \in \mathbb{N}$ tel que $X_{n} \subseteq Attr(F)$ on peut construire une stratégie $\sigma _{1}$ pour $J_{1}$ telle que pour tout $\sigma_2 \in \Sigma_2$, $\langle \sigma _{1},\sigma _{2}\rangle_v \in \Omega _{1}$.
+		\noindent$\mathbf{Attr(F) \subseteq W_{1}}$: Soit $v \in Attr(F)$ alors par la propriété \ref{prop:suiteUltConst} on a \linebreak : $Attr(F) = X_{N}$ pour un certain $N \in \mathbb{N}$. Montrons par récurrence sur $n$ que dans ce cas, pour tout $n \in \mathbb{N}$ tel que $X_{n} \subseteq Attr(F)$ on peut construire une stratégie $\sigma _{1}$ pour $J_{1}$ telle que pour tout $\sigma_2 \in \Sigma_2$, $\langle \sigma _{1},\sigma _{2}\rangle_v \in \Omega _{1}$.
 		\begin{enumerate}
 			\item[$\star$] Pour $n=0$: alors $v \in X_{0} = F$ et l'objectif est atteint par $J_{1}$. $\sigma_1$ peut alors être définie de n'importe quelle manière puisque l'objectif est atteint.
 			
@@ -132,7 +132,7 @@ Cette première propriété signifie simplement qu'un noeud du jeu ne peut pas �
 			Si $v \in Pre(X_{k})\backslash X_k$, alors si $v \in V_{1}$ par définition de $Pre(X_{k})$ on sait qu'il existe $v'\in X_{k}$ tel que $(v,v')\in E$. De plus, comme $v' \in X_k$ , par hypothèse de récurrence, on sait qu'il existe $\tilde{\sigma}_1$ telle que $\forall \sigma_2 \in \Sigma_2$ $\langle \sigma_1, \sigma_2 \rangle_{v'} \in \Omega_1$. Ainsi, on définit $\sigma _{1}(u) =\begin{cases} v' & \text{si } u = v \\ \tilde{\sigma_1}(u) & \text{sinon} \end{cases}$. Il en découle que $\forall \sigma_2 \in \Sigma_2$: $\langle \sigma_1, \sigma_2 \rangle_v \in \Omega_1$.
 			 Tandis que si $v \in V_{2}$, par définition de $Pre(X_k)$, quelle que soit la stratégie $\sigma _{2}$ adoptée par $J_{2}$  nous sommes assurés que $\sigma _{2}(v) \in X_{k}$. Donc par hypothèse de récurrence, on sait qu'il existe $\tilde{\sigma}_1 \in \Sigma_1$ telle que pour toute stratégie $\tilde{\sigma_2} \in \Sigma_2$ on ait : $\langle \tilde{\sigma}_1, \tilde{\sigma}_2 \rangle_{\sigma_2(v)} \in \Omega_1$. Il suffit donc de prendre $\sigma_1  = \tilde{\sigma}_1$.\\
 			
-			 Dès lors, le résultat : $\exists \sigma_1 \in \Sigma_1$ telle que $\forall \sigma_2 \in \Sigma_2$ on ait $ \langle \sigma _{1},\sigma _{2} \rangle_v \in \Omega _{1}$ est assuré.
+			 Dès lors, le résultat : $\exists \sigma_1 \in \Sigma_1$ telle que $\forall \sigma_2 \in \Sigma_2$ on ait \linebreak $ \langle \sigma _{1},\sigma _{2} \rangle_v \in \Omega _{1}$ est assuré.
 		\end{enumerate}
 		Par cette preuve par récurrence, l'assertion est bien vérifiée.\\
 		
@@ -166,15 +166,15 @@ Appliquons sur l'exemple ci-dessous, le principe de l'attracteur.
 
 Au vu de la définition de l'attracteur d'un ensemble, l'implémentation de la résolution d'un jeu d'atteignabilité à deux joueurs avec objectif qualitatif en découle aisément. En effet, si nous possédons un algorithme permettant de calculer $Pre(X)$ pour tout sous-ensemble $X$ de sommets du graphe, il suffit alors d'appeler plusieurs fois cet algorithme afin de générer la suite $(X_k)_{k \in \mathbb{N}}$ conformément à la définition~\ref{def:predecesseur} jusqu'à ce que celle-ci soit constante. Nous donnons ci-après le pseudo-code d'un algorithme permettant de résoudre ce type de jeu. \\
 
-Soit $\mathcal{G} = ((V,E),V_{1},V_{2}, F, \Omega _{1}, \Omega _{2})$, nous supposons que $V$ comprend $n$ sommets numérotés de $0$ à $n-1$ et que le graphe $G = (V,E)$ est encodé sur base de sa \textit{liste des successeurs}: succ - \emph{i.e.,} pour chaque sommet indicé par $k$ on possède une liste des sommets $v_l$ tels que $0 \leq l \leq n-1$ et $(v_k, v_l) \in E$.\\
+Soit $\mathcal{G} = ((V,E),V_{1},V_{2}, F, \Omega _{1}, \Omega _{2})$, nous supposons que $V$ comprend $n$ sommets numérotés de $0$ à $n-1$ et que le graphe $G = (V,E)$ est encodé sur base de sa \textit{liste d'adjacence}: adj - \emph{i.e.,} pour chaque sommet indicé par $k$ on possède une liste des sommets $v_l$ tels que $0 \leq l \leq n-1$ et $(v_k, v_l) \in E$.\\
 
 Un premier algorithme (algorithme~\ref{algo:preX}) calcule à partir d'un sous ensemble $X \subseteq V$ de $V$ l'ensemble $Pre(X)$ comme défini en \ref{def:predecesseur}. Le principe de cet algorithme est le suivant: pour tout sommet $v\in V_{1}$ on teste s'il existe un arc sortant de $v$ vers un sommet de $X$. Si c'est le cas, alors $v\in Pre(X)$. On traite ensuite tous les sommets $v \in V_{2}$. Pour qu'un tel sommet $v$ appartienne à $Pre(X)$ il faut que tous les arcs sortant de $v$ atteignent un sommet de $X$.
 
 \begin{notations}
 	Pour l'écriture de cet algorithme nous adoptons les conventions de notation suivantes:
 	\begin{itemize}
-		\item[$\bullet$] On note $succ$ la liste des successeurs. Pour récupérer la liste des successeurs du noeud $v_1$, on note donc $succ[1]$ et pour récupérer le premier successeur de $v_1$ on écrit donc $succ[1][0]$ (on suppose que les listes utilisées sont indicées à partir de 0).
-		\item[$\bullet$] La notation $|succ[n]|$ désigne le nombre de successeurs que possède le noeud indicé par $n$ (\emph{i.e.,} la longueur de la liste $succ[n]$).
+		\item[$\bullet$] On note $adj$ la liste d'adjacence. Pour récupérer la liste des successeurs du noeud $v_1$, on note donc $adj[1]$ et pour récupérer le premier successeur de $v_1$ on écrit donc $adj[1][0]$ (on suppose que les listes utilisées sont indicées à partir de 0).
+		\item[$\bullet$] La notation $|adj[n]|$ désigne le nombre de successeurs que possède le noeud indicé par $n$ (\emph{i.e.,} la longueur de la liste $adj[n]$).
 	\end{itemize}
 \end{notations}
 
@@ -190,8 +190,8 @@ Un premier algorithme (algorithme~\ref{algo:preX}) calcule à partir d'un sous e
 		\FORALL { $v_{i} \in V_{1}$}	
 			\STATE ind $\leftarrow$ 0
 			\STATE existeArc $\leftarrow$ faux
-			\WHILE{$\neg existeArc$ et $ind \leq |succ[i]|$}
-				\IF {$succ[i][ind] \in X$}
+			\WHILE{$\neg existeArc$ et $ind \leq |adj[i]|$}
+				\IF {$adj[i][ind] \in X$}
 					\STATE existeArc $\leftarrow$ vrai
 				\ELSE
 					\STATE ind $\leftarrow$ ind + 1
@@ -205,8 +205,8 @@ Un premier algorithme (algorithme~\ref{algo:preX}) calcule à partir d'un sous e
 		\FORALL { $v_{i}\in V_{2}$}
 			\STATE ind $\leftarrow$ 0
 			\STATE tousArcs $\leftarrow$ vrai
-			\WHILE{tousArcs et $ind \leq |succ[i]|$}
-				\IF {$succ[i][ind] \in X$}
+			\WHILE{tousArcs et $ind \leq |adj[i]|$}
+				\IF {$adj[i][ind] \in X$}
 					\STATE ind $\leftarrow$ ind + 1
 				\ELSE
 					\STATE  tousArcs $\leftarrow$ faux
