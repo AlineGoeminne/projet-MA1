@@ -408,12 +408,12 @@ class ReachabilityGame(object):
     def generate_game(nbr_player, nbr_vertex, init, goal, a, b):
 
         """
-        init est l'ID de l'init!!!
+        init est l'ID du sommet initial
         """
 
         #todo: dic inutile
 
-        pred = Graph.generate_complete_graph(nbr_vertex, "pred", a, b)
+        pred = Graph.generate_complete_graph(nbr_vertex,"pred", a, b)
         succ = Graph.list_pred_to_list_succ(pred)
         (vertex, partition, dic) = ReachabilityGame.generate_vertex_player_uniform(nbr_player, nbr_vertex)
 
@@ -969,6 +969,7 @@ class ReachabilityGame(object):
         nbr_player_notreached = game.player - len(cost)
         g_n = 0
         max_length = game.compute_max_length()
+        max_weight = game.graph.max_weight
         for i in cost:
             g_n += cost[i]
 
@@ -983,7 +984,7 @@ class ReachabilityGame(object):
                 goal_p = game.goal[p-1].pop()
                 game.goal[p-1].add(goal_p)
                 res = all_dijk[goal_p]
-                h_n += min(res[last_vertex.id], max_length +1)
+                h_n += min(res[last_vertex.id], max_length * max_weight + 1)
 
         return g_n + h_n
 

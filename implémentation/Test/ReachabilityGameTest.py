@@ -354,18 +354,33 @@ class TestReachabilityGame(unittest.TestCase):
 
         graph = Graph(vertex, None, pred, succ, 1)
 
-        goal = [set([3]), set([2])]
+        goal = [{3}, {2}]
 
         game = ReachabilityGame(2, graph, v0, goal, None, {0: 1, 1: 2, 2: 1, 3: 1})
 
-        candidate = game.best_first_search(ReachabilityGame.heuristic)
+        #candidate = game.best_first_search(ReachabilityGame.heuristic)
         candidate_a_star = game.best_first_search(ReachabilityGame.a_star, None, 5)
 
-        print ReachabilityGame.path_vertex_to_path_index(candidate)
-        print "a_star ", str(candidate_a_star)
+        random = game.test_random_path(100, game.compute_max_length())
+        random_result = game.filter_best_result(random)
+
+
+
+        print "A_star :", str(candidate_a_star)
+        (nash1, coal) = game.is_a_Nash_equilibrium(candidate_a_star)
+        print "Est un EN? ", nash1
+        (cout,atteint) = game.get_info_path(candidate_a_star)
+        print "Information sur l'outcome : \nCout pour chaque joueur: ", cout, " joueurs ayant atteint leur objectif ", atteint
+
+        print "Random : ", str(random_result)
+        (nash1, coal) = game.is_a_Nash_equilibrium(random_result)
+        print "Est un EN? ", nash1
+        (cout, atteint) = game.get_info_path(random_result)
+        print "Information sur l'outcome :\nCout pour chaque joueur: ", cout, " joueur ayant atteint leur objectif ", atteint
+
+
 
     def test_best_first_search_2(self):
-
 
         v0 = Vertex(0, 1)
         v1 = Vertex(1, 1)
@@ -384,16 +399,16 @@ class TestReachabilityGame(unittest.TestCase):
         list_succ = Graph.list_pred_to_list_succ(list_pred)
 
         graph = Graph(vertex, None, list_pred, list_succ, 4)
-        goals = [set([3]), set([0])]
+        goals = [{3}, {0}]
         init = v1
         game = ReachabilityGame(2, graph, init, goals, None, {0:1, 1:1, 2:2, 3:1, 4:1})
 
-        candidate = game.best_first_search(game.heuristic)
-        candidate2 = game.best_first_search(game.heuristic_short_path)
+        #candidate = game.best_first_search(game.heuristic)
+        #candidate2 = game.best_first_search(game.heuristic_short_path)
 
         #result = game.parcours_d_arbre((game.player+1) * 4 * 5)
 
-        print " exhaustif"
+        #print " exhaustif"
         #for res in result:
         #    print ReachabilityGame.path_vertex_to_path_index(res)
         #    print game.get_info_path(res)
@@ -401,18 +416,42 @@ class TestReachabilityGame(unittest.TestCase):
         #best =game.filter_best_result(result)
         #print "best", ReachabilityGame.path_vertex_to_path_index(best)
 
-        print " heuristique"
-        print ReachabilityGame.path_vertex_to_path_index(candidate)
+        #print " heuristique"
+        #print ReachabilityGame.path_vertex_to_path_index(candidate)
 
-        print "heuristique short path"
-        print ReachabilityGame.path_vertex_to_path_index(candidate2)
+        #print "heuristique short path"
+        #print ReachabilityGame.path_vertex_to_path_index(candidate2)
 
+        a_star = game.best_first_search(ReachabilityGame.a_star, None, 5)
+
+        self.assertEqual(a_star, [v1, v2, v3, v0])
+
+
+        random = game.test_random_path(100, game.compute_max_length())
+        result_random = game.filter_best_result(random)
+
+
+        print "A_star :"
+        print str(a_star)
+        (nash1, coal) = game.is_a_Nash_equilibrium(a_star)
+        print "est un EN? ", nash1
+        print "info path ", game.get_info_path(a_star)
+
+        path_random =[v1, v0, v1, v2, v3, v0, v1, v2, v4, v3, v4, v2, v3, v4, v3, v0, v1, v0, v1, v0, v1, v2, v3, v0, v1, v2, v3]
+        path_random_2 = [v1, v2, v3, v0, v1, v2, v3, v0, v1, v2, v4, v2, v4, v2, v3, v4, v3, v0, v1, v0, v1, v0, v1, v2, v3, v4, v3]
+
+
+        print "random :"
+        print str(path_random)
+        (nash2, coal) = game.is_a_Nash_equilibrium(path_random)
+        print " est un EN? ", nash2
+        print "info path ", game.get_info_path(path_random)
 
 
 
     def test_best_first_search3(self):
 
-        # exemple du rapport
+        # exemple du rapport modifie
 
         v0 = Vertex(0, 2)
         v1 = Vertex(1, 1)
@@ -428,51 +467,38 @@ class TestReachabilityGame(unittest.TestCase):
         # pred tableau des pred tq (u,k) u = index du pred, et k = valeur de l'arc
 
         pred0 = [(1, 1), (2, 4), (3, 5)]
-        pred1 = [ (2, 1)]
-        pred2 = [(0, 1), (3, 4), (4, 5)]
-        pred3 = [(4, 1), (2, 1)]
+        pred1 = [(2, 1)]
+        pred2 = [ (0,1), (3, 4), (4, 5)]
+        pred3 = [(4, 1),(2,1)]
         pred4 = [(5, 1), (3, 1)]
-        pred5 = [(4, 1), (6,2)]
+        pred5 = [(4, 1), (6, 2)]
         pred6 = [(5, 1), (7, 1)]
         pred7 = [(6, 1)]
 
         list_pred = [pred0, pred1, pred2, pred3, pred4, pred5, pred6, pred7]
         list_succ = Graph.list_pred_to_list_succ(list_pred)
 
-        print "list_succ", list_succ
-
         graph = Graph(vertices, None, list_pred, list_succ, 5)
         goal = [{6}, {0}]
         game = ReachabilityGame(2, graph, v3, goal, None, {0:2 , 1:1, 2:2, 3:1, 4:1, 5:2, 6:1, 7:2})
 
-        #heuristic = game.best_first_search(ReachabilityGame.heuristic ,None, 5)
-        print "done"
-        #heuristic2 = game.best_first_search(ReachabilityGame.heuristic_short_path, None,5)
-        print"done"
-        #heuristic3 = game.best_first_search_with_init_path(ReachabilityGame.heuristic, 5)
-        print "done"
-        #heuristic4 = game.restart_best_first_search(ReachabilityGame.heuristic, 5)
-        #prof = game.restart_best_first_search(ReachabilityGame.profondeur, 5)
         a_star = game.best_first_search(ReachabilityGame.a_star, None, 5)
 
-        both_two = game.best_first_search_with_init_path_both_two(ReachabilityGame.heuristic_short_path, 5)
-        print "both_two"
-        print str(both_two)
 
-        print "heuristic 1"
-        #print repr(heuristic)
-        print "heuristic 2"
-        #print repr(heuristic2)
-        print "heuristic 3"
-        #print repr(heuristic3)
-        print "heuristic 4"
-        #print repr(heuristic4)
-        print "prof"
-        #print repr(prof)
-        #print game.is_a_Nash_equilibrium(prof)
-        print "a_star"
-        print str(a_star)
-        print game.get_info_path(a_star)
+        random = game.test_random_path(100, game.compute_max_length())
+        random_result = game.filter_best_result(random)
+
+        print "A_star :", str(a_star)
+        (nash1, coal) = game.is_a_Nash_equilibrium(a_star)
+        print "Est un EN? ", nash1
+        (cout, atteint) = game.get_info_path(a_star)
+        print "Information sur l'outcome : \nCout pour chaque joueur: ", cout, " joueurs ayant atteint leur objectif ", atteint
+
+        print "Random : ", str(random_result)
+        (nash1, coal) = game.is_a_Nash_equilibrium(random_result)
+        print "Est un EN? ", nash1
+        (cout, atteint) = game.get_info_path(random_result)
+        print "Information sur l'outcome :\nCout pour chaque joueur: ", cout, " joueur ayant atteint leur objectif ", atteint
 
         #path = [v3, v2, v1, v0, v2, v3, v4, v5, v6]
         #print str(path)
