@@ -6,6 +6,7 @@
 Les prérequis sur les jeux d'atteignabilité ayant été clairement expliqué, nous nous intéressons à la recherche - de manière algorithmique - d'équilibres de Nash \og pertinents \fg. Dans un premier temps, nous définissons clairement l'objectif que nous désirons atteindre ainsi que ce signifie pour nous des équilibres de Nash pertinents. Ensuite, nous établissons quelques remarques et propriétés qui nous sont utiles afin de mener à bien notre raisonnement. Enfin, nous expliquons de quelle manière nous désirons mettre en oeuvre des procédés permettant de résoudre cette problématique.
 
 \subsection{Définition du problème et des équilibres pertinents}
+\label{subsection:defEqPert}
 
 Tout d'abord, soit $\mathcal{G} = ( \{ 1,2 \}, V, (V_{1}, V_{2}),E, (Cost _{1},Cost _{2}))$, considérons le jeu $(\mathcal{G},v_{1})$ où:\begin{enumerate}
 \item[$\bullet$] Pour tout  $\rho = \rho _{0} \rho _{1} \rho _{2} \ldots $ où $\rho \in Plays$ :\\$Cost_{i}(\rho) = $ $\begin{cases} 
@@ -62,8 +63,8 @@ Au vu de l'exemple ci-dessus, nous avons mis en lumière le fait que pour certai
 
 \begin{itemize}
 	\item[$\bullet$] Si on est dans un type de jeu tel qu'il existe (au moins) un équilibre de Nash tel que tous les joueurs voient leur objectif atteint alors on souhaite que si $\rho$ est l'outcome de l'équilibre de Nash trouvé on ait que
-	$ \sum_{i \in \Pi} Cost_i(\rho)$ soit \textbf{minimale}.
-	\item[$\bullet$]S'il n'est pas certain qu'il existe un équilibre de Nash du type de celui décrit ci-dessus alors on désire \textbf{maximiser} le nombre de joueurs qui atteignent leur objectif, notons cet ensemble de joueurs $A$. De plus, on souhaite \textbf{minimiser} $\sum_{i \in A} Cost_i(\rho)$.
+	$ \sum_{i \in \Pi} \varphi_i(\rho)$ soit \textbf{minimale}.
+	\item[$\bullet$]S'il n'est pas certain qu'il existe un équilibre de Nash du type de celui décrit ci-dessus alors on désire \textbf{maximiser} le nombre de joueurs qui atteignent leur objectif, notons cet ensemble de joueurs $Visit(\rho)$. De plus, on souhaite \textbf{minimiser} $\sum_{i \in \visit(\rho)} \varphi_i(\rho)$.
 \end{itemize}
 
 \subsection{Caractérisation de l'outcome d'un équilibre de Nash}
@@ -218,13 +219,16 @@ Dans sa thèse~\cite{juliePhd}, Julie De Pril explicite une procédure afin de c
 	Etant donné un équilibre de Nash dans un jeu multijoueur initialisé à objectif quantitatif, il existe un équilibre de Nash du même type
 \end{thm}
 
-Ce procédé consiste en deux étapes. Etant donné un équilibre de Nash, on commence par construire un second équilibre de Nash du même type duquel on a supprimé les cycles inutiles. Un cycle inutile est un cycle tel que lors de son parcourt aucun joueur qui n'avait pas encore visité son objectif n'atteint celui-ci. Ensuite, on construit un équilibre de Nash $(\sigma_i)_{i\in \Pi}$, toujours avec le même type, tel qu'à partir de l'outcome $\langle (\sigma_i)_{i\in \Pi}\rangle_{v_0}$ on puisse identifier un préfixe $\alpha\beta$ pour lequel on peut répéter infiniment $\beta$. De plus, si nous définissons la notation $\visit(\alpha)$ comme étant l'ensemble des joueurs qui on vu leur objectif atteint lors du parcourt de $\alpha$, nous retrouvons dès lors le résultat suivant:
+Ce procédé consiste en deux étapes. Etant donné un équilibre de Nash, on commence par construire un second équilibre de Nash du même type duquel on a supprimé les cycles inutiles. Un cycle inutile est un cycle tel que lors de son parcourt aucun joueur qui n'avait pas encore visité son objectif n'atteint celui-ci mais qu'ensuite un nouvel objectif est atteint. Ensuite, on construit un équilibre de Nash $(\sigma_i)_{i\in \Pi}$, toujours avec le même type, tel qu'à partir de l'outcome $\langle (\sigma_i)_{i\in \Pi}\rangle_{v_0}$ on puisse identifier un préfixe $\alpha\beta$ pour lequel on peut répéter infiniment $\beta$. De plus, si nous définissons la notation $\visit(\alpha)$ comme étant l'ensemble des joueurs qui on vu leur objectif atteint lors du parcourt de $\alpha$, nous retrouvons dès lors le résultat suivant:
 
 \begin{propriete}
+	\label{prop: rechEqPert1}
 	Soit $(\sigma_i)_{i\in \Pi}$ un équilibre de Nash dans le jeu d'atteignabilité multijoueur à objectifs quantitatifs et initialisé $(\mathcal{G}, v_0)$, il existe un équilibre de Nash $(\tau_i)_{i\in \Pi}$ avec le même type et tel que $\langle (\tau_i)_{i\in \Pi} \rangle_{v_0} = \alpha \beta^{\omega}$, où \linebreak $\visit(\alpha) = \type((\sigma_i)_{i \in \Pi})$ et $|\alpha\beta| < (\Pi + 1)\cdot |V|$.
 \end{propriete}
-Remarquons toutefois que dans le cadre de ces preuves, le fonction de poids $\phi: E \rightarrow \mathbb{R}$ est la fonction telle que pour tout $e \in E$, $\phi(e) = 1$. Les preuves s'adaptent toutefois si la fonction de poids est de la forme \linebreak $\phi : E \rightarrow \mathbb{N}_{0}$. En effet, s'il existe un arc $(v,v')$ tel que $\phi(v,v') = c$ pour un certain $c \in \mathbb{N}_{0}$, il suffit de rajouter autant d'arc de poids 1 qu'il est nécessaire pour que la somme de ces poids vaille $c$ (cf. figure~\ref{fig:transfoGraphPoids} avec $c = 4$).\\
-\todo{?}\\
+Remarquons toutefois que dans le cadre de ces preuves, le fonction de poids $w: E \rightarrow \mathbb{R}$ est la fonction telle que pour tout $e \in E$, $w(e) = 1$. Les preuves s'adaptent toutefois si la fonction de poids est de la forme \linebreak $w : E \rightarrow \mathbb{N}_{0}$. En effet, s'il existe un arc $(v,v')$ tel que $w(v,v') = c$ pour un certain $c \in \mathbb{N}_{0}$, il suffit de rajouter autant d'arc de poids 1 qu'il est nécessaire pour que la somme de ces poids vaille $c$ (cf. figure~\ref{fig:transfoGraphPoids} avec $c = 4$). Remarquons que si le graphe d'origine présente $|V|$ noeud, le graphe transformé, dont l'ensemble des noeuds est $V'$, possède $|V'| = |V| + \sum_{e \in E} (w(e) - 1)$ noeuds. Il semble donc raisonnable que nous nous contentions de considérer des outcomes de longueur $(\Pi + 1)\cdot |V'|.$\\
+
+\textbf{Une étude attentive de la preuve effectuée pour \linebreak la propriété~\ref{prop: rechEqPert1} permettrait peut-être d'exhiber une meilleure bor\-ne sur la longueur maximale des outcomes testés.}
+
 \begin{figure}[!h]
 	\centering
 	\begin{tikzpicture}
@@ -262,13 +266,134 @@ Nous pouvons donc conclure qu'il est correct de se restreindre à le recherche d
 Nous avons désormais à notre disposition:
 \begin{itemize}
 	\item[$\bullet$] Une manière de tester si un outcome correspond à l'outcome d'un équilibre de Nash.
-	\item[$\bullet$] Un résultat permettant d'affirmer que nous pouvons nous contenter d'examiner les équilibres de Nash de la forme $\alpha \beta^{\omega}$ où $\alpha$ et $\beta$ sont des éléments de $V^{+}$. Nous pouvons donc travailler uniquement à partir de chemins de longueur au plus $|V|. (\max_{e \in E} \phi(e) -1). |E|$. De là, nous pouvons appliquer le point précédant sur $\alpha\beta$ et comme ce mot est un mot fini, un algorithme peut effectuer cette tâche. 
+	\item[$\bullet$] Un résultat permettant d'affirmer que nous pouvons nous contenter d'examiner les équilibres de Nash de la forme $\alpha \beta^{\omega}$ où $\alpha$ et $\beta$ sont des éléments de $V^{+}$. Nous pouvons donc travailler uniquement à partir de chemins de longueur au plus $(\Pi + 1)\cdot |V'|$. De là, nous pouvons appliquer le point précédant sur $\alpha\beta$ et comme ce mot est un mot fini, un algorithme peut effectuer cette tâche. 
 	\item[$\bullet$] Un algorithme (\verb|DijkstraMinMax|) qui permet des récupérer les valeurs de chaque noeud pour tous les jeux  où un joueur joue contre la coalition des autres joueurs. Ces valeurs permettent de vérifier si la propriété du point précédent est respectée.
 \end{itemize}
 \smallskip
-\indent Il nous reste donc à déterminer un algorithme qui nous permet de trouver rapidement un équilibre de Nash pertinent. La phase d'implémentation de ce projet ayant commencé relativement tard les méthodes testées restent naïves et peu efficaces. Avant d'aborder ces dernières avec plus de précisions, nous expliquons un type de recherche du quel nous nous sommes inspirés : le \og best-first-search \fg.
+\indent Il nous reste donc à déterminer un algorithme qui nous permet de trouver rapidement un équilibre de Nash pertinent. La phase d'implémentation de ce projet ayant commencé relativement tard les méthodes testées restent naïves et peu efficaces. Avant d'aborder ces dernières avec plus de précisions, nous expliquons certains types d'algorithmes d'exploration desquels nous nous sommes inspirés.
 
-\subsection{Best-first-search}
+\subsection{Algorithmes d'exploration}
+
+Cette section se base sur le livre de Russel et Norvig~\cite{artInt} ainsi que sur les notes du cours d'Intelligence Artificielle enseigné par Hadrien Mélot à l'université de Mons (notes de l'année 2014--2015).\\
+
+
+Lorsque l'on recherche une solution à un problème plusieurs méthodes sont applicables en fonction de la nature du problème. Nous nous sommes penchés sur la résolution de notre problème via des méthodes d'exploration. C'est-à-dire qu'à un problème donné est associé un \emph{espace d'états}. Ces états sont parcourus jusqu'à atteindre l'objectif attendu, celui-ci correspond à la solution du problème.
+
+Dans notre cas, l'objectif que nous désirons atteindre est de trouver un chemin dans le graphe du jeu qui corresponde à l'outcome d'un équilibre de Nash. La pertinence de cet équilibre est jaugée via les critères évoqués dans la section~\ref{subsection:defEqPert}. Le but ultime est donc d'atteindre l'équilibre le plus pertinent.
+
+Différents types d'exploration sont possibles, deux grandes familles sont à évoquer:
+
+\begin{itemize}
+	\item[$\bullet$] Algorithme d'exploration non informée: seule la définition du problème est connue (\emph{blind search}).
+	\item[$\bullet$] Algorithme d'exploration informée: la recherche est guidée grâce à des données supplémentaires (\emph{heuristic search}).
+\end{itemize}
+
+\begin{exemple}
+	Un voyageur qui se situe dans une ville A souhaite rejoindre une ville B. Pour ce faire, il aimerait emprunter le chemin le plus court pour relier A et B. Une exploration non informée testerait les différentes villes voisines de la ville A et ainsi de suite jusqu'à atteindre la ville B. Une approche plus éclairée serait donc d'utiliser la distance à vol d'oiseau séparant une ville C de la ville B afin de pouvoir choisir à chaque fois quelle ville voisine C visiter en priorité. Il s'agit alors d'une exploration informée.
+\end{exemple}
+
+L'objectif à atteindre étant établi, le problème doit maintenant être défini. Les cinq composants suivant sont essentiels:
+
+\begin{description}
+	\item[L'état initial] est l'état à partir duquel l'exploration commence. Dans notre cas, puis que nous travaillons avec des jeux initialisés par un certain sommet $v_0$, l'état initial est le chemin $v_0$.
+	\item[Les actions possibles] à partir d'un état donné afin de pouvoir continuer l'exploration. Ici, si le dernier noeud du chemin courant est la noeud $v_i$, les actions possibles sont de choisir un noeud parmi ceux de $Succ(v_i) = \{ v\, |\, (v_i, v) \in E \}.$
+	\item[Le modèle de transition] associe à partir d'un état courant et d'une action l'état successeur. Si on est à l'état $h = h_1 ... h_k$ et que l'action choisie est de sélectionner le noeud $v$, alors l'état successeur est l'état $hv$.
+\end{description}
+
+L'état initial, les actions possibles ainsi que le modèle de transition définissent \emph{l'espace d'états} qui est l'ensemble de tous les états possibles associés au problème.
+
+\begin{description}
+	\item[Un test] détermine si un état correspond à un état objectif. Dans le cas présent, ce test consiste soit à vérifier si la longueur du chemin correspond à la longueur maximale de l'outcome d'un équilibre de Nash et dans le cas échéant de tester si ce chemin en est bien un équilibre de Nash via le critère de la propriété~\ref{prop:rechEqpert1}, soit tous les joueurs ont atteint leur objectif et nous vérifions via ce même critère si ce chemin est un équilibre de Nash.
+	
+	\item[Une fonction de coût] modélise la qualité du chemin courant. Une solution optimale est telle que le coût associé à l'état objectif solution est minimal.
+\end{description}
+
+Maintenant que le modèle est explicité, nous expliquons de quelle manière la recherche est effectuée. Tous les algorithmes d'exploration utilisent cette structure. La différence entre ces différents algorithmes est la manière dont les états successifs sont sélectionnés, cette notion est nommée \emph{stratégie d'exploration}.
+
+La recherche se fait en parcourant un arbre dont la racine est l'état initial, les branches les actions possibles et les noeuds les états. A chaque fois qu'un état est sélectionné tous ses successeurs sont générés et sont ajoutés à l'ensemble des états qui attendent d'être visités. Cette ensemble est appelée \emph{frontière} tandis que ce processus de génération des successeurs d'un état est appelé \emph{expansion}. Tant qu'un état objectif n'est pas atteint, un nouvel état est sélectionné dans la frontière et ses successeurs y sont ajoutés. Cette procédure est appelée \emph{tree search}.
+
+L'inconvénient de cette approche est que l'arbre généré peut-être infini. En effet, supposons qu'il existe un arc $(v_0, v_1)$ et un arc $(v_1, v_0)$ dans le graphe du jeu, alors le chemin $ (v_0v_1)^{\omega}$ peut être généré et le processus pourrait ne jamais s'arrêter. Dans notre cas, puisque nous nous restreignant à la recherche de chemin d'une certaine longueur maximale ce comportement n'est pas dérangeant. En effet, une fois la longueur maximale du chemin atteinte, nous pouvons couper la recherche à partir de ce noeud. De plus, empêcher l'apparition de cycle n'est pas envisageable car même pour la recherche d'équilibre de Nash pertinent des cycles peuvent être nécessaires (cf. exemple de la section~\ref{prop:rechEqpert1} pour lequel un outcome  d'équilibre de Nash pertinent est $\rho = v_{1}v_{0}v_{1}(v_{2}v_{3})^{\omega} $).\\
+
+Comme nous l'avons déjà précisé, les différents algorithmes d'exploration différent entre eux par leur stratégie d'exploration. La structure de donnée utilisée pour représenter la frontière influence donc l'ordre de traitement des noeuds de l'arbre d'exploration. Les trois structures suivantes sont utilisées : les piles (le dernier élément ajouté est le premier retiré), les files (la premier élément ajouté est le premier élément retiré) et les files de priorités (les éléments sont triés selon une certaine préférence).
+
+\begin{comment}
+
+Les stratégies d'exploration sont évaluées selon quatre critères:
+\begin{itemize}
+	\item[\textbf{Complétude}] La stratégie trouve-t-elle toujours une solution si elle existe?
+	\item[\textbf{Complexité en temps}] Quel est le nombre de noeuds de l'arbre d'exploration qui sont générés lors de celle-ci?
+	\item[\textbf{Complexité en espace}] Quel est le nombre de noeuds maximal gardé en mémoire?
+	\item[\textbf{Optimalité}] La solution retournée est-elle une solution optimale?
+\end{itemize}
+	
+Pour exprimer la complexité en temps et en mémoire, les notations suivantes sont utilisées:
+
+\begin{itemize}
+	\item[$\bullet$] \emph{d}: distance minimale entre l'état initial et l'état objectif.
+	\item[$\bullet$] \emph{b}: nombre maximum d'enfants d'un noeud dans l'arbre d'exploration.
+	\item[$\bullet$] \emph{m}: profondeur maximale de l'espace d'état.	
+\end{itemize}
+\end{comment}
+
+L'utilisation d'une file permet, par exemple, une exploration en largeur de l'arbre - appelée \emph{breadth-first search}. Cette exploration visite en premier les noeuds de l'arbre qui sont les moins profonds. Tandis qu'une file assure prioritairement l'expansion des noeuds les plus profonds. Cette exploration est appelée \emph{depth-first search}. Ces deux approches sont des exemples d'explorations non informées. Elles ne sont, en général, pas optimales car elles retournent le premier état objectif trouvé. De plus, leur complexité en temps est exponentielle. Si \emph{d} est distance minimale entre l'état initial et l'état objectif, \emph{b} est le nombre maximum d'enfants d'un noeud dans l'arbre d'exploration et \emph{m} est la profondeur maximale de l'espace d'état, alors breadth-first search a une complexité en temps en $\mathcal{O}(b^d)$ tandis que le le depth-first search est en $\mathcal{O}(b^m)$.\\
+
+
+Ces deux approches étant assez naïves et non exploitables en pratique, nous aimerions guider notre recherche afin que celle-ci trouve le plus rapidement possible une solution de bonne qualité. Les stratégies d'exploration informées sont utilisées dans ce but et ce type d'exploration est appélé \emph{best-first search}.
+
+Dans ce genre de stratégie, les noeuds de la frontière sont ordonnés grâce à une \emph{fonction d'évaluation} $f$ qui permet d'estimer à quel point ce noeud est souhaitable. De plus, pour la plupart des algorithmes de type best-first search, une \emph{fonction heuristique} $h$ est utilisée dans l'expression de la fonction $f$. En fait, $h(n)$ estime le plus petit coût nécessaire pour rejoindre l'état objectif le plus proche à partir du noeud $n$.
+
+Terminons en expliquant le cas particulier de l'algorithme $A^*$ ainsi que la manière dont nous l'avons utilisé afin de trouver une solution à notre problème.
+
+\subsubsection{Algorithme $\mathbf{A^*}$}
+\label{subsubsection:aStar}
+
+L'algorithme $A^*$ est un exemple d'algorithme best-first search qui est caractérisé par sa fonction d'évaluation. Dans ce cas $f$ est défini de la manière suivante:
+
+$$f(n) = g(n) + h(n)$$
+où 
+\begin{itemize}
+	\item[$\bullet$] $g(n)$ est le coût nécessaire pour aller du noeud initial au noeud $n$.
+	\item[$\bullet$] $h(n)$ est l'estimation du coût minimum nécessaire pour aller du noeud $n$ à un état objectif.
+	\item[$\bullet$] $f(n)$ est donc l'estimation du coût minimum pour pour aller du noeud initial à un noeud objectif et ce en passant par le noeud $n$.
+\end{itemize}
+
+Pour notre part, la fonction que nous désirons minimiser est la suivante:
+
+$$ F(\rho) = \sum_{i \in \visit(\rho)} \varphi_i(\rho) + |\Pi \backslash \visit(\rho)| \cdot p$$
+
+où nous avons:
+
+\begin{itemize}
+	\item[$\bullet$] $\rho = v_0 \rho_1 ... \rho_l$ où $v_0$ est le noeud initial du jeu et $l$ est la longueur maximale des chemins à tester.
+	\item[$\bullet$] $p$ est le poids maximal que peut atteindre un chemin tel que sa longueur est la longueur maximale à tester.\\
+	 Dans le cadre de nos tests, nous fixons cette valeur à : $((\Pi + 1) \cdot (|V| + \sum_{e \in E} (w(e) - 1)))\cdot \max_{e \in E} w(e)$.\\ \textbf{Une étude plus approfondie du problème permettrait-elle \linebreak également de trouver une borne plus fine?} \textbf{Améliorerait-elle vraiment les résultats obtenus?}\\
+\end{itemize}
+
+Nous utilisons donc pour $g$ et $h$ les fonctions suivantes:
+
+$$ g(n) = \sum_{i \in \visit(h)} \varphi_i(h) + |\Pi\backslash \visit(h)| \cdot \epsilon_k$$
+
+
+
+$$h(n) = \sum_{i \in \visit(h)} \min\{ p - \epsilon_k ,\, c_i \}$$
+
+
+où nous avons:
+
+\begin{itemize}
+	\item[$\bullet$] $h$ est le chemin $h = h_0 h_1 ... h_k$ (où $h_0$ = $v_0$ le noeud initial du jeu) stocké dans le noeud $n$.
+	\item[$\bullet$] $\displaystyle \epsilon_k = \sum_{j = 0}^{k-1} w(v_j, v_{j+1})$.
+	\item[$\bullet$] $c_i$ est le poids du plus court chemin pour rejoindre un objectif du joueur $i$ à partir du sommet $h_k$.
+\end{itemize}
+$ $\\
+\textbf{Nous savons que sous certaines conditions l'algorithme $A^*$ est optimal. Est-il possible dans ce cas d'arriver à une telle conclusion? Quelles sont les performances réelles de cette approche? Quelles en sont les limites, les types de graphes de jeu sur lesquels elle est applicable?}\\
+	
+	
+	
+Toutes les notions théoriques qui nous sont nécessaires pour l'implémentation d'un procédé visant à rechercher un équilibre de Nash pertinent sont maintenant expliquées. Nous pouvons maintenant expliquer la manière dont nous les avons mises en \oe uvre.
+
+
+
 
 
 

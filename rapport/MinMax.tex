@@ -310,10 +310,10 @@ Comme pour l'algorithme de Dijkstra, pour une meilleure complexité les files de
 			\STATE $o.S \leftarrow S$
 			\STATE $o.S.$\textsc{Insérer}$(0, NULL)$
 		\ENDFOR
-		\FORALL{$v \in G.V_{1}\backslash \{ Goal \}$}
+		\FORALL{$v \in G.V_{1}\backslash Goal $}
 			\STATE $v.S \leftarrow (+\infty, NULL)$
 		\ENDFOR
-		\FORALL{$v \in G.V_{2}\backslash \{ Goal \}$}
+		\FORALL{$v \in G.V_{2}\backslash Goal $}
 			\STATE $S \leftarrow$ nouveau tas
 			\STATE $v.S \leftarrow S$
 			\STATE $v.S.$\textsc{Insérer}$(+\infty, NULL)$
@@ -336,7 +336,7 @@ Comme pour l'algorithme de Dijkstra, pour une meilleure complexité les files de
 		\ENSURE Un tas $Q$ qui comprend tous les sommets de $V$ classés par leur valeur $d$.
 		
 		\STATE $Q \leftarrow$ nouveau tas 
-		\FORALL{$v \in G.V \backslash \{ Goal \}$}
+		\FORALL{$v \in G.V \backslash  Goal $}
 			\STATE $v.d \leftarrow +\infty$
 			\STATE $Q.$\textsc{Insérer}(v)
 		\ENDFOR
@@ -536,7 +536,7 @@ Au préalable, afin de prouver que le premier invariant est correct, nous allons
 		Ce que nous pouvons réécrire:
 		\begin{align*} 
 			Val(v) &= g( v. \langle \sigma_1^*, \sigma_2^* \rangle_{\sigma_1^*(v)})\\
-			   &= w(v, \sigma_1^*(v)) + g(\langle \sigma_1^*, \sigma_2^* \rangle_{\sigma_1^*(v)}\\
+			   &= w(v, \sigma_1^*(v)) + g(\langle \sigma_1^*, \sigma_2^* \rangle_{\sigma_1^*(v)})\\
 			   &= w(v, \sigma_1^*(v)) + Val(\sigma_1^*(v))
 		\end{align*}
 		

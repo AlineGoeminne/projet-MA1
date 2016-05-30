@@ -33,6 +33,20 @@
 \usepackage{comment}
 \usepackage{adjustbox}
 
+\usepackage{listings}
+
+\lstnewenvironment{code}
+    {\lstset{%
+        basicstyle=\ttfamily,
+        escapechar=~,
+        morekeywords={foo,bar},
+        keywordstyle=\color{green},
+        literate={\$}{{\textcolor{blue}{\$}}}1}
+    }
+    {}
+
+    
+
 \setcounter{secnumdepth}{3}
 \setcounter{tocdepth}{3}
 
