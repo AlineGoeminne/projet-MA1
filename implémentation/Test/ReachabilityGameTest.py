@@ -60,69 +60,6 @@ class TestReachabilityGame(unittest.TestCase):
         self.assertTrue(game.is_a_Nash_equilibrium(path2, {2}))
 
 
-    def test_is_nash_equilibrium2(self):
-
-        mat = [[0,8,8,8,4], [9,0,2,8,1], [3,3,0,10,2], [9,9,5,0,10],[5,2,6,5,0]]
-
-        pred = Graph.matrix_to_list_pred(mat)
-        succ = Graph.list_pred_to_list_succ(pred)
-
-        v0 = Vertex(0, 1)
-        v1 = Vertex(1, 1)
-        v2 = Vertex(2, 2)
-        v3 = Vertex(3, 2)
-        v4 = Vertex(4, 2)
-
-        vertex = [v0, v1, v2, v3, v4]
-
-        graph = Graph(vertex, mat, pred, succ, 10)
-
-        obj = [set([0]), set([4])]
-
-        game = ReachabilityGame(2, graph, v3, obj, None, {0:1, 1:1, 2:2, 3:2, 4:2})
-
-        path = [v3, v0]
-
-        #print game.is_a_Nash_equilibrium_one_player(path, 1)
-
-        #res = game.best_first_search(game.heuristic_short_path, None, 2)
-
-        #random_path = game.test_random_path(100, 150)
-        #doc = open("res_random.txt", "w")
-        #for res in random_path:
-            #doc.write(str(ReachabilityGame.path_vertex_to_path_index(res)))
-            #doc.write("\n")
-        #doc.close()
-
-        res_init = game.best_first_search_with_init_path(game.heuristic, 2)
-        print res_init
-
-    def test_is_nash_equilibrium_3(self):
-
-        mat = [[0, 10, 6, 2, 4],[2, 0, 10, 4, 6],[3, 6, 0, 5, 6],[6, 5, 9, 0, 6],[7, 10, 3, 6, 0]]
-
-        v0 = Vertex(0, 2)
-        v1 = Vertex(1, 2)
-        v2 = Vertex(2, 1)
-        v3 = Vertex(3, 2)
-        v4 = Vertex(4, 1)
-
-        vertex = [v0, v1, v2, v3, v4]
-
-        pred = Graph.matrix_to_list_pred(mat)
-        succ = Graph.list_pred_to_list_succ(pred)
-
-
-        graph = Graph(vertex, mat, pred, succ, 10)
-        obj = [set([0]), set([4])]
-
-        game = ReachabilityGame(2, graph, v3, obj, None, {0:2, 1:2, 2:1, 3:2, 4:1})
-
-        path = [v3, v4]
-
-
-        print game.is_a_Nash_equilibrium(path)
-
 
     def test_same_path(self):
 
@@ -181,9 +118,6 @@ class TestReachabilityGame(unittest.TestCase):
 
         self.assertTrue(len(en_set) <= 50)
         self.assertEqual(10, len(en_set[0]))
-
-        for en in en_set:
-            print ReachabilityGame.path_vertex_to_path_index(en)
 
 
     def test_path_cost_one_player(self):
@@ -266,72 +200,6 @@ class TestReachabilityGame(unittest.TestCase):
         self.assertFalse(nash31)
         self.assertTrue(nash32)
 
-    def test_parcours_d_arbre(self):
-        v0 = Vertex(0, 1)
-        v1 = Vertex(1, 1)
-        v2 = Vertex(2, 2)
-        v3 = Vertex(3, 1)
-        v4 = Vertex(4, 1)
-        vertex = [v0, v1, v2, v3, v4]
-
-        pred0 = [(1, 1), (3, 1)]
-        pred1 = [(0, 1)]
-        pred2 = [(1, 1), (4, 2)]
-        pred3 = [(2, 1), (4, 1)]
-        pred4 = [(2, 4), (3, 1)]
-
-        list_pred = [pred0, pred1, pred2, pred3, pred4]
-        list_succ = Graph.list_pred_to_list_succ(list_pred)
-
-        graph = Graph(vertex, None, list_pred, list_succ)
-        goals = [set([3]), set([0])]
-        init = v1
-        game = ReachabilityGame(2, graph, init, goals, None, None)
-        prof = (game.player +1)*4*len(game.graph.vertex)
-
-        result = game.parcours_d_arbre(prof)
-
-        print "nombre de resultats", len(result)
-        for i in range(0 , len(result)):
-            print ReachabilityGame.path_vertex_to_path_index(result[i])
-
-
-
-    def test_strange_example(self):
-
-        v0 = Vertex(0, 1)
-        v1 = Vertex(1, 2)
-        v2 = Vertex(2, 1)
-        v3 = Vertex(3, 1)
-
-        vertex = [v0, v1, v2, v3]
-
-        pred0 = [(1, 1), (2, 1)]
-        pred1 = [(0, 1), (3, 1)]
-        pred2 = [(0, 1)]
-        pred3 = [(1, 1)]
-
-        pred = [pred0, pred1, pred2, pred3]
-        succ = Graph.list_pred_to_list_succ(pred)
-
-        graph = Graph(vertex, None, pred, succ )
-
-        goal = [set([3]), set([2])]
-
-        game = ReachabilityGame(2, graph, v0, goal, None, {0: 1, 1:2, 2:1, 3:1})
-
-        result = game.parcours_d_arbre(12)
-        print "nombre de resultats", len(result)
-        for i in range(0, len(result)):
-            (cost, reached) = game.get_info_path(result[i])
-            print ReachabilityGame.path_vertex_to_path_index(result[i]), " infos:: cost", cost, " reached", reached
-
-        best_result = game.filter_best_result(result)
-        (cost,reached) = game.get_info_path(best_result)
-        print ReachabilityGame.path_vertex_to_path_index(best_result) , "info :: cost", cost, "reached", reached
-
-
-
 
     def test_best_first_search(self):
 
@@ -358,25 +226,41 @@ class TestReachabilityGame(unittest.TestCase):
 
         game = ReachabilityGame(2, graph, v0, goal, None, {0: 1, 1: 2, 2: 1, 3: 1})
 
-        #candidate = game.best_first_search(ReachabilityGame.heuristic)
+        candidate = game.best_first_search(ReachabilityGame.short_path_evaluation)
         candidate_a_star = game.best_first_search(ReachabilityGame.a_star, None, 5)
 
         random = game.test_random_path(100, game.compute_max_length())
         random_result = game.filter_best_result(random)
 
-
+        init = game.best_first_search_with_init_path_both_two(ReachabilityGame.a_star, 5)
 
         print "A_star :", str(candidate_a_star)
         (nash1, coal) = game.is_a_Nash_equilibrium(candidate_a_star)
         print "Est un EN? ", nash1
         (cout,atteint) = game.get_info_path(candidate_a_star)
         print "Information sur l'outcome : \nCout pour chaque joueur: ", cout, " joueurs ayant atteint leur objectif ", atteint
+        print"\n"
+
+        print "Best-first search shortest_path ",str(candidate)
+        (nash2, coal) = game.is_a_Nash_equilibrium(candidate)
+        print "Est un EN? ", nash2
+        (cout, atteint) = game.get_info_path(candidate)
+        print "Information sur l'outcome : \nCout pour chaque joueur: ", cout, " joueurs ayant atteint leur objectif ", atteint
+        print"\n"
+
+        print "Init best-first search ", str(init)
+        (nash, coal) = game.is_a_Nash_equilibrium(init)
+        print "Est un EN? ", nash
+        (cout, atteint) = game.get_info_path(init)
+        print "Information sur l'outcome : \nCout pour chaque joueur: ", cout, " joueurs ayant atteint leur objectif ", atteint
+        print"\n"
 
         print "Random : ", str(random_result)
         (nash1, coal) = game.is_a_Nash_equilibrium(random_result)
         print "Est un EN? ", nash1
         (cout, atteint) = game.get_info_path(random_result)
         print "Information sur l'outcome :\nCout pour chaque joueur: ", cout, " joueur ayant atteint leur objectif ", atteint
+        print"\n"
 
 
 
@@ -428,7 +312,9 @@ class TestReachabilityGame(unittest.TestCase):
 
 
         random = game.test_random_path(100, game.compute_max_length())
-        result_random = game.filter_best_result(random)
+        path_random = game.filter_best_result(random)
+        init = game.best_first_search_with_init_path_both_two(ReachabilityGame.a_star, 5)
+        candidate = game.best_first_search(ReachabilityGame.short_path_evaluation, None, 5)
 
 
         print "A_star :"
@@ -436,9 +322,7 @@ class TestReachabilityGame(unittest.TestCase):
         (nash1, coal) = game.is_a_Nash_equilibrium(a_star)
         print "est un EN? ", nash1
         print "info path ", game.get_info_path(a_star)
-
-        path_random =[v1, v0, v1, v2, v3, v0, v1, v2, v4, v3, v4, v2, v3, v4, v3, v0, v1, v0, v1, v0, v1, v2, v3, v0, v1, v2, v3]
-        path_random_2 = [v1, v2, v3, v0, v1, v2, v3, v0, v1, v2, v4, v2, v4, v2, v3, v4, v3, v0, v1, v0, v1, v0, v1, v2, v3, v4, v3]
+        print "\n"
 
 
         print "random :"
@@ -446,6 +330,21 @@ class TestReachabilityGame(unittest.TestCase):
         (nash2, coal) = game.is_a_Nash_equilibrium(path_random)
         print " est un EN? ", nash2
         print "info path ", game.get_info_path(path_random)
+        print "\n"
+
+        print "Best-first search shortest_path ", str(candidate)
+        (nash2, coal) = game.is_a_Nash_equilibrium(candidate)
+        print "Est un EN? ", nash2
+        (cout, atteint) = game.get_info_path(candidate)
+        print "Information sur l'outcome : \nCout pour chaque joueur: ", cout, " joueurs ayant atteint leur objectif ", atteint
+        print"\n"
+
+        print "Init best-first search ", str(init)
+        (nash, coal) = game.is_a_Nash_equilibrium(init)
+        print "Est un EN? ", nash
+        (cout, atteint) = game.get_info_path(init)
+        print "Information sur l'outcome : \nCout pour chaque joueur: ", cout, " joueurs ayant atteint leur objectif ", atteint
+        print"\n"
 
 
 
@@ -483,6 +382,11 @@ class TestReachabilityGame(unittest.TestCase):
         game = ReachabilityGame(2, graph, v3, goal, None, {0:2 , 1:1, 2:2, 3:1, 4:1, 5:2, 6:1, 7:2})
 
         a_star = game.best_first_search(ReachabilityGame.a_star, None, 5)
+        #init = game.best_first_search_with_init_path_both_two(ReachabilityGame.a_star, 5)
+        #candidate = game.best_first_search(ReachabilityGame.short_path_evaluation, None, 5)
+        #first = game.breadth_first_search()
+        #breadth = game.breadth_first_search(False, 30)
+        #breadth_result = game.filter_best_result(breadth)
 
 
         random = game.test_random_path(100, game.compute_max_length())
@@ -493,12 +397,16 @@ class TestReachabilityGame(unittest.TestCase):
         print "Est un EN? ", nash1
         (cout, atteint) = game.get_info_path(a_star)
         print "Information sur l'outcome : \nCout pour chaque joueur: ", cout, " joueurs ayant atteint leur objectif ", atteint
+        print"\n"
 
         print "Random : ", str(random_result)
         (nash1, coal) = game.is_a_Nash_equilibrium(random_result)
         print "Est un EN? ", nash1
         (cout, atteint) = game.get_info_path(random_result)
         print "Information sur l'outcome :\nCout pour chaque joueur: ", cout, " joueur ayant atteint leur objectif ", atteint
+        print"\n"
+
+
 
         #path = [v3, v2, v1, v0, v2, v3, v4, v5, v6]
         #print str(path)
@@ -533,9 +441,9 @@ class TestReachabilityGame(unittest.TestCase):
 
         # pred tableau des pred tq (u,k) u = index du pred, et k = valeur de l'arc
 
-        pred0 = [(1, 1), (2, 1), (3, 5)]
+        pred0 = [(0, 1),(1,1), (2, 1), (3, 5)]
         pred1 = [(2, 1)]
-        pred2 = [(0, 1), (3, 1), (4, 5)]
+        pred2 = [ (3, 1), (4, 5)]
         pred3 = [(4, 1)]
         pred4 = [(5, 1)]
         pred5 = []
@@ -546,20 +454,26 @@ class TestReachabilityGame(unittest.TestCase):
         list_succ = Graph.list_pred_to_list_succ(list_pred)
 
         graph = Graph(vertices, None, list_pred, list_succ, 5)
-        goal = [set([0]), set([6])]
+        goal = [{6}, {0}]
         dijk_graph2 = ReachabilityGame.graph_transformer(graph, 2)
         dijk_graph1 = ReachabilityGame.graph_transformer(graph, 1)
 
-        game = ReachabilityGame(2, graph, v1, goal, None, {0:2 , 1:1, 2:2, 3:1, 4:1, 5:2, 6:1, 7:2})
+        game = ReachabilityGame(2, graph, v3, goal, None, {0:2 , 1:1, 2:2, 3:1, 4:1, 5:2, 6:1, 7:2})
         T2 = dijkstraMinMax(dijk_graph2, set([6]))
         T1 = dijkstraMinMax(dijk_graph1, set([0]))
 
-        path = [v3, v0]
+        path = [v3,v2, v0]
 
         print game.is_a_Nash_equilibrium_one_player(path, 1)
         print game.get_info_path(path)
 
-        print_result(T1, set([0]), list_succ)
+        #print_result(T1, set([0]), list_succ)
+
+        result = game.best_first_search(ReachabilityGame.a_star,None,30)
+        print "result", result
+        print "cost", game.cost_for_all_players(result)
+        print "info", game.get_info_path(result)
+
 
 
 
