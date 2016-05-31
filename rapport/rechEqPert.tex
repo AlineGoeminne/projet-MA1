@@ -78,11 +78,10 @@ Existe-t'il un équilibre de Nash tel que chaque joueur atteigne son objectif?
 
 \end{qst}
 
-Nous n'avons pas encore de réponse claire à cette question. Toutefois, pour un jeu à $n$ joueurs nous avons une bonne intuition quant à la manière de passer d'un équilibre de Nash où $n-1$ joueurs atteignent leur objectif à un équilibre de Nash où $n$ joueurs atteignent leur objectif. En effet, à partir du dernier état objectif atteint, si $j$ est le joueur qui n'a pas atteint son objectif, il suffit que tous les joueurs s'allient afin d'atteindre un objectif du joueur $j$.\\
+Nous n'avons pas encore de réponse claire à cette question. Toutefois, pour un jeu à $n$ joueurs nous avons une bonne intuition quant à la manière de passer d'un équilibre de Nash où $n-1$ joueurs atteignent leur objectif à un équilibre de Nash où $n$ joueurs atteignent leur objectif. En effet, à partir du dernier état objectif atteint, si $j$ est le joueur qui n'a pas atteint son objectif, il suffit que tous les joueurs s'allient afin d'atteindre un objectif du joueur $j$.\\\textbf{Cette question est dès lors toujours une question ouverte.}
+\\
 
 Nous remarquons que si nous répondons positivement à cette question alors nous rentrons dans les conditions explicitées dans le premier point de la section précédente.
-
-\todo{?}
 
 
 Maintenant, nous nous demandons s'il existe un processus algorithmique qui permet de déterminer si un outcome particulier correspond à l'outcome d'un équilibre de Nash. Dans le cas échéant, nous désirons expliciter ce procédé. Dans la suite de cette section nous répondons positivement à cette question. Nous énonçons d'abord une propriété (propriété~\ref{prop:rechEqpert1}) qui nous permet de déterminer une condition nécessaire et suffisante pour qu'un outcome soit l'outcome d'un certain équilibre de Nash. Toutefois, pour pouvoir effectuer une procédure algorithmique sur les outcomes, il faut que nous trouvions un moyen de représenter ceux-ci car nous travaillons avec des mots infinis. Nous nous convainquons donc par la suite que nous pouvons nous restreindre à l'étude d'équilibres de Nash dont l'outcome est de la forme $\alpha \beta^{\omega}$ où $\alpha$ et $\beta$ sont des mots finis. 

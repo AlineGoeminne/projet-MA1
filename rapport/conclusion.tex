@@ -2,3 +2,9 @@
 
 \section{Conclusion}
 
+Le but de notre travail était de mettre au point un processus algorithmique permettant de trouver le plus rapidement possible un équilibre de Nash pour les jeux sur graphe multijoueurs avec coût et objectif d'atteignabilité. \\
+
+Pour ce faire, un critère permettant de déterminer si un chemin infini dans le graphe du jeu correspond à l'outcome d'une équilibre de Nash a été prouvé par nos soins. Afin de pouvoir appliquer ce critère, la valeur de chaque noeud du jeu, et ce pour chaque jeu où un joueur joue contre la coalition des autres joueurs, est requise. Nous avons donc implémenté une variante de l'algorithme de Dijkstra afin de récupérer ces valeurs. Ensuite, nous nous sommes interrogés sur ce qu'était pour nous la notion d'équilibre de Nash pertinent. Une fois ce concept défini et après avoir réfléchi à la manière d'appliquer notre critère d'équilibre de Nash, un algorithme ne pouvant pas s'exécuter sur un chemin infini, une implémentation et une expérimentation de diverses méthodes de recherches ont été effectées. Nous avons retenu la méthode aléatoire, le breadth-first search, le best-first search associé à une fonction d'évaluation de type $A^*$ et le best-first search initialisé. Enfin, nous avons réalisés quelques tests sur des arènes de jeux particuliers (graphe complet, 2 joueurs, un objectif différent par joueur et fonction de poids du graphe à valeurs dans $[1, 100] \cap \mathbb{N}$). Ces tests nous ont permis de nous convaincre que la méthode $A^*$ était la plus aboutie.\\
+
+
+

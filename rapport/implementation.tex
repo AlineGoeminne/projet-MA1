@@ -51,7 +51,7 @@ Une implémentation de la méthode d'exploration best-first search a également 
 
 Comme pour l'approche précédente, une limite sur le temps d'exécution de l'algorithme peut être paramétrée. De plus, n'importe quelle fonction d'évaluation peut être passée en paramètre afin d'ordonner les noeuds dans la frontière. Dans notre cas, après plusieurs tentatives de fonction d'évaluation peu convaincantes, nous avons effectué nos tests à partir de la fonction d'évaluation correspondant à l'algorithme $A^*$ (cf. section~\ref{subsubsection:aStar}).
 
-\subsubsection*{Best-first-search initialisé}
+\subsubsection*{Best-first search initialisé}
 
 Au lieu de commencer l'exploration à partir du chemin composé uniquement du noeud initial $v_0$, nous avons tenté de guider au mieux le début de la recherche. Pour ce faire nous précédons de la manière suivante: si $o_1$ (resp. $o_2$) est le noeud objectif de $J_1$ (resp. $J_2$) on construit dans un premier temps le chemin le plus court de $v_0$ à $o_1$, si ce chemin n'enfreint pas le critère pour être un équilibre de Nash, alors on lance le best-first search à partir du chemin $v_0 ... o_1$. Si par contre le chemin ainsi constitué enfreint le critère ou si la recherche prend trop temps, on recommence à partir du plus court chemin entre $v_0$ et $o_2$.
 
