@@ -120,26 +120,42 @@
 \null
 
 \setcounter{page}{0}
-
+\addtocontents{toc}{\protect\thispagestyle{empty}}
 \tableofcontents
-\newpage\thispagestyle{empty}
-\null
+
+
+\newpage
+\strut
+\thispagestyle{empty}
+
+\newpage
+\thispagestyle{plain}
+
+
+\setcounter{page}{1}
 
 
 \input{intro}
 \newpage
+\thispagestyle{plain}
 \input{conceptsFondamentaux}
 \newpage
+\thispagestyle{plain}
 \input{jeuxAtt}
 \newpage
 %\input{ProblemesPoses}
 \newpage
+\thispagestyle{plain}
+
 \input{rechEqPert}
 \newpage
+\thispagestyle{plain}
+
 \input{implementation}
 \newpage
+\thispagestyle{plain}
+
 \input{conclusion}
-\newpage
 
 
 

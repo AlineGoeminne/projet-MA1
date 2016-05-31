@@ -1,0 +1,24 @@
+-f******************* 
+ test avec 5 sommets 
+ temps permis pour chaque recherche 30
+A_STAR : 
+Nb EN trouves 100
+temps ecoule 0.277960300446
+----------------------- 
+RANDOM : 
+Nb EN trouves 97
+temps ecoule 113.498395205
+----------------------- 
+INIT BEST : 
+Nb EN trouves 95
+temps ecoule 661.052829266
+----------------------- 
+BREADTH FIRST : 
+Nb EN trouves 100
+temps ecoule 0.539841413498
+----------------------- 
+STAT SUR A_STAR : 
+A_star vs random: meilleur 32 pire 0 pareil :0 equivalent :68 manque tous les deux :0
+A_star vs init : meilleur 9 pire 0 pareil 73 equivalent 18 manque tous les deux 0
+A_star vs breadth first: meilleur 38 pire 0 pareil 62 equivalent 0 manque tous les deux 0
+----------------------- 

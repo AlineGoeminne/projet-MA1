@@ -6,5 +6,18 @@ Le but de notre travail était de mettre au point un processus algorithmique per
 
 Pour ce faire, un critère permettant de déterminer si un chemin infini dans le graphe du jeu correspond à l'outcome d'une équilibre de Nash a été prouvé par nos soins. Afin de pouvoir appliquer ce critère, la valeur de chaque noeud du jeu, et ce pour chaque jeu où un joueur joue contre la coalition des autres joueurs, est requise. Nous avons donc implémenté une variante de l'algorithme de Dijkstra afin de récupérer ces valeurs. Ensuite, nous nous sommes interrogés sur ce qu'était pour nous la notion d'équilibre de Nash pertinent. Une fois ce concept défini et après avoir réfléchi à la manière d'appliquer notre critère d'équilibre de Nash, un algorithme ne pouvant pas s'exécuter sur un chemin infini, une implémentation et une expérimentation de diverses méthodes de recherches ont été effectées. Nous avons retenu la méthode aléatoire, le breadth-first search, le best-first search associé à une fonction d'évaluation de type $A^*$ et le best-first search initialisé. Enfin, nous avons réalisés quelques tests sur des arènes de jeux particuliers (graphe complet, 2 joueurs, un objectif différent par joueur et fonction de poids du graphe à valeurs dans $[1, 100] \cap \mathbb{N}$). Ces tests nous ont permis de nous convaincre que la méthode $A^*$ était la plus aboutie.\\
 
+\subsubsection*{Faiblesses et perspectives d'amélioration}
 
+Certaines questions pour lesquelles nous n'avons pu mener notre réflexion à son terme se sont présentées:
+\begin{itemize}
+	\item[$\bullet$] Existence d'un équilibre de Nash où tous joueurs visitent leur objectif pour les jeux dont le graphe est fortement connexe (question~\ref{qst:1} p.~\pageref{qst:1});
+	\item[$\bullet$] Choix des bornes pour les longueurs et les poids maximum des chemins à tester pour trouver les équilibres (p.~\ref{fig:transfoGraphPoids} et p.60);
+	\item[$\bullet$] Optimalité de la méthode $A^*$ (p. 60).
+\end{itemize}
+
+De plus, la partie implémentation de notre travail visait essentiellement à tester nos approches, arriver à des résultats était donc l'objectif principal. C'est pourquoi, le code proposé gagnerait à être amélioré. En effet, nous gardons parfois en mémoire plus fois les mêmes informations ou calculons des données ayant déjà été calculées au préalable. Un bon compromis temps d'exécution et allocation mémoire doit être étudié. De plus, certains de nos algorithmes ne fonctionnent que si chaque joueur ne possède qu'un seul objectif et que les objectifs de tous les joueurs sont différents.
+
+En outre, nous n'avons eu le temps de n'effectuer que peu de tests. D'autres tests, en se fiant cette fois sur le temps CPU, seraient donc bénéfiques afin de se convaincre de la performance de nos résultats sur un plus grand échantillon de tests. Il serait également intéressant d'étudier le comportement de nos approches sur d'autres types de jeux sur graphe avec coût et objectif d'atteignabilité  (par exemple: plus de deux joueurs, graphe non complet, etc).
+
+Enfin, d'autres types de méthodes que les méthodes d'exploration pourraient être envisageables. Nous pensons, par exemple, à l'application de métaheuristiques telles que le hill-climbing.
 

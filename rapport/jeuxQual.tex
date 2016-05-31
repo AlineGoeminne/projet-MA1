@@ -259,7 +259,6 @@ Terminons en abordant brièvement la complexité de ces algorithmes. Posons $n$ 
 	
 	\item[Algorithme~\ref{algo:attrF}] Supposons que nous utilisons une structure de données telle que l'on puisse récupérer la taille des ensembles en $\mathcal{O}(1)$, alors la complexité de cet algorithme est en $\mathcal{O}(m.n)$. En effet, dans le pire cas on part d'un ensemble $F$ de cardinalité égale à 1 et on ne rajoute qu'un seul élément à la suite $(X_k)_{k \in \mathbb{N}}$ à chaque étape du calcul de $Pre(X_k)$ jusqu'à obtenir un ensemble de cardinalité $n$. Dès lors, dans ce cas on fait appel $n-1$ fois à l'algorithme~\ref{algo:preX} et on obtient bien un algorithme en $\mathcal{O}(m.n)$.
 
-\todo{En fait la condition 6 de l'algorithme joue sur le nombre de fois qu'on rentre dans la boucle while et si on ajoute $n$ éléments à cette ligne on a une complexitée en $\mathcal{O}(n)$. Ajouter au fur et à mesure dans PreX pour éviter ce problème?}
 	
 \end{description}
 

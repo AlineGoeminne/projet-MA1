@@ -1,0 +1,112 @@
+******************* 
+******************* 
+ test avec 5 sommets 
+ temps permis pour chaque recherche 30
+ nb EN trouves 100
+ nbr EN manques 0
+temps ecoule 0.39744591713
+******************* 
+******************* 
+ test avec 6 sommets 
+ temps permis pour chaque recherche 30
+ nb EN trouves 100
+ nbr EN manques 0
+temps ecoule 2.37303590775
+******************* 
+******************* 
+ test avec 7 sommets 
+ temps permis pour chaque recherche 30
+ nb EN trouves 99
+ nbr EN manques 1
+temps ecoule 32.4507260323
+******************* 
+******************* 
+ test avec 8 sommets 
+ temps permis pour chaque recherche 30
+ nb EN trouves 98
+ nbr EN manques 2
+temps ecoule 63.0758440495
+******************* 
+******************* 
+ test avec 9 sommets 
+ temps permis pour chaque recherche 30
+ nb EN trouves 100
+ nbr EN manques 0
+temps ecoule 19.7638521194
+******************* 
+******************* 
+ test avec 10 sommets 
+ temps permis pour chaque recherche 30
+ nb EN trouves 99
+ nbr EN manques 1
+temps ecoule 46.2176058292
+******************* 
+******************* 
+ test avec 11 sommets 
+ temps permis pour chaque recherche 30
+ nb EN trouves 95
+ nbr EN manques 5
+temps ecoule 158.193425179
+******************* 
+******************* 
+ test avec 12 sommets 
+ temps permis pour chaque recherche 30
+ nb EN trouves 99
+ nbr EN manques 1
+temps ecoule 33.8585219383
+******************* 
+******************* 
+ test avec 13 sommets 
+ temps permis pour chaque recherche 30
+ nb EN trouves 98
+ nbr EN manques 2
+temps ecoule 135.713361025
+******************* 
+******************* 
+ test avec 14 sommets 
+ temps permis pour chaque recherche 30
+ nb EN trouves 93
+ nbr EN manques 7
+temps ecoule 242.858203888
+******************* 
+******************* 
+ test avec 15 sommets 
+ temps permis pour chaque recherche 30
+ nb EN trouves 98
+ nbr EN manques 2
+temps ecoule 80.0822088718
+******************* 
+******************* 
+ test avec 16 sommets 
+ temps permis pour chaque recherche 30
+ nb EN trouves 96
+ nbr EN manques 4
+temps ecoule 144.581473827
+******************* 
+******************* 
+ test avec 17 sommets 
+ temps permis pour chaque recherche 30
+ nb EN trouves 94
+ nbr EN manques 6
+temps ecoule 248.380395889
+******************* 
+******************* 
+ test avec 18 sommets 
+ temps permis pour chaque recherche 30
+ nb EN trouves 93
+ nbr EN manques 7
+temps ecoule 258.743710041
+******************* 
+******************* 
+ test avec 19 sommets 
+ temps permis pour chaque recherche 30
+ nb EN trouves 95
+ nbr EN manques 5
+temps ecoule 208.0722332
+******************* 
+******************* 
+ test avec 20 sommets 
+ temps permis pour chaque recherche 30
+ nb EN trouves 92
+ nbr EN manques 8
+temps ecoule 331.206330061
