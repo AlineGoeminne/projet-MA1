@@ -37,7 +37,7 @@ class VertexDijk(object):
 
 class VertexDijkPlayerMin(VertexDijk):
 
-    def __init__(self, id, player=1, key =float("infinity"), min = None, index=0 ):
+    def __init__(self, id, player=1, key=float("infinity"), min = None, index=0 ):
 
         VertexDijk.__init__(self, id, player, key, index)
         self.S = min
@@ -94,14 +94,15 @@ class Successor(object):
     def __lt__(self, other):
         return self.key < other.key
 
-"""
-    Initialise pour chaque noeud du graphe la structure de donnee permettant de tenir a jour la valeur future de Val(v)
-    :param graph : un graph represente par sa liste de predecesseurs
-
-"""
 
 
 def initS(graph, goal):
+
+    """
+        Initialise pour chaque noeud du graphe la structure de donnee permettant de tenir a jour la valeur future de Val(v)
+        :param graph : un graph represente par sa liste de predecesseurs
+
+    """
 
     vertices = graph.vertex
 
@@ -153,6 +154,7 @@ def relaxation(p, s, w, Q, goal):
     """
     Relaxation du predecesseur p de s sachant que l arc (p,s) est des poids w
     """
+
     if(s.player == 1) or (s.id in goal):
         sVal = s.S.key
 
@@ -187,8 +189,6 @@ def block_max(s,Q):
 
     Q.heap_increase_key(s.index, new_min.key, True)
     s.nbrSucc -= 1
-
-    # vu que pas besoin de retrouver les strategies optimales dans mon cas, je ne stocke pas les arcs deja bloques
 
     s.blocked.add(blocked.id)
 
@@ -262,12 +262,9 @@ def print_result(T, goal, succ):
 def get_succ_in_opti_strat(T, goal, succ):
 
     successor = [0]* len(T)
-
     for v in T:
 
-
         if v.player == 1 or v.id in goal:
-
 
             res = v.S.id
             if res is not None:
@@ -308,150 +305,3 @@ def get_all_values(T):
         tab[i.id] = i.key
 
     return tab
-
-
-
-
-
-# ******
-# tests
-# ******
-
-
-
-
-def test():
-
-    v1 = VertexDijk(1, 1, 4)
-    v2 = VertexDijk(2, 1, 7)
-    v3 = VertexDijk(3, 1, 12)
-    v4 = VertexDijk(4, 1, 2)
-
-    tas = MinHeap()
-
-    tas.insertion(v1,True)
-    tas.insertion(v2,True)
-    tas.insertion(v3,True)
-    tas.insertion(v4,True)
-
-    vnew = 0
-    tas.heap_decrease_key(v3.index, vnew, True)
-
-    print tas
-    print "index v3", v3.index
-    print "index v1", v1.index
-    print "index v2", v2.index
-    print "index v4", v4.index
-
-    tas.heap_increase_key(v1.index, 4, True)
-    print tas
-    print "index v3", v3.index
-    print "index v1", v1.index
-    print "index v2", v2.index
-    print "index v4", v4.index
-
-def test2():
-    v0 = Vertex(0, 2)
-    v1 = Vertex(1, 1)
-    v2 = Vertex(2, 2)
-    v3 = Vertex(3, 1)
-    v4 = Vertex(4, 1)
-    v5 = Vertex(5, 2)
-    v6 = Vertex(6, 1)
-    v7 = Vertex(7, 2)
-
-    vertices = [v0, v1, v2, v3, v4, v5, v6, v7]
-
-    pred0 = [(0, 1), (1, 1), (2, 1), (3, 5)]
-    pred1 = [(2, 1)]
-    pred2 = [(3, 1), (4, 5)]
-    pred3 = [(4, 1)]
-    pred4 = [(5, 1)]
-    pred5 = []
-    pred6 = [(5, 1), (7, 1)]
-    pred7 = [(5, 1)]
-
-    list_pred = [pred0, pred1, pred2, pred3, pred4, pred5, pred6, pred7]
-
-    graph = Graph(vertices, None,list_pred, None)
-    goal = set([0])
-
-    T = dijkstraMinMax(graph, goal)
-    print_result(T, goal)
-
-def test_index_mis_a_jour():
-
-    tas = MinHeap()
-
-    v0 = VertexDijk(0, 1, 42)
-    tas.insertion(v0, True)
-
-    v1 = VertexDijk(1, 1, 3)
-    tas.insertion(v1, True)
-
-    v2 = VertexDijk(2, 1, 50)
-    tas.insertion(v2, True)
-
-    tas.delete_min(True)
-
-    v4 = VertexDijk(4, 1, 43)
-
-    tas.insertion(v4, True)
-
-
-    print tas
-    print "index de V0 ", v0.index
-    print "index de V1", v1.index
-    print "index de V2", v2.index
-    print "index de V4", v4.index
-
-def insertion_tas_sans_index():
-
-    tas1 = MinHeap()
-    tas2 = MinHeap()
-
-    tas1.tab = [42]
-
-    print tas1
-    print tas2
-
-   # super test sur un jeu maintenant
-
-    v0 = VertexDijkPlayerMax(0,0)
-    print v0.S is None
-
-    pred = [[]]
-    graph = Graph([v0], None, pred, None)
-    initS(graph, set([1]))
-    print v0.S.tab
-    print v0.S
-
-
-def test3(): # comportement bizarre avec ou sans none , si je mets tab = []
-    heap = MinHeap([1, 2, 3], 3)
-    heap.insertion(4)
-    heap2 = MinHeap()
-    print heap
-    print heap2.tab
-
-    v0 = VertexDijkPlayerMax(0, 0)
-    print v0.S is None
-    v1 = VertexDijkPlayerMax(1, 0)
-    print v1.S is None
-
-    pred = [[],[]]
-    graph = Graph([v0, v1], None, pred, None)
-    initS(graph, set([2]))
-    print v0.S.tab
-    print v0.S
-    v0.S.insertion(Successor(2, 42))
-    print v0.S.tab
-    print v0.S
-    print v1.S.tab
-    print v1.S
-
-
-
-
-if __name__ == "__main__":
-    test3()

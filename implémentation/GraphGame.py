@@ -12,6 +12,7 @@ from DijkstraMinMax import convertPred2NbrSucc
 from DijkstraMinMax import get_all_values
 from DijkstraMinMax import print_result
 from DijkstraMinMax import get_succ_in_opti_strat
+
 class ArenaError(Exception):
     def __init__(self, value):
         self.value = value
@@ -76,7 +77,7 @@ class Graph(object):
         self.mat = mat
         self.pred = pred
         self.succ = succ
-        self.max_weight= max_weight
+        self.max_weight = max_weight
 
     @staticmethod
     def generate_complete_graph(nbr_vertex, type, a, b):
@@ -151,14 +152,13 @@ class Graph(object):
 
 
         else:
-            # TODO : est-ce bien un ValueError qui est adequat?
             raise ValueError()
 
 
     @staticmethod
     def matrix_to_list_succ(mat):
 
-        "Transforme une matrice d'adjancence en liste de successeurs"
+        "Transforme une matrice d'adjacence en liste de successeurs"
 
         if len(mat) != len(mat[0]):
             raise ArenaError("La matrice d'adjacence n'est pas carree")
@@ -286,7 +286,6 @@ class Node(object):
 
 
     def __eq__(self, other):
-
         return self.value == other
 
     def __ge__(self, other):
@@ -306,14 +305,6 @@ class Node(object):
         return str
 
 
-class Node_restart_search(Node):
-
-    def __init__(self, current, parent, eps, cost, value = float("infinity"), blocked = set([])):
-
-        Node.__init__(self, current, parent, eps, cost, value)
-        self.blocked = blocked
-
-
 
 # ------------------
 # Class ReachabilityGame
@@ -322,14 +313,13 @@ class Node_restart_search(Node):
 
 class ReachabilityGame(object):
 
-    def __init__(self, player, graph, init, goal, partition, dic):
+    def __init__(self, player, graph, init, goal, partition):
 
         self.player = player   # nbr de joueurs
         self.graph = graph     # graphe represantant le jeu
         self.init = init       # noeud initial du jeu
         self.goal = goal       # tab avec pour chaque joueur ensemble des noeuds objectifs
         self.part = partition  # tab avec pour chaque joueur ensemble des noeuds lui appartenant
-        self.id_to_player = dic #dictionnaire permettant a partir de l ID d un noeud de retrouver son joueur
 
     def get_vertex_player(self, id_player):
 
@@ -340,8 +330,7 @@ class ReachabilityGame(object):
 
     def is_a_goal(self, v):
 
-        # TODO : ici je considere que les ensembles objectifs sont disjoints
-
+        # /!\ ici on suppose que les ensembles Goal_i sont disjoints
         """
         Teste si le noeud teste correspond a un etat objectif.
         Si oui renvoie (True, player) ou player est le joueur ayant atteint son objectif
@@ -385,12 +374,10 @@ class ReachabilityGame(object):
     @staticmethod
     def generate_vertex_player_uniform(nbr_player, nbr_vertex):
 
-        #todo: id_to_player inutile
 
         player_univers = range(1,nbr_player+1)
         vertex = []
         partition = []
-        id_to_player = {}
 
         for i in range(0, nbr_player):
             partition.append(set())
@@ -399,27 +386,32 @@ class ReachabilityGame(object):
             player = random.choice(player_univers)
             v = Vertex(i, player)
             vertex.append(v)
-            id_to_player[i] = player
             partition[player-1].add(i)
 
-        return vertex, partition, id_to_player
+        return vertex, partition
 
     @staticmethod
     def generate_game(nbr_player, nbr_vertex, init, goal, a, b):
 
-        """
-        init est l'ID du sommet initial
+
         """
 
-        #todo: dic inutile
+        :param nbr_player: nombre de joueurs dans le jeu
+        :param nbr_vertex: nombre de sommets du jeu
+        :param init: index du sommet initial
+        :param goal: objectif pour chaque joueur
+        :param a: poids min sur les arcs du graphe
+        :param b: poids max sur les arcs du graphe
+        :return: un jeu  dont le graphe est genere aleatoirement
+        """
 
         pred = Graph.generate_complete_graph(nbr_vertex,"pred", a, b)
         succ = Graph.list_pred_to_list_succ(pred)
-        (vertex, partition, dic) = ReachabilityGame.generate_vertex_player_uniform(nbr_player, nbr_vertex)
+        (vertex, partition) = ReachabilityGame.generate_vertex_player_uniform(nbr_player, nbr_vertex)
 
-        graph = Graph(vertex, None, pred, succ)
+        graph = Graph(vertex, None, pred, succ, b)
 
-        return ReachabilityGame(nbr_player, graph, graph.vertex[init], goal, partition, dic)
+        return ReachabilityGame(nbr_player, graph, graph.vertex[init], goal, partition)
 
 
 
@@ -436,7 +428,7 @@ class ReachabilityGame(object):
         for i in range(0,length - 1):
             list_succ_current = self.graph.succ[current.id]
             (succ, weight) = random.choice(list_succ_current)
-            current = Vertex(succ, self.id_to_player[succ])
+            current = Vertex(succ, self.graph.vertex[succ].player)
             path.append(current)
         return path
 
@@ -465,6 +457,10 @@ class ReachabilityGame(object):
 
         """
         A partir d'un graphe, modelise le graphe du jeu min-max tel que le joueur voulant minimiser est min_player
+        :param grap: un graphe
+        :param min_player: le joueur que l on veut transformer en joueur Min
+        :return  le graphe du jeu Min Max ou le joueur min_player est le joueur Max, les autres joueurs sont rassembles
+        en une coalition
 
         """
 
@@ -523,26 +519,6 @@ class ReachabilityGame(object):
 
     def breadth_first_search(self, first=True, allowed_time= float("infinity")):
 
-        mon_fichier = open("test_breadth.txt", "w")
-        mon_fichier.write("************************** \n")
-        parcours = open("parcours_breadth.txt", "w")
-        result = open("result_breadth_first_search.txt", "w")
-        result.write("info sur le jeu : \n")
-        result.write(Graph.mat_to_string(Graph.list_succ_to_mat(self.graph.succ)))
-        result.write("\n")
-        result.write("nombres de noeuds :" + repr(len(self.graph.vertex)))
-        result.write("\n")
-        result.write("noeud initial : v" + repr(self.init.id))
-        result.write("\n")
-        result.write("objectifs :" + repr(self.goal))
-        result.write("\n")
-        result.write("partitions :" + repr(self.part))
-        result.write("\n")
-        result.write("temps permis: " + repr(allowed_time))
-
-        result.write("\n")
-        result.write("\n")
-
         start = time.time()
 
         max_length = self.compute_max_length()
@@ -566,38 +542,17 @@ class ReachabilityGame(object):
         while True and time.time() - start < allowed_time:
 
             if len(frontier) == 0:
-                mon_fichier.close()
-                parcours.close()
-                result.close()
                 raise BestFirstSearchError(" Plus d'elements dans la frontiere")
 
             candidate_node = frontier.pop(0)
             candidate_path = candidate_node.current
 
-            mon_fichier.write("pop : ")
-            mon_fichier.write(str(ReachabilityGame.path_vertex_to_path_index(candidate_path)))
-            mon_fichier.write("\n")
-
-            parcours.write(str(ReachabilityGame.path_vertex_to_path_index(candidate_path)))
-            parcours.write("------->")
-            parcours.write(str(candidate_node.value))
-            parcours.write("\n")
 
             if len(candidate_node.cost) == self.player:
-                parcours.write("j'ai trouve un EN : ")
-                parcours.write(str(candidate_path))
-                parcours.write("\n")
-
-                result.write("j'ai trouve un EN : ")
-                result.write(str(candidate_path))
-                result.write("\n")
 
 
                 # Alors on sait qu'il s'agit d'un equilibre de Nash car tous les cost ont ete initialises
                 if first:
-                    parcours.close()
-                    result.close()
-                    mon_fichier.close()
                     return candidate_path
                 else:
                     res.append(candidate_path)
@@ -608,19 +563,7 @@ class ReachabilityGame(object):
 
                 (nash, coalition) = self.is_a_Nash_equilibrium(candidate_path, candidate_node.cost.keys())
                 if nash:
-                    parcours.write("j'ai trouve un EN : ")
-                    parcours.write(str(candidate_path))
-                    parcours.write("\n")
-
-                    result.write("j'ai trouve un EN : ")
-                    result.write(str(candidate_path))
-                    result.write("\n")
-
-
                     if first:
-                        parcours.close()
-                        result.close()
-                        mon_fichier.close()
                         return candidate_path
                     else:
                         res.append(candidate_path)
@@ -643,20 +586,12 @@ class ReachabilityGame(object):
                     succ_vertex = self.graph.vertex[succ]
                     new_path.append(succ_vertex)
 
-                    mon_fichier.write(str(ReachabilityGame.path_vertex_to_path_index(new_path)))
 
                     (goal, player) = self.is_a_goal(succ_vertex)
 
                     if goal and player not in candidate_node.cost:
-                        mon_fichier.write("nouvel objectif atteint pour " + str(player))
-                        mon_fichier.write("\n")
 
                         (nash, coalitions) = self.is_a_Nash_equilibrium_one_player(new_path, player)
-
-                        mon_fichier.write("pour le moment je respecte les conditions d' etre un EN :")
-
-                        mon_fichier.write(str(nash))
-                        mon_fichier.write("\n")
 
                         if nash:
                             new_cost = copy.deepcopy(candidate_node.cost)
@@ -665,24 +600,12 @@ class ReachabilityGame(object):
                             new_node = Node(new_path, candidate_node, epsilon, new_cost)
 
                             frontier.append(new_node)
-                            mon_fichier.write("frontiere :")
-                            mon_fichier.write(str(frontier))
-                            mon_fichier.write("\n")
 
                     else:
 
                         new_node = Node(new_path, candidate_node, epsilon, candidate_node.cost)
                         frontier.append(new_node)
-                        mon_fichier.write("border :")
-                        mon_fichier.write(str(frontier))
-                        mon_fichier.write("\n")
 
-        mon_fichier.close()
-        parcours.close()
-        result.write("Calcul stoppe")
-        result.write("\n")
-        result.write("**********************")
-        result.close()
         return res
 
 
@@ -696,27 +619,6 @@ class ReachabilityGame(object):
             all_dijk = self.compute_all_dijkstra()
         else:
             all_dijk = None
-
-        mon_fichier = open("test.txt", "w")
-        mon_fichier.write("************************** \n")
-        parcours = open("parcours_best.txt", "w")
-        result = open("result_best_first_search.txt", "w")
-        result.write("info sur le jeu : \n")
-        result.write(Graph.mat_to_string(Graph.list_succ_to_mat(self.graph.succ)))
-        result.write("\n")
-        result.write("nombres de noeuds :" +repr(len(self.graph.vertex)))
-        result.write("\n")
-        result.write("noeud initial : v" + repr(self.init.id))
-        result.write("\n")
-        result.write("objectifs :" + repr(self.goal))
-        result.write("\n")
-        result.write("partitions :" + repr(self.part))
-        result.write("\n")
-        result.write("temps permis: " +repr(allowed_time))
-
-        result.write("\n")
-        result.write("\n")
-
 
         start = time.time()
 
@@ -739,33 +641,13 @@ class ReachabilityGame(object):
         while True and time.time() - start < allowed_time:
 
             if len(frontier) == 0:
-                mon_fichier.close()
                 raise BestFirstSearchError(" Plus d'elements dans la frontiere")
 
             candidate_node = heapq.heappop(frontier)
             candidate_path = candidate_node.current
 
-            mon_fichier.write("pop : ")
-            mon_fichier.write(str(ReachabilityGame.path_vertex_to_path_index(candidate_path)))
-            mon_fichier.write("\n")
-
-            parcours.write(str(ReachabilityGame.path_vertex_to_path_index(candidate_path)))
-            parcours.write("------->")
-            parcours.write(str(candidate_node.value))
-            parcours.write("\n")
-
             if len(candidate_node.cost) == self.player:
-                parcours.write("j'ai trouve un EN : ")
-                parcours.write(str(candidate_path))
-                parcours.write("\n")
 
-                result.write("j'ai trouve un EN : ")
-                result.write(str(candidate_path))
-                result.write("\n")
-
-                parcours.close()
-                result.close()
-                mon_fichier.close()
                 #Alors on sait qu'il s'agit d'un equilibre de Nash car tous les cost ont ete initialises
                 return candidate_path
 
@@ -775,17 +657,7 @@ class ReachabilityGame(object):
 
                 (nash,coalition) = self.is_a_Nash_equilibrium(candidate_path, candidate_node.cost.keys())
                 if nash:
-                    parcours.write("j'ai trouve un EN : ")
-                    parcours.write(str(candidate_path))
-                    parcours.write("\n")
 
-                    result.write("j'ai trouve un EN : ")
-                    result.write(str(candidate_path))
-                    result.write("\n")
-
-                    parcours.close()
-                    result.close()
-                    mon_fichier.close()
                     return candidate_path
 
             else: #len(candidate_path) < max_length et len(candidate_node.cost) != self.player
@@ -805,21 +677,12 @@ class ReachabilityGame(object):
 
                     succ_vertex = self.graph.vertex[succ]
                     new_path.append(succ_vertex)
-                    mon_fichier.write(str(ReachabilityGame.path_vertex_to_path_index(new_path)))
 
                     (goal, player) = self.is_a_goal(succ_vertex)
 
                     if goal and player not in candidate_node.cost:
-                        mon_fichier.write("nouvel objectif atteint pour "+str(player))
-                        mon_fichier.write("\n")
 
                         (nash, coalitions) = self.is_a_Nash_equilibrium_one_player(new_path, player)
-
-
-                        mon_fichier.write("pour le moment je respecte les conditions d' etre un EN :")
-
-                        mon_fichier.write(str(nash))
-                        mon_fichier.write("\n")
 
                         if nash:
 
@@ -827,36 +690,16 @@ class ReachabilityGame(object):
                             new_cost[player] = epsilon
                             value = heuristic(self, new_cost,epsilon, len(new_path), succ_vertex, all_dijk)
 
-                            mon_fichier.write("valeur du nouveau chemin :")
-                            mon_fichier.write(str(value))
-                            mon_fichier.write("\n")
-
-
                             new_node = Node(new_path, candidate_node, epsilon, new_cost, value)
 
                             heapq.heappush(frontier, new_node)
-                            mon_fichier.write("frontiere :")
-                            mon_fichier.write(str(frontier))
-                            mon_fichier.write("\n")
 
                     else:
                         value = heuristic(self, candidate_node.cost,epsilon, len(new_path), succ_vertex, all_dijk)
-                        mon_fichier.write("valeur du chemin : ")
-                        mon_fichier.write(str(value))
-                        mon_fichier.write("\n")
 
                         new_node = Node(new_path, candidate_node, epsilon, candidate_node.cost, value)
                         heapq.heappush(frontier, new_node)
-                        mon_fichier.write("border :")
-                        mon_fichier.write(str(frontier))
-                        mon_fichier.write("\n")
 
-        mon_fichier.close()
-        parcours.close()
-        result.write("Calcul stoppe")
-        result.write("\n")
-        result.write("**********************")
-        result.close()
         return
 
     def compute_all_dijkstra(self):
@@ -1011,8 +854,6 @@ class ReachabilityGame(object):
                 succ = self.graph.vertex[successor[path[-1].id]]
                 path.append(succ)
 
-
-
                 if succ.id == goal_id:
                     goal_is_reached = True
 
@@ -1064,14 +905,10 @@ class ReachabilityGame(object):
 
     def best_first_search_with_init_path_both_two_aux(self, evaluation, goal, allowed_time=float("infinity")):
 
-
         if evaluation is ReachabilityGame.a_star:
             all_dijk = self.compute_all_dijkstra()
         else:
             all_dijk = None
-
-
-
 
         (is_goal,player) = self.is_a_goal(goal)
         path = self.init_search_goal(goal)
@@ -1133,7 +970,7 @@ class ReachabilityGame(object):
         reach_goals = set()
         (goal, player) = self.is_a_goal(path[0])
         if goal:
-            cost[player-1] = weight
+            cost[player] = weight
             reach_goals_player.add(player)
             reach_goals.add(path[0].id)
 
@@ -1447,7 +1284,7 @@ class ReachabilityGame(object):
         print "Matrice d'adjacence"
         mat = Graph.list_succ_to_mat()
         string = Graph.mat_to_string(mat)
-        print mat
+        print string
 
 
 
@@ -1589,236 +1426,59 @@ def test_succ_to_mat():
 
     print string
 
-def test_restart():
-    mat = [[0, 6, 4, 4, 5],[7, 0, 4, 1, 10],[5, 1, 0, 3, 10],[7, 1, 1, 0, 8],[6, 3, 1, 4, 0]]
 
-    list_pred = Graph.matrix_to_list_pred(mat)
-    list_succ = Graph.list_pred_to_list_succ(list_pred)
 
-    v0 = Vertex(0, 2)
-    v1 = Vertex(1, 2)
-    v2 = Vertex(2, 1)
-    v3 = Vertex(3, 1)
-    v4 = Vertex(4, 1)
 
-    vertex = [v0, v1, v2, v3, v4]
 
-    graph = Graph(vertex, mat, list_pred, list_succ, 10)
 
-    goals = [set([4]), set([0])]
 
-    game = ReachabilityGame(2, graph, v3, goals, None, {0:2, 1:2, 2:1, 3:1, 4:1})
+def generate_vertex_uniform():
 
-    res = game.restart_best_first_search(ReachabilityGame.heuristic, 5)
+    vertex,partition = ReachabilityGame.generate_vertex_player_uniform(4, 5)
+    for v in vertex:
+        print "sommet v"+str(v.id)+" joueur :" + str(v.player)
+    print "vertex ",vertex
+    print "partition ", partition
 
-    res2 = game.best_first_search_with_init_path(ReachabilityGame.heuristic, 5)
 
-    result = game.test_random_path(100, (game.player + 1) * game.graph.max_weight * len(game.graph.vertex))
+def test():
+    v0 = Vertex(0,2)
+    v1 = Vertex(1,2)
+    v2 = Vertex(2,1)
+    v3 = Vertex(3,1)
+    v4 = Vertex(4,3)
+    v5 = Vertex(5,1)
+    v6 = Vertex(6,1)
+    v7= Vertex(7,2)
+    v8 = Vertex(8,2)
+    v9 = Vertex(9,1)
 
-    print  str(res)
-    print "  "
-    print str(res2)
-    print "  "
+    vertex = [v0, v1, v2, v3, v4, v5, v6, v7, v8, v9]
 
+    pred0 = [(1,20)]
+    pred1 = []
+    pred2 =[]
+    pred3 = []
+    pred4 = []
+    pred5 = []
+    pred6 = []
+    pred7 =[]
+    pred8 = []
+    pred9 = []
 
-    for r in result:
-        print r
+    list_pred = [pred0, pred1, pred2, pred3, pred4, pred5, pred6, pred7, pred8, pred9]
+    graph = Graph(vertex, None, list_pred, None, 20)
 
-def test_restart_2():
-    mat = [ [0, 2, 3, 5, 5],[2, 0, 7, 7, 2],[10, 6, 0, 1, 9],[9, 3, 2, 0, 7], [10, 6, 8, 5, 0]]
-    list_pred = Graph.matrix_to_list_pred(mat)
-    list_succ = Graph.list_pred_to_list_succ(list_pred)
 
-    v0 = Vertex(0, 1)
-    v1 = Vertex(1, 1)
-    v2 = Vertex(2, 1)
-    v3 = Vertex(3, 1)
-    v4 = Vertex(4, 1)
+    goal = [{0},{1}]
 
-    vertex = [v0, v1, v2, v3, v4]
+    game = ReachabilityGame(2, graph, v1, goal, None)
 
-    graph = Graph(vertex, mat, list_pred, list_succ, 10)
+    path = [v1, v0]
 
-    goals = [set([0]), set([4])]
+    cost = game.cost_for_all_players(path)
+    print cost
 
-    game = ReachabilityGame(2, graph, v3, goals, None, {0: 1, 1: 1, 2: 1, 3: 1, 4: 1})
-
-    res = game.restart_best_first_search(ReachabilityGame.heuristic, 5)
-
-    #res2 = game.best_first_search_with_init_path(ReachabilityGame.heuristic, 5)
-
-    #result = game.test_random_path(100, (game.player + 1) * game.graph.max_weight * len(game.graph.vertex))
-
-
-
-    #print game.is_a_Nash_equilibrium(path)
-
-    print  str(res)
-    print "  "
-    #print str(res2)
-    print "  "
-
-
-
-def a_star_test1():
-    mat = [[0, 7, 9, 5, 4],[5, 0, 2, 9, 3],[6, 4, 0, 9, 3],[2, 7, 2, 0, 10],[8, 9, 7, 3, 0]]
-
-    list_pred = Graph.matrix_to_list_pred(mat)
-    list_succ = Graph.list_pred_to_list_succ(list_pred)
-
-    v0 = Vertex(0, 1)
-    v1 = Vertex(1, 2)
-    v2 = Vertex(2, 2)
-    v3 = Vertex(3, 2)
-    v4 = Vertex(4, 2)
-
-    vertex = [v0, v1, v2, v3, v4]
-
-    graph = Graph(vertex, mat, list_pred, list_succ, 10)
-
-    goals = [{0}, {4}]
-
-    game = ReachabilityGame(2, graph, v3, goals, None, {0: 1, 1: 2, 2: 2, 3: 2, 4: 2})
-
-    a_star = game.best_first_search(ReachabilityGame.a_star, None, 5)
-    init = game.best_first_search_with_init_path_both_two(ReachabilityGame.a_star, 5)
-    candidate = game.best_first_search(ReachabilityGame.short_path_evaluation, None, 5)
-    first = game.breadth_first_search()
-    breadth = game.breadth_first_search(False, 1)
-    breadth_result = game.filter_best_result(breadth)
-
-    random = game.test_random_path(100, game.compute_max_length())
-    random_result = game.filter_best_result(random)
-
-
-    if a_star is not None:
-
-        print "A_star :", str(a_star)
-        (nash1, coal) = game.is_a_Nash_equilibrium(a_star)
-        print "Est un EN? ", nash1
-        (cout, atteint) = game.get_info_path(a_star)
-        print "Information sur l'outcome : \nCout pour chaque joueur: ", cout, " joueurs ayant atteint leur objectif ", atteint
-        print"\n"
-    else:
-        print "A_star a echoue"
-
-    if random_result is not None:
-        print "Random : ", str(random_result)
-        (nash2, coal) = game.is_a_Nash_equilibrium(random_result)
-        print "Est un EN? ", nash2
-        (cout, atteint) = game.get_info_path(random_result)
-        print "Information sur l'outcome :\nCout pour chaque joueur: ", cout, " joueur ayant atteint leur objectif ", atteint
-        print"\n"
-    else :
-        print "Random result a echoue"
-
-
-    if candidate is not None:
-        print "Best-first search shortest_path ", str(candidate)
-        (nash3, coal) = game.is_a_Nash_equilibrium(candidate)
-        print "Est un EN? ", nash3
-        (cout, atteint) = game.get_info_path(candidate)
-        print "Information sur l'outcome : \nCout pour chaque joueur: ", cout, " joueurs ayant atteint leur objectif ", atteint
-        print"\n"
-    else: "Best first search shortest path a echoue"
-
-    if init is not None:
-        print "Init best-first search ", str(init)
-        (nash4, coal) = game.is_a_Nash_equilibrium(init)
-        print "Est un EN? ", nash4
-        (cout, atteint) = game.get_info_path(init)
-        print "Information sur l'outcome : \nCout pour chaque joueur: ", cout, " joueurs ayant atteint leur objectif ", atteint
-        print"\n"
-    else :
-        print "Init best-first search a echoue"
-
-    if first is not None:
-        print "Breadth-first search first", str(first)
-        (nash5, coal) = game.is_a_Nash_equilibrium(first)
-        print "Est un EN? ", nash5
-        (cout, atteint) = game.get_info_path(first)
-        print "Information sur l'outcome : \nCout pour chaque joueur: ", cout, " joueurs ayant atteint leur objectif ", atteint
-        print"\n"
-    else:
-        print "Breadth-girst search first a echoue"
-
-    if breadth_result is not None:
-
-        print "Breadth-first search multi", str(breadth_result)
-        (nash6, coal) = game.is_a_Nash_equilibrium(breadth_result)
-        print "Est un EN? ", nash6
-        (cout, atteint) = game.get_info_path(breadth_result)
-        print "Information sur l'outcome : \nCout pour chaque joueur: ", cout, " joueurs ayant atteint leur objectif ", atteint
-        print"\n"
-    else:
-        print "Breadth first search multi a echoue"
-
-
-
-
-def a_star_test2():
-    mat = [[0, 9, 3, 3, 5],[3, 0, 3, 9, 1],[9, 8, 0, 10, 1],[8, 6, 3, 0, 8],[4, 4, 9, 4, 0]]
-
-    list_pred = Graph.matrix_to_list_pred(mat)
-    list_succ = Graph.list_pred_to_list_succ(list_pred)
-
-    v0 = Vertex(0, 1)
-    v1 = Vertex(1, 2)
-    v2 = Vertex(2, 2)
-    v3 = Vertex(3, 2)
-    v4 = Vertex(4, 1)
-
-    vertex = [v0, v1, v2, v3, v4]
-
-    graph = Graph(vertex, mat, list_pred, list_succ, 10)
-
-    goals = [{1}, {0}]
-
-    game = ReachabilityGame(2, graph, v3, goals, None, {0: 1, 1: 2, 2: 2, 3: 2, 4: 2})
-
-    res = game.best_first_search(ReachabilityGame.a_star,None, 5)
-
-    print "a_star", str(res)
-    print "EN ? ", game.is_a_Nash_equilibrium(res)
-
-    res2 = game.best_first_search_with_init_path_both_two(ReachabilityGame.a_star, 5)
-
-    print "both-two ", str(res2)
-    print "En? ", game.is_a_Nash_equilibrium(res2)
-
-def super_bug():
-    mat = [[0, 7, 9, 5, 4], [5, 0, 2, 9, 3], [6, 4, 0, 9, 3], [2, 7, 2, 0, 10], [8, 9, 7, 3, 0]]
-
-    list_pred = Graph.matrix_to_list_pred(mat)
-    list_succ = Graph.list_pred_to_list_succ(list_pred)
-
-    v0 = Vertex(0, 1)
-    v1 = Vertex(1, 2)
-    v2 = Vertex(2, 2)
-    v3 = Vertex(3, 2)
-    v4 = Vertex(4, 2)
-
-    vertex = [v0, v1, v2, v3, v4]
-
-    graph = Graph(vertex, mat, list_pred, list_succ, 10)
-
-    goals = [{0}, {4}]
-
-    game = ReachabilityGame(2, graph, v3, goals, None, {0: 1, 1: 2, 2: 2, 3: 2, 4: 2})
-
-    path =[v3, v0, v4, v3, v0, v1, v3, v2, v1, v2, v4, v1, v2, v3, v2, v0, v4, v0, v2, v1, v2, v1, v0, v1, v4, v1, v3, v0, v3, v4, v1, v3, v4, v2, v3, v0, v3, v4, v0, v3, v1, v3, v0, v1, v2, v1, v4, v3, v1, v3, v1, v4, v1, v4, v1, v2, v3, v1, v2, v0, v3, v4, v0, v3, v2, v0, v2, v3, v1, v2, v4, v3, v0, v1, v0, v3, v0, v1, v0, v2, v3, v2, v4, v1, v0, v1, v4, v3, v0, v3, v0, v3, v4, v2, v0, v2, v3, v2, v3, v1, v2, v1, v3, v2, v3, v1, v4, v0, v3, v1, v0, v4, v0, v2, v4, v0, v4, v3, v1, v2, v0, v3, v0, v1, v2, v4, v3, v4, v0, v2, v3, v0, v3, v4, v0, v2, v0, v4, v3, v1, v2, v0, v1, v3, v0, v1, v4, v3, v1, v3, v0, v3, v1, v4, v0, v3, v0, v2, v3, v2, v1, v2, v0, v4, v3, v0, v2, v0, v2, v4, v2, v0, v4, v0, v2, v4, v3, v4, v0, v2, v1, v0, v4, v1, v4, v3, v0, v1, v0, v4, v2, v3, v0, v4, v2, v1, v4, v1, v4, v0, v2, v4, v1, v0, v2, v4, v3, v4, v3, v2, v0, v2, v3, v1, v3, v4, v1, v4, v2, v1, v2, v1, v0, v4, v0, v1, v0, v3, v0, v2, v1, v2, v0, v3, v1, v2, v1, v0, v2, v1, v4, v3, v4, v3, v2, v0, v1, v3, v1, v3, v2, v4, v1, v4, v3, v4, v1, v3, v1, v2, v4, v1, v3, v0, v4, v0, v3, v2, v3, v4, v0, v1, v3, v1, v3, v2, v3, v1, v0, v3, v4, v1, v0, v2, v3, v2, v4, v0, v3, v0, v3, v1, v4, v0, v2, v4, v2]
-    random = game.test_random_path(100, game.compute_max_length())
-    random_result = game.filter_best_result(random)
-
-    if random_result is not None:
-        print "Random : ", str(random_result)
-        (nash2, coal) = game.is_a_Nash_equilibrium(random_result)
-        print "Est un EN? ", nash2
-        (cout, atteint) = game.get_info_path(random_result)
-        print "Information sur l'outcome :\nCout pour chaque joueur: ", cout, " joueur ayant atteint leur objectif ", atteint
-        print"\n"
-    else:
-        print "Random result a echoue"
 
 if __name__ == '__main__':
 
@@ -1830,6 +1490,9 @@ if __name__ == '__main__':
 
     #test_real_dijkstra()
 
-    #test_restart_2()
     #a_star_test1()
-    super_bug()
+    #a_star_test2()
+
+    #generate_vertex_uniform()
+
+    test()

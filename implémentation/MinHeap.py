@@ -160,7 +160,7 @@ class MinHeap(object):
             if modeInd:
                 self.tab[0].index = 0
             self.size -= 1
-            del (self.tab[self.size])  #TODO: necessaire?
+            del (self.tab[self.size])
 
             self.heapify(0, modeInd)
 
@@ -215,50 +215,6 @@ class MinHeap(object):
         return ret
 
 
-
-def test():
-
-        tas = MinHeap([4, 6, 4, 7, 9, 5, 9, 10, 11], 9)
-        pere = tas.find_index_father(1)
-        filsgauche = tas.find_index_l_son(1)
-        filsdroit = tas.find_index_r_son(1)
-        #tas.insertion(10)
-        min = tas.delete_min()
-        print tas
-        min = tas.delete_min()
-        print tas
-        min = tas.delete_min()
-        print tas
-        min = tas.delete_min()
-        print tas
-        min = tas.delete_min()
-        print tas
-        min = tas.delete_min()
-        print tas
-        min = tas.delete_min()
-        print tas
-        min = tas.delete_min()
-        print tas
-        min = tas.delete_min()
-        print tas
-        print tas.is_empty()
-
-        print "min ", min
-        print "size ",tas.size
-        print tas
-
-
-        tas.insertion(4)
-        print tas
-        tas.insertion(43)
-        print tas
-        tas.delete_min()
-        print tas
-
-
-
-if __name__=='__main__':
-    test()
 
 
 
