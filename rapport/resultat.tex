@@ -77,11 +77,11 @@ Joueurs ayant atteint leur objectif  [1, 2]
 \end{code}
 
 
-Nous remarquons que pour les deux outcomes trouvés les deux joueurs atteignent leur objectif et que la somme de leur coût est de 5. Ils sont donc équivalent du point de vue de notre test de pertinence. De plus, si la méthode random est lancée une nouvelle fois, le même outcome que pour l'algorithme $A^*$ est retourné. \\
+Nous remarquons que pour les deux outcomes trouvés les deux joueurs atteignent leur objectif et que la somme de leur coût est de 5. Ils sont donc équivalents du point de vue de notre test de pertinence. De plus, si la méthode random est lancée une nouvelle fois, le même outcome que pour l'algorithme $A^*$ est retourné. \\
 
 \noindent \textbf{Deuxième exemple}
 
-Pour l'exemple illustrés dans la section~\ref{subsection:defEqPert} les résultats sont ceux repris ci-dessous.
+Pour l'exemple illustré dans la section~\ref{subsection:defEqPert} les résultats sont ceux repris ci-dessous.
 \begin{code}
 A_star : [v0, v2, v0, v1, v3]
 Est un EN?  True
@@ -150,7 +150,7 @@ v0, v0, v0, v0, v0 , v0, v0, v0, v0, v0, v0, v0, v0]
 Est un EN?  True
 Information sur l'outcome : 
 Cout pour chaque joueur:  {1: inf, 2: 2}
-Joueurs ayant atteint leur objectif  [] 2]
+Joueurs ayant atteint leur objectif  [2]
 
 Random :
 [v3, v2, v0, v0, v0, v0, v0, v0, v0, v0, v0,
@@ -165,7 +165,7 @@ Joueurs ayant atteint leur objectif  [2]
 \end{code}
 
 
-Puisque depuis le noeud $v_0$ la seule action possible est de boucler sur $v_0$ ce comportement est normal. 
+Puisque depuis le noeud $v_0$ la seule action possible est de boucler sur $v_0$, ce comportement est normal. 
 
 Rajoutons des noeuds à ce graphe afin que celui-ci soit un graphe fortement connexe. Afin de ne pas surcharger le graphe, les arcs qui ne possèdent pas d'étiquette sont des arcs de poids $1$.
 
@@ -241,13 +241,13 @@ Le résultat retourné par l'algorithme $A^*$ est meilleur que celui de la méth
 
 \subsubsection*{Comparaison des résultats}
 
-Afin de pouvoir comparer nos différentes méthodes, une série de test est générée. Nous avons exécuté nos tests comme suit : nous générons aléatoirement 100 jeux qui respectent les conditions explicitées dans le section~\ref{section:implementation} et dont le graphe du jeu possède 5 sommets. Ensuite, les quatre méthodes auxquelles nous nous sommes intéressées sont exécutées sur chacun de ces jeux en permettant un temps d'exécution de 30 secondes pour chaque méthode et en générant 100 chemins différents pour la méthode aléatoire. Puisque nous voulons tester l'efficacité du best-first search avec l'utilisation de la fonction d'évaluation de type $A^*$, qui nous semble être l'approche la plus aboutie, chaque résultat obtenu est comparé avec celui de cette méthode. Nous avons alors cinq possibilités, $A^*$ est:
+Afin de pouvoir comparer nos différentes méthodes, une série de tests est générée. Nous avons exécuté nos tests comme suit : nous générons aléatoirement 100 jeux qui respectent les conditions explicitées dans le section~\ref{section:implementation} et dont le graphe du jeu possède 5 sommets. Ensuite, les quatre méthodes auxquelles nous nous sommes intéressées sont exécutées sur chacun de ces jeux en permettant un temps d'exécution de 30 secondes pour chaque méthode et en générant 100 chemins différents pour la méthode aléatoire. Puisque nous voulons tester l'efficacité du best-first search avec l'utilisation de la fonction d'évaluation de type $A^*$, qui nous semble être l'approche la plus aboutie, chaque résultat obtenu est comparé avec celui de cette méthode. Nous avons alors cinq possibilités, le résultat d'$A^*$ est:
 \begin{itemize}
 	\item[$\bullet$] meilleur;
 	\item[$\bullet$] pire;
 	\item[$\bullet$] égal (le même outcome est retourné pour les deux méthodes);
 	\item[$\bullet$] équivalent (un outcome différent est retourné pour les deux méthodes, mais le nombre de joueurs ayant atteint leur objectif ainsi que la somme des coûts pour ceux-ci sont égaux);
-	\item[$\bullet$] les deux méthodes ont échoués (une méthode échoue si elle n'a pas trouvé d'équilibre de Nash endéans le temps imparti)
+	\item[$\bullet$] échec pour les deux méthodes (une méthode échoue si elle n'a pas trouvé d'équilibre de Nash endéans le temps imparti).
 \end{itemize}
 
 En plus de cela, le temps nécessaire pour l'exécution des 100 recherches pour chaque méthode est calculé.\\
@@ -290,9 +290,9 @@ Les résultats de ces tests sont repris dans le tableau~\ref{tab:compMet} et à 
 Bien que peu de tests permettant de comparer les différentes approches aient été effectués, nous pouvons toutefois tirer quelques conclusions:
 
 \begin{itemize}
-	\item[$\bullet$] La méthode best-first search en utilisant la fonction  d'évaluation $A^*$ est celle la plus aboutie. En effet, au vu des résultats sur les graphes complets, un équilibre est trouvé en moins de 30 secondes dans plus de 90\% des tests. De plus, si l'on regarde les tests de comparaison avec les autres méthodes, cette méthode est meilleure aussi bien au point de vue du temps nécessaire pour trouver un équilibre de Nash, ainsi que sur la qualité de celui-ci. 
+	\item[$\bullet$] La méthode best-first search en utilisant la fonction  d'évaluation $A^*$ est celle la plus aboutie. En effet, au vu des résultats sur les graphes complets, un équilibre est trouvé en moins de 30 secondes dans plus de 90\% des tests. De plus, si l'on regarde les tests de comparaison avec les autres méthodes, cette méthode est meilleure aussi bien au point de vue du temps nécessaire pour trouver un équilibre de Nash, que pour la qualité de celui-ci. 
 	\item[$\bullet$] La méthode aléatoire trouve généralement un équilibre de Nash mais rien ne garantit l'optimalité de celui-ci. De plus, dans certains cas, elle peut ne retourner aucun résultat.	
-	\item[$\bullet$] La méthode de best-first search initialisé, qui est une des premières approches que nous avons testée, est celle qui nous garantissait les meilleurs résultats avant que nous ne changions la fonction d'évaluation de notre best-first search. Elle comporte divers inconvénients. Puisque l'on teste l'initialisation du chemin jusqu'au premier noeud initial, que l'on attend un certain laps de temps puis seulement que l'on relance la recherche, cette approche est peut s'avérer coûteuse en temps. De plus, elle ne trouve pas toujours d'équilibre de Nash dans le temps imparti.
+	\item[$\bullet$] La méthode de best-first search initialisé, qui est une des premières approches que nous avons testée, est celle qui nous garantissait les meilleurs résultats avant que nous ne changions la fonction d'évaluation de notre best-first search. Elle comporte divers inconvénients. Puisque l'on teste l'initialisation du chemin jusqu'au premier noeud initial, que l'on attend un certain laps de temps puis seulement que l'on relance la recherche, cette approche peut s'avérer coûteuse en temps. De plus, elle ne trouve pas toujours d'équilibre de Nash dans le temps imparti.
 	\item[$\bullet$] Si la méthode breadth-first search est utilisée en renvoyant le premier équilibre trouvé alors, puisqu'elle parcourt les chemins par taille croissante, cette recherche n'est pas optimale. En effet, il se peut qu'un chemin d'une plus longue taille mais de poids moindre soit préférable à un chemin plus court. Il en va de même, si on récupère tous les équilibres trouvés pendant un certain laps de temps. De plus, pour cette dernière procédure, le temps d'exécution est toujours égal au temps d'exécution permis.
 \end{itemize}
 $ $\\

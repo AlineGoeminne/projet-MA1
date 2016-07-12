@@ -3,7 +3,7 @@
 \section{Recherche d'équilibres de Nash pertinents}
 \label{section:equilibrePert}
 
-Les prérequis sur les jeux d'atteignabilité ayant été clairement expliqué, nous nous intéressons à la recherche - de manière algorithmique - d'équilibres de Nash \og pertinents \fg. Dans un premier temps, nous définissons clairement l'objectif que nous désirons atteindre ainsi que ce signifie pour nous des équilibres de Nash pertinents. Ensuite, nous établissons quelques remarques et propriétés qui nous sont utiles afin de mener à bien notre raisonnement. Enfin, nous expliquons de quelle manière nous désirons mettre en oeuvre des procédés permettant de résoudre cette problématique.
+Les prérequis sur les jeux d'atteignabilité ayant été clairement expliqués, nous nous intéressons à la recherche - de manière algorithmique - d'équilibres de Nash \og pertinents \fg. Dans un premier temps, nous définissons clairement l'objectif que nous désirons atteindre ainsi que ce signifie pour nous la notion d'équilibre de Nash pertinent. Ensuite, nous établissons quelques remarques et propriétés qui nous sont utiles afin de mener à bien notre raisonnement. Enfin, nous expliquons de quelle manière nous désirons mettre en oeuvre des procédés permettant de résoudre cette problématique.
 
 \subsection{Définition du problème et des équilibres pertinents}
 \label{subsection:defEqPert}
@@ -17,6 +17,8 @@ Tout d'abord, soit $\mathcal{G} = ( \{ 1,2 \}, V, (V_{1}, V_{2}),E, (Cost _{1},C
 \item[$\bullet$]  $V_{1}$ (resp. $V_{2}$) est représenté par les noeuds ronds (resp. carrés) du graphe de la figure~\ref{ex:patologique}.
 
 \end{enumerate}
+
+
 
 
 \begin{figure}[ht!]
@@ -55,14 +57,14 @@ Soit $\sigma _{1}(v) =$ $\begin{cases}
 						
 						
 						
-\noindent et soit $\sigma _{2}(v) = v_{1}$ alors $(\sigma _{1},\sigma _{2})$ est un équilibre de Nash du jeu $(\mathcal{G},v_{1})$ dont l'outcome est $(v_{1}v_{2})^{\omega}$. Nous remarquons qu'avec cet équilibre de Nash aucun des deux joueurs n'atteint son objectif. Nous pouvons également observer que si les deux joueurs coopéraient, ils pourraient tous deux minimiser leur coût. En effet, si les deux joueurs suivaient un profil de stratégie ayant comme outcome $\rho = v_{1}v_{0}v_{1}(v_{2}v_{3})^{\omega} $ nous aurions $Cost_{1}(\rho) = 4$ et $Cost_{2}(\rho) = 1$.
+\noindent et soit $\sigma _{2}(v) = v_{1}$ pour $v = v_2$ alors, $(\sigma _{1},\sigma _{2})$ est un équilibre de Nash du jeu $(\mathcal{G},v_{1})$ dont l'outcome est $(v_{1}v_{2})^{\omega}$. Nous remarquons qu'avec cet équilibre de Nash aucun des deux joueurs n'atteint son objectif. Nous pouvons également observer que si les deux joueurs coopéraient, ils pourraient tous deux minimiser leur coût. En effet, si les deux joueurs suivaient un profil de stratégie ayant comme outcome $\rho = v_{1}v_{0}v_{1}(v_{2}v_{3})^{\omega} $ nous aurions $Cost_{1}(\rho) = 4$ et $Cost_{2}(\rho) = 1$.
 
 La question que nous nous posons alors est la suivante : \og Etant donné un jeu d'atteignabilité à objectifs quantitatifs et multijoueur, nous souhaitons trouver de manière rapide un équilibre de Nash pertinent \fg. Nous avons donc dû nous interroger au sens à donner au concept d'équilibre de Nash pertinent.
 
-Au vu de l'exemple ci-dessus, nous avons mis en lumière le fait que pour certains équilibres de Nash, aucun joueur ne voyait son objectif atteint. Dès lors nous pouvons établir qu'un équilibre de Nash pertinent vérifie:
+Au vu de l'exemple ci-dessus, nous avons mis en lumière le fait que pour certains équilibres de Nash, aucun joueur ne voyait son objectif atteint. Dès lors, nous pouvons établir qu'un équilibre de Nash pertinent vérifie:
 
 \begin{itemize}
-	\item[$\bullet$] Si on est dans un type de jeu tel qu'il existe (au moins) un équilibre de Nash tel que tous les joueurs voient leur objectif atteint alors on souhaite que si $\rho$ est l'outcome de l'équilibre de Nash trouvé on ait que
+	\item[$\bullet$] Si on est dans un type de jeu tel qu'il existe (au moins) un équilibre de Nash tel que tous les joueurs voient leur objectif atteint alors, on souhaite que si $\rho$ est l'outcome de l'équilibre de Nash trouvé on ait que
 	$ \sum_{i \in \Pi} \varphi_i(\rho)$ soit \textbf{minimale}.
 	\item[$\bullet$]S'il n'est pas certain qu'il existe un équilibre de Nash du type de celui décrit ci-dessus alors on désire \textbf{maximiser} le nombre de joueurs qui atteignent leur objectif, notons cet ensemble de joueurs $Visit(\rho)$. De plus, on souhaite \textbf{minimiser} $\sum_{i \in \visit(\rho)} \varphi_i(\rho)$.
 \end{itemize}
@@ -78,13 +80,15 @@ Existe-t'il un équilibre de Nash tel que chaque joueur atteigne son objectif?
 
 \end{qst}
 
-Nous n'avons pas encore de réponse claire à cette question. Toutefois, pour un jeu à $n$ joueurs nous avons une bonne intuition quant à la manière de passer d'un équilibre de Nash où $n-1$ joueurs atteignent leur objectif à un équilibre de Nash où $n$ joueurs atteignent leur objectif. En effet, à partir du dernier état objectif atteint, si $j$ est le joueur qui n'a pas atteint son objectif, il suffit que tous les joueurs s'allient afin d'atteindre un objectif du joueur $j$.\\\textbf{Cette question est dès lors toujours une question ouverte.}
+Nous n'avons pas encore de réponse claire à cette question. Toutefois, pour un jeu à $n$ joueurs, nous avons une bonne intuition quant à la manière de passer d'un équilibre de Nash où $n-1$ joueurs atteignent leur objectif à un équilibre de Nash où $n$ joueurs atteignent leur objectif. En effet, à partir du dernier état objectif atteint, si $j$ est le joueur qui n'a pas atteint son objectif, il suffit que tous les joueurs s'allient afin d'atteindre un objectif du joueur $j$.\\\textbf{Cette question est dès lors toujours une question ouverte.}
 \\
 
-Nous remarquons que si nous répondons positivement à cette question alors nous rentrons dans les conditions explicitées dans le premier point de la section précédente.
+Nous remarquons que si nous répondons positivement à cette question alors, nous rentrons dans les conditions explicitées dans le premier point de la section précédente.
 
 
-Maintenant, nous nous demandons s'il existe un processus algorithmique qui permet de déterminer si un outcome particulier correspond à l'outcome d'un équilibre de Nash. Dans le cas échéant, nous désirons expliciter ce procédé. Dans la suite de cette section nous répondons positivement à cette question. Nous énonçons d'abord une propriété (propriété~\ref{prop:rechEqpert1}) qui nous permet de déterminer une condition nécessaire et suffisante pour qu'un outcome soit l'outcome d'un certain équilibre de Nash. Toutefois, pour pouvoir effectuer une procédure algorithmique sur les outcomes, il faut que nous trouvions un moyen de représenter ceux-ci car nous travaillons avec des mots infinis. Nous nous convainquons donc par la suite que nous pouvons nous restreindre à l'étude d'équilibres de Nash dont l'outcome est de la forme $\alpha \beta^{\omega}$ où $\alpha$ et $\beta$ sont des mots finis. 
+Maintenant, nous nous demandons s'il existe un processus algorithmique qui permet de déterminer si un outcome particulier correspond à l'outcome d'un équilibre de Nash. Dans le cas échéant, nous désirons expliciter ce procédé.
+
+Dans la suite de cette section, nous répondons positivement à cette question. Nous énonçons d'abord une propriété (propriété~\ref{prop:rechEqpert1}) qui nous permet de déterminer une condition nécessaire et suffisante pour qu'un outcome soit l'outcome d'un certain équilibre de Nash. Toutefois, pour pouvoir effectuer une procédure algorithmique sur les outcomes, il faut que nous trouvions un moyen de représenter ceux-ci car nous travaillons avec des mots infinis. Nous nous convainquons donc par la suite que nous pouvons nous restreindre à l'étude d'équilibres de Nash dont l'outcome est de la forme $\alpha \beta^{\omega}$ où $\alpha$ et $\beta$ sont des mots finis. 
 
 Avant de formuler notre propriété, nous devons aborder quelques notions qui nous sont nécessaires.
 
@@ -105,7 +109,7 @@ $ \displaystyle \mathcal{G}_{i}= (\mathcal{A}_{i}, g , Goal) \text{ où }$:
 \noindent De plus, pour tout $v\in V$, $Val_i(v)$ est la valeur du jeu $\mathcal{G}_i$ pour tout noeud $v\in V$. 
 \end{defi} 
 
-En d'autres mots, $G_i$ correspond au jeu où le joueur $i$ (joueur Min) joue contre la coalition $\Pi\backslash\{ i \}$ (joueur Max). Cela signifie que le joueur $i$ tente d'atteindre son objectif le plus rapidement possible tandis que tous les autres joueurs veulent l'en empêcher (ou tout du moins maximiser son gain). Nous avons vu précédemment qu'un tel jeu est déterminé et que les deux joueurs possèdent une stratégie optimale ($\sigma^*_i$ et $\sigma^*_{-i}$) telles que:
+En d'autres mots, $\mathcal{G}_i$ correspond au jeu où le joueur $i$ (joueur Min) joue contre la coalition $\Pi\backslash\{ i \}$ (joueur Max). Cela signifie que le joueur $i$ tente d'atteindre son objectif le plus rapidement possible tandis que tous les autres joueurs veulent l'en empêcher (ou tout du moins maximiser son gain). Nous avons vu précédemment qu'un tel jeu est déterminé et que les deux joueurs possèdent une stratégie optimale ($\sigma^*_i$ et $\sigma^*_{-i}$) telles que:
 $$ \inf_{\sigma _{i\in \Sigma _{Min}}} \varphi_i(\langle \sigma_i,\sigma^*_{-i}\rangle_v)= Val_i(v) = \sup _{\sigma_{-i}\in \Sigma_{Max}} \varphi_i(\langle \sigma^*_i, \sigma_{-i}\rangle_v).$$ De plus, de la stratégie optimale $\sigma^*_{-i}$ nous pouvons dériver une stratégie pour tout joueur $j \neq i$ que nous notons $\sigma_{j,i}$.\\
 
 Nous sommes maintenant aptes à énoncer notre propriété. La preuve de celle-ci a été effectuée par nos soins, mais nous faisons remarquer qu'une preuve similaire dans le cas des jeux concurrents à informations parfaites a déjà été effectuée par Haddad~\cite{characNashEq}. 
@@ -143,7 +147,7 @@ Nous sommes maintenant aptes à énoncer notre propriété. La preuve de celle-c
 			\varphi_j(\langle \sigma^*_j,\sigma_{-j} \rangle_{v_k}) < \varphi_j(\langle(\sigma_i)_{i\in \Pi}\rangle_{v_k})
 		\end{equation}
 		
-		La relation~\eqref{eq:questEq3} signifie qu'à partir du noeud $v_k$ le joueur $j$ ferait mieux de suivre la stratégie $\sigma^*_j$. Il s'agit donc d'une déviation profitable pour le joueur $j$ par rapport au profil de stratégies $(\sigma_i)_{i\in \Pi}$. Cela implique que $(\sigma_i)_{i\in\Pi}$ n'est pas un équilibre de Nash. Nous avons donc la contradiction attendue.\\
+		La relation~\eqref{eq:questEq3} signifie qu'à partir du noeud $v_k$, le joueur $j$ ferait mieux de suivre la stratégie $\sigma^*_j$. Il s'agit donc d'une déviation profitable pour le joueur $j$ par rapport au profil de stratégies $(\sigma_i)_{i\in \Pi}$. Cela implique que $(\sigma_i)_{i\in\Pi}$ n'est pas un équilibre de Nash. Nous avons donc la contradiction attendue.\\
 		
 		\item[$(\Uparrow)$] Soit $(\tau_i)_{i\in \Pi}$ un profil de stratégies qui permet d'obtenir l'outcome $\rho$ de paiement $(x_i)_{i\in\Pi}$.
 		A partir de $(\tau_i)_{i\in \Pi}$ nous désirons construire un équilibre de Nash ayant le même outcome (et donc le même profil de coût).
@@ -182,7 +186,7 @@ Nous sommes maintenant aptes à énoncer notre propriété. La preuve de celle-c
 		\begin{equation*}
 			\rho = h. \langle (\sigma_i)_{i\in\Pi} \rangle_v \text{ et } \tilde{\rho} =  h.\langle \tilde{\sigma_j}, (\sigma)_{i\in\Pi\backslash \{ j \}} \rangle_v
 		\end{equation*}
-		 S'il en existe plusieurs nous en choisissons une de longueur maximale.
+		 S'il en existe plusieurs, nous en choisissons une de longueur maximale.
 		Au vu de la définition de $\sigma_i$, nous pouvons réécrire:
 		
 		\begin{equation*}
@@ -215,16 +219,16 @@ Nous sommes maintenant aptes à énoncer notre propriété. La preuve de celle-c
 Dans sa thèse~\cite{juliePhd}, Julie De Pril explicite une procédure afin de construire à partir d'un équilibre de Nash un équilibre de Nash du même \emph{type} tel que toutes les stratégies sont à mémoire finie. Le type d'un profil de stratégies est l'ensemble des joueurs qui ont visité leur objectif en suivant cet équilibre. Si le profil de stratégies est $(\sigma_i)_{i \in \Pi}$ alors on note le type de ce profil $\type((\sigma_i)_{i\in \Pi})$. Le théorème suivant est donc énoncé:
 
 \begin{thm}
-	Etant donné un équilibre de Nash dans un jeu multijoueur initialisé à objectif quantitatif, il existe un équilibre de Nash du même type
+	Etant donné un équilibre de Nash dans un jeu multijoueur initialisé à objectif quantitatif, il existe un équilibre de Nash du même type.
 \end{thm}
 
-Ce procédé consiste en deux étapes. Etant donné un équilibre de Nash, on commence par construire un second équilibre de Nash du même type duquel on a supprimé les cycles inutiles. Un cycle inutile est un cycle tel que lors de son parcourt aucun joueur qui n'avait pas encore visité son objectif n'atteint celui-ci mais qu'ensuite un nouvel objectif est atteint. Ensuite, on construit un équilibre de Nash $(\sigma_i)_{i\in \Pi}$, toujours avec le même type, tel qu'à partir de l'outcome $\langle (\sigma_i)_{i\in \Pi}\rangle_{v_0}$ on puisse identifier un préfixe $\alpha\beta$ pour lequel on peut répéter infiniment $\beta$. De plus, si nous définissons la notation $\visit(\alpha)$ comme étant l'ensemble des joueurs qui on vu leur objectif atteint lors du parcourt de $\alpha$, nous retrouvons dès lors le résultat suivant:
+Ce procédé consiste en deux étapes. Etant donné un équilibre de Nash, on commence par construire un second équilibre de Nash du même type duquel on a supprimé les cycles inutiles. Un cycle inutile est un cycle tel que lors de son parcourt aucun joueur qui n'avait pas encore visité son objectif n'atteint pas celui-ci mais qu'ensuite un nouvel objectif est atteint. Ensuite, on construit un équilibre de Nash $(\sigma_i)_{i\in \Pi}$, toujours avec le même type, tel qu'à partir de l'outcome $\langle (\sigma_i)_{i\in \Pi}\rangle_{v_0}$ on puisse identifier un préfixe $\alpha\beta$ pour lequel on peut répéter infiniment $\beta$. De plus, si nous définissons la notation $\visit(\alpha)$ comme étant l'ensemble des joueurs qui ont vu leur objectif atteint lors du parcourt de $\alpha$, nous retrouvons dès lors le résultat suivant:
 
 \begin{propriete}
 	\label{prop: rechEqPert1}
 	Soit $(\sigma_i)_{i\in \Pi}$ un équilibre de Nash dans le jeu d'atteignabilité multijoueur à objectifs quantitatifs et initialisé $(\mathcal{G}, v_0)$, il existe un équilibre de Nash $(\tau_i)_{i\in \Pi}$ avec le même type et tel que $\langle (\tau_i)_{i\in \Pi} \rangle_{v_0} = \alpha \beta^{\omega}$, où \linebreak $\visit(\alpha) = \type((\sigma_i)_{i \in \Pi})$ et $|\alpha\beta| < (\Pi + 1)\cdot |V|$.
 \end{propriete}
-Remarquons toutefois que dans le cadre de ces preuves, le fonction de poids $w: E \rightarrow \mathbb{R}$ est la fonction telle que pour tout $e \in E$, $w(e) = 1$. Les preuves s'adaptent toutefois si la fonction de poids est de la forme \linebreak $w : E \rightarrow \mathbb{N}_{0}$. En effet, s'il existe un arc $(v,v')$ tel que $w(v,v') = c$ pour un certain $c \in \mathbb{N}_{0}$, il suffit de rajouter autant d'arc de poids 1 qu'il est nécessaire pour que la somme de ces poids vaille $c$ (cf. figure~\ref{fig:transfoGraphPoids} avec $c = 4$). Remarquons que si le graphe d'origine présente $|V|$ noeud, le graphe transformé, dont l'ensemble des noeuds est $V'$, possède $|V'| = |V| + \sum_{e \in E} (w(e) - 1)$ noeuds. Il semble donc raisonnable que nous nous contentions de considérer des outcomes de longueur $(\Pi + 1)\cdot |V'|.$\\
+Remarquons toutefois que dans le cadre de ces preuves, la fonction de poids $w$ est la fonction telle que pour tout $e \in E$, $w(e) = 1$. Néanmoins, les preuves s'adaptent si la fonction de poids est de la forme \linebreak $w : E \rightarrow \mathbb{N}_{0}$. En effet, s'il existe un arc $(v,v')$ tel que $w(v,v') = c$ pour un certain $c \in \mathbb{N}_{0}$, il suffit de rajouter autant d'arc de poids 1 qu'il est nécessaire pour que la somme de ces poids vaille $c$ (cf. figure~\ref{fig:transfoGraphPoids} avec $c = 4$). Remarquons que si le graphe d'origine présente $|V|$ noeud, le graphe transformé, dont l'ensemble des noeuds est $V'$, possède $|V'| = |V| + \sum_{e \in E} (w(e) - 1)$ noeuds. Il semble donc raisonnable que nous nous contentions de considérer des outcomes de longueur $(\Pi + 1)\cdot |V'|.$\\
 
 \textbf{Une étude attentive de la preuve effectuée pour \linebreak la propriété~\ref{prop: rechEqPert1} permettrait peut-être d'exhiber une meilleure bor\-ne sur la longueur maximale des outcomes testés.}
 
@@ -260,27 +264,27 @@ Remarquons toutefois que dans le cadre de ces preuves, le fonction de poids $w: 
 	\label{fig:transfoGraphPoids}
 \end{figure}
 
-Nous pouvons donc conclure qu'il est correct de se restreindre à le recherche d'équilibres dont l'outcome est de cette forme. En effet, vu qu'ils possèdent le même type cela n'influence pas notre intention de maximiser le nombre de joueurs qui atteignent leur objectif. De plus, puisque les poids sur les arcs sont tous des poids positifs, la suppression des cycles lors de la première étape de la procédure ne fait que diminuer le coût des joueurs pour cet équilibre si un cycle est présent. Cette modification est à notre avantage, en effet, cela diminue la somme des coûts des joueurs qui est la valeur que nous désirons minimiser pour trouver un équilibre pertinent.\\
+Nous pouvons donc conclure qu'il est correct de se restreindre à le recherche d'équilibres dont l'outcome est de cette forme. En effet, vu qu'ils possèdent le même type, cela n'influence pas notre intention de maximiser le nombre de joueurs qui atteignent leur objectif. De plus, puisque les poids sur les arcs sont tous des poids positifs, la suppression des cycles lors de la première étape de la procédure ne fait que diminuer le coût des joueurs pour cet équilibre si un cycle est présent. Cette modification est à notre avantage. En effet, cela diminue la somme des coûts des joueurs qui est la valeur que nous désirons minimiser pour trouver un équilibre pertinent.\\
 
 Nous avons désormais à notre disposition:
 \begin{itemize}
 	\item[$\bullet$] Une manière de tester si un outcome correspond à l'outcome d'un équilibre de Nash.
-	\item[$\bullet$] Un résultat permettant d'affirmer que nous pouvons nous contenter d'examiner les équilibres de Nash de la forme $\alpha \beta^{\omega}$ où $\alpha$ et $\beta$ sont des éléments de $V^{+}$. Nous pouvons donc travailler uniquement à partir de chemins de longueur au plus $(\Pi + 1)\cdot |V'|$. De là, nous pouvons appliquer le point précédant sur $\alpha\beta$ et comme ce mot est un mot fini, un algorithme peut effectuer cette tâche. 
+	\item[$\bullet$] Un résultat permettant d'affirmer que nous pouvons nous contenter d'examiner les équilibres de Nash dont l'outcome est de la forme $\alpha \beta^{\omega}$ où $\alpha$ et $\beta$ sont des éléments de $V^{+}$. Nous pouvons donc travailler uniquement à partir de chemins de longueur au plus $(\Pi + 1)\cdot |V'|$. De là, nous pouvons appliquer le point précédent sur $\alpha\beta$ et comme ce mot est un mot fini, un algorithme peut effectuer cette tâche. 
 	\item[$\bullet$] Un algorithme (\verb|DijkstraMinMax|) qui permet des récupérer les valeurs de chaque noeud pour tous les jeux  où un joueur joue contre la coalition des autres joueurs. Ces valeurs permettent de vérifier si la propriété du point précédent est respectée.
 \end{itemize}
 \smallskip
-\indent Il nous reste donc à déterminer un algorithme qui nous permet de trouver rapidement un équilibre de Nash pertinent. La phase d'implémentation de ce projet ayant commencé relativement tard les méthodes testées restent naïves et peu efficaces. Avant d'aborder ces dernières avec plus de précisions, nous expliquons certains types d'algorithmes d'exploration desquels nous nous sommes inspirés.
+\indent Il nous reste donc à déterminer un algorithme qui nous permet de trouver rapidement un équilibre de Nash pertinent. La phase d'implémentation de ce projet ayant commencé relativement tard les méthodes testées restent sans doute un peu naïves. Avant d'aborder ces dernières avec plus de précisions, nous expliquons certains types d'algorithmes d'exploration desquels nous nous sommes inspirés.
 
 \subsection{Algorithmes d'exploration}
 
 Cette section se base sur le livre de Russel et Norvig~\cite{artInt} ainsi que sur les notes du cours d'Intelligence Artificielle enseigné par Hadrien Mélot à l'université de Mons (notes de l'année 2014--2015).\\
 
 
-Lorsque l'on recherche une solution à un problème plusieurs méthodes sont applicables en fonction de la nature du problème. Nous nous sommes penchés sur la résolution de notre problème via des méthodes d'exploration. C'est-à-dire qu'à un problème donné est associé un \emph{espace d'états}. Ces états sont parcourus jusqu'à atteindre l'objectif attendu, celui-ci correspond à la solution du problème.
+Lorsque l'on recherche une solution à un problème plusieurs méthodes sont applicables en fonction de la nature du problème. Nous nous sommes penchés sur une résolution utilisant des méthodes d'exploration. C'est-à-dire qu'à un problème donné est associé un \emph{espace d'états}. Ces états sont parcourus jusqu'à atteindre l'objectif attendu, celui-ci correspond à la solution du problème.
 
 Dans notre cas, l'objectif que nous désirons atteindre est de trouver un chemin dans le graphe du jeu qui corresponde à l'outcome d'un équilibre de Nash. La pertinence de cet équilibre est jaugée via les critères évoqués dans la section~\ref{subsection:defEqPert}. Le but ultime est donc d'atteindre l'équilibre le plus pertinent.
 
-Différents types d'exploration sont possibles, deux grandes familles sont à évoquer:
+Différents types d'exploration sont possibles. Deux grandes familles sont à évoquer:
 
 \begin{itemize}
 	\item[$\bullet$] Algorithme d'exploration non informée: seule la définition du problème est connue (\emph{blind search}).
@@ -291,12 +295,12 @@ Différents types d'exploration sont possibles, deux grandes familles sont à é
 	Un voyageur qui se situe dans une ville A souhaite rejoindre une ville B. Pour ce faire, il aimerait emprunter le chemin le plus court pour relier A et B. Une exploration non informée testerait les différentes villes voisines de la ville A et ainsi de suite jusqu'à atteindre la ville B. Une approche plus éclairée serait donc d'utiliser la distance à vol d'oiseau séparant une ville C de la ville B afin de pouvoir choisir à chaque fois quelle ville voisine C visiter en priorité. Il s'agit alors d'une exploration informée.
 \end{exemple}
 
-L'objectif à atteindre étant établi, le problème doit maintenant être défini. Les cinq composants suivant sont essentiels:
+L'objectif à atteindre étant établi, le problème doit maintenant être défini. Les cinq composants suivants sont essentiels:
 
 \begin{description}
 	\item[L'état initial] est l'état à partir duquel l'exploration commence. Dans notre cas, puis que nous travaillons avec des jeux initialisés par un certain sommet $v_0$, l'état initial est le chemin $v_0$.
-	\item[Les actions possibles] à partir d'un état donné afin de pouvoir continuer l'exploration. Ici, si le dernier noeud du chemin courant est la noeud $v_i$, les actions possibles sont de choisir un noeud parmi ceux de $Succ(v_i) = \{ v\, |\, (v_i, v) \in E \}.$
-	\item[Le modèle de transition] associe à partir d'un état courant et d'une action l'état successeur. Si on est à l'état $h = h_1 ... h_k$ et que l'action choisie est de sélectionner le noeud $v$, alors l'état successeur est l'état $hv$.
+	\item[Les actions possibles] à partir d'un état donné afin de pouvoir continuer l'exploration. Ici, si le dernier noeud du chemin courant est le noeud $v_i$, les actions possibles sont de choisir un noeud parmi ceux de $Succ(v_i) = \{ v\, |\, (v_i, v) \in E \}.$
+	\item[Le modèle de transition] associe, à partir d'un état courant et d'une action, l'état successeur. Si on est à l'état $h = h_1 ... h_k$ et que l'action choisie est de sélectionner le noeud $v$, alors l'état successeur est l'état $hv$.
 \end{description}
 
 L'état initial, les actions possibles ainsi que le modèle de transition définissent \emph{l'espace d'états} qui est l'ensemble de tous les états possibles associés au problème.
@@ -309,9 +313,9 @@ L'état initial, les actions possibles ainsi que le modèle de transition défin
 
 Maintenant que le modèle est explicité, nous expliquons de quelle manière la recherche est effectuée. Tous les algorithmes d'exploration utilisent cette structure. La différence entre ces différents algorithmes est la manière dont les états successifs sont sélectionnés, cette notion est nommée \emph{stratégie d'exploration}.
 
-La recherche se fait en parcourant un arbre dont la racine est l'état initial, les branches les actions possibles et les noeuds les états. A chaque fois qu'un état est sélectionné tous ses successeurs sont générés et sont ajoutés à l'ensemble des états qui attendent d'être visités. Cette ensemble est appelée \emph{frontière} tandis que ce processus de génération des successeurs d'un état est appelé \emph{expansion}. Tant qu'un état objectif n'est pas atteint, un nouvel état est sélectionné dans la frontière et ses successeurs y sont ajoutés. Cette procédure est appelée \emph{tree search}.
+La recherche se fait en parcourant un arbre dont la racine est l'état initial, les branches les actions possibles et les noeuds les états. A chaque fois qu'un état est sélectionné, tous ses successeurs sont générés et sont ajoutés à l'ensemble des états qui attendent d'être visités. Cet ensemble est appelé \emph{frontière}, tandis que ce processus de génération des successeurs d'un état est appelé \emph{expansion}. Tant qu'un état objectif n'est pas atteint et que la frontière contient des éléments, un nouvel état est sélectionné dans celle-ci et ses successeurs y sont ajoutés. Cette procédure est appelée \emph{tree search}.
 
-L'inconvénient de cette approche est que l'arbre généré peut-être infini. En effet, supposons qu'il existe un arc $(v_0, v_1)$ et un arc $(v_1, v_0)$ dans le graphe du jeu, alors le chemin $ (v_0v_1)^{\omega}$ peut être généré et le processus pourrait ne jamais s'arrêter. Dans notre cas, puisque nous nous restreignant à la recherche de chemin d'une certaine longueur maximale ce comportement n'est pas dérangeant. En effet, une fois la longueur maximale du chemin atteinte, nous pouvons couper la recherche à partir de ce noeud. De plus, empêcher l'apparition de cycle n'est pas envisageable car même pour la recherche d'équilibre de Nash pertinent des cycles peuvent être nécessaires (cf. exemple de la section~\ref{prop:rechEqpert1} pour lequel un outcome  d'équilibre de Nash pertinent est $\rho = v_{1}v_{0}v_{1}(v_{2}v_{3})^{\omega} $).\\
+L'inconvénient de cette approche est que l'arbre généré peut-être infini. En effet, supposons qu'il existe un arc $(v_0, v_1)$ et un arc $(v_1, v_0)$ dans le graphe du jeu, alors le chemin $ (v_0v_1)^{\omega}$ peut être généré et le processus pourrait ne jamais s'arrêter. Dans notre cas, puisque nous nous restreignons à la recherche de chemin d'une certaine longueur maximale, ce comportement n'est pas dérangeant. En effet, une fois la longueur maximale du chemin atteinte, nous pouvons couper la recherche à partir de ce noeud. De plus, empêcher l'apparition de cycle n'est pas envisageable car même pour la recherche d'équilibre de Nash pertinent, des cycles peuvent être nécessaires (cf. exemple de la section~\ref{prop:rechEqpert1} pour lequel un outcome  d'équilibre de Nash pertinent est $\rho = v_{1}v_{0}v_{1}(v_{2}v_{3})^{\omega} $).\\
 
 Comme nous l'avons déjà précisé, les différents algorithmes d'exploration différent entre eux par leur stratégie d'exploration. La structure de donnée utilisée pour représenter la frontière influence donc l'ordre de traitement des noeuds de l'arbre d'exploration. Les trois structures suivantes sont utilisées : les piles (le dernier élément ajouté est le premier retiré), les files (la premier élément ajouté est le premier élément retiré) et les files de priorités (les éléments sont triés selon une certaine préférence).
 
@@ -346,7 +350,7 @@ Terminons en expliquant le cas particulier de l'algorithme $A^*$ ainsi que la ma
 \subsubsection{Algorithme $\mathbf{A^*}$}
 \label{subsubsection:aStar}
 
-L'algorithme $A^*$ est un exemple d'algorithme best-first search qui est caractérisé par sa fonction d'évaluation. Dans ce cas $f$ est défini de la manière suivante:
+L'algorithme $A^*$ est un exemple d'algorithme best-first search qui est caractérisé par sa fonction d'évaluation. Dans ce cas, $f$ est défini de la manière suivante:
 
 $$f(n) = g(n) + h(n)$$
 où 
@@ -370,18 +374,18 @@ où nous avons:
 
 Nous utilisons donc pour $g$ et $h$ les fonctions suivantes:
 
-$$ g(n) = \sum_{i \in \visit(h)} \varphi_i(h) + |\Pi\backslash \visit(h)| \cdot \epsilon_k$$
+$$ g(n) = \sum_{i \in \visit(\rho)} \varphi_i(\rho) + |\Pi\backslash \visit(\rho)| \cdot \epsilon_k$$
 
 
 
-$$h(n) = \sum_{i \in \visit(h)} \min\{ p - \epsilon_k ,\, c_i \}$$
+$$h(n) = \sum_{i \notin \visit(\rho)} \min\{ p - \epsilon_k ,\, c_i \}$$
 
 
 où nous avons:
 
 \begin{itemize}
-	\item[$\bullet$] $h$ est le chemin $h = h_0 h_1 ... h_k$ (où $h_0$ = $v_0$ le noeud initial du jeu) stocké dans le noeud $n$.
-	\item[$\bullet$] $\displaystyle \epsilon_k = \sum_{j = 0}^{k-1} w(v_j, v_{j+1})$.
+	\item[$\bullet$] $\rho$ est le chemin $\rho = h_0 h_1 ... h_k$ (où $h_0$ = $v_0$ le noeud initial du jeu) stocké dans le noeud $n$.
+	\item[$\bullet$] $\displaystyle \epsilon_k = \sum_{j = 0}^{k-1} w(h_j, h_{j+1})$.
 	\item[$\bullet$] $c_i$ est le poids du plus court chemin pour rejoindre un objectif du joueur $i$ à partir du sommet $h_k$.
 \end{itemize}
 $ $\\

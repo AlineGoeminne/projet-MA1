@@ -142,7 +142,7 @@ Lorsque l'on cherche des stratégies pour un joueur $J_{i}$, on distingue les \t
 																	
 		La stratégie $\sigma _{\mathcal{A}_{i}}$ calculée par un automate fini $\mathcal{A}_{i}$ est définie  par\\
  $\sigma _{\mathcal{A}_{i}}(hv) = \nu(\delta^{*}(m_{0},h),v)$ pour tout $hv \in Hist_{i}$ . Cela signifie qu'à chaque fois qu'une décision est prise, la mémoire est modifiée en conséquence et que chaque nouvelle décision est prise en fonction de la mémoire enregistrée jusque maintenant.
-		Dès lors on dit que $\sigma _{i}$ est une stratégie à mémoire finie s'il existe un automate fini $\mathcal{A}_{i}$ tel que $\sigma _{i} = \sigma _{\mathcal{A}_{i}}$. De plus, on dit que $\sigma_i$ a une mémoire de taille $|M|$.
+		Dès lors, on dit que $\sigma _{i}$ est une stratégie à mémoire finie s'il existe un automate fini $\mathcal{A}_{i}$ tel que $\sigma _{i} = \sigma _{\mathcal{A}_{i}}$. De plus, on dit que $\sigma_i$ a une mémoire de taille $|M|$.
 
 \end{defi}
 
@@ -153,7 +153,7 @@ Nous pouvons remarquer que le cas des stratégies sans mémoire est un cas parti
 	Une stratégie $\sigma _{i} \in \Sigma _{i}$ est une \textit{stratégie à mémoire infinie } si elle n'est ni sans mémoire ni à mémoire finie.
 \end{defi}
 
-De même, nous pouvons définir ce que signifie la notion de mémoire pour une profil de stratégie.
+De même, nous pouvons définir ce que signifie la notion de mémoire pour un profil de stratégies.
 
 \begin{defi}
 	On appelle $(\sigma_i)_{i\in \Pi}$ un profil de stratégies de mémoire $m$ si pour tout $i\in \Pi$, la stratégie $\sigma_i$ a une mémoire d'au plus $m$.
@@ -184,7 +184,7 @@ Mettons maintenant en lumière  ces notions par un simple exemple.
 					v_3 &\text{ si } v = v_4\\
 					v_0 &\text{ si } v = v_3
 				\end{cases} $$\end{minipage} \hfill
-	\begin{minipage}[c]{0.1\linewidth}\center{et}\end{minipage} \hfill \begin{minipage}[c]{0.30\linewidth}	\center{			$$ \sigma_2(v) = v_3$$
+	\begin{minipage}[c]{0.1\linewidth}\center{et}\end{minipage} \hfill \begin{minipage}[c]{0.30\linewidth}	\center{			$$ \sigma_2(v) = v_3 \text{ si }v = v_2$$
 	} \end{minipage} \newline
 	
 	Nous remarquons que le jeu $(v_0 v_1 v_2 v_3)^{\omega}$ est consistant avec les stratégies $\sigma_1$ et $\sigma_2$ tandis que $v_0 v_1 v_0 (v_2 v_4)^{\omega}$ n'est pas consistant avec $\sigma_1$.
@@ -279,4 +279,4 @@ Nous donnons maintenant un exemple de machine de Mealy qui permet de calculer un
 	
 \end{exemple}
 
-Comme nous l'avons dit précédemment, lorsque l'on définit un jeu sur graphe nous devons préciser l'arène du jeu ainsi que les objectifs que chaque joueur doivent atteindre. Dans la section suivante nous allons nous intéresser à un certain type d'objectif: l'objectif d'atteignabilité.
+Comme nous l'avons dit précédemment, lorsque l'on définit un jeu sur graphe nous devons préciser l'arène du jeu ainsi que les objectifs que chaque joueur doit atteindre. Dans la section suivante nous allons nous intéresser à un certain type d'objectif: l'objectif d'atteignabilité.

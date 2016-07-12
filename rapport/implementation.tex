@@ -16,7 +16,7 @@ Notre implémentation a été réalisée en Python et se découpe en différents
 	\begin{itemize}
 		\item[$\star$] \textbf{Classe Graph} pour représenter un graphe ainsi que différentes fonctions pour effectuer des manipulations sur ce dernier.
 		\item[$\star$] \textbf{Classe Vertex} pour représenter un sommet du graphe.
-		\item[$\star$] \textbf{Classe ReachabilityGame} qui modélise la structure de jeu d'atteignabilité. Elle regroupe les méthodes nécessaires pour calculer le poids d'un chemin, déterminer si un chemin correspond à l'outcome d'un équilibre de Nash ainsi que les différents algorithmes d'exploration testés.
+		\item[$\star$] \textbf{Classe ReachabilityGame} qui modélise la structure de jeu d'atteignabilité. Elle regroupe, entre autre, les méthodes nécessaires pour calculer le coût d'un chemin, déterminer si un chemin correspond à l'outcome d'un équilibre de Nash ainsi que les différents algorithmes d'exploration testés.
 	\end{itemize}
 	
 	\item[$\bullet$] \textbf{Les modules DijkstraMinMaxTest, ReachabilityGameTest et TestMinHeap} qui nous ont permis de tester nos algorithmes au fur et à mesure de leur implémentation.
@@ -32,17 +32,17 @@ Bien que la plupart de nos algorithmes sont utilisables dans des cas plus géné
 	\item[$\bullet$] La fonction de poids considérées est de la forme $w : E \rightarrow [1,100] \cap \mathbb{N} $.
 \end{itemize}
 
-Comme nous l'avons déjà évoqués, plusieurs approches ont été testées afin de trouver un équilibre de Nash pertinent. Nous les expliquons brièvement ci-après.
+Comme nous l'avons déjà évoqué, plusieurs approches ont été testées afin de trouver un équilibre de Nash pertinent. Nous les expliquons brièvement ci-après.
 
 \subsubsection*{Méthode aléatoire}
 De loin la plus naïve, la méthode aléatoire génère de manière aléatoire à partir du sommet initial un certain nombre de chemins (ce nombre est paramétrable) dans le graphe du jeu et ne retient que ceux qui correspondent à l'outcome d'un équilibre de Nash. La longueur de ce chemin est la longueur maximale des chemins à tester. A partir de ce résultat, une méthode a été implémentée afin de ne retenir que l'équilibre le plus pertinent.
 
 \subsubsection*{Breadth-first search}
-Nous avons également à notre disposition un algorithme Breadth-first search qui a été un peu modifié. En effet, au lieu de retourner directement le premier objectif rencontré lors du parcours de l'arbre, il est possible de les stocker et de tous les retourner. Nous pouvons ensuite, comme pour la méthode précédente retenir uniquement l'équilibre le plus pertinent. Comme le parcours de tout l'arbre d'exploration peut prendre beaucoup de temps  (complexité exponentielle), il est possible de préciser une limite de temps pour l'exécution de l'algorithme. Une fois cette limite dépassée, ce dernier renvoie tous les équilibres trouvés durant ce laps de temps.
+Nous avons également à notre disposition un algorithme breadth-first search qui a été un peu modifié. En effet, au lieu de retourner directement le premier objectif rencontré lors du parcours de l'arbre, il est possible de les stocker et de tous les retourner. Nous pouvons ensuite, comme pour la méthode précédente retenir uniquement l'équilibre le plus pertinent. Comme le parcours de l'entièreté de l'arbre d'exploration peut prendre beaucoup de temps  (complexité exponentielle), il est possible de préciser une limite de temps pour l'exécution de l'algorithme. Une fois cette limite dépassée, ce dernier renvoie tous les équilibres trouvés durant ce laps de temps.
 
 \subsubsection*{Best-first search}
 
-Une implémentation de la méthode d'exploration best-first search a également été mise en \oe uvre. Nous l'avons toutefois amélioré au vu de l'utilisation que nous en faisons. En effet, dans certains cas, il est possible de couper des branches de l'arbre d'exploration:
+Une implémentation de la méthode d'exploration best-first search a également été mise en \oe uvre. Nous l'avons toutefois améliorée au vu de l'utilisation que nous en faisons. En effet, dans certains cas, il est possible de couper des branches de l'arbre d'exploration:
 
 \begin{itemize}
 	\item[$\bullet$] Si le chemin dans le noeud en cours de traitement a atteint la longueur maximale des chemins à tester, il est inutile de pratiquer l'expansion à partir de ce noeud.
@@ -53,7 +53,7 @@ Comme pour l'approche précédente, une limite sur le temps d'exécution de l'al
 
 \subsubsection*{Best-first search initialisé}
 
-Au lieu de commencer l'exploration à partir du chemin composé uniquement du noeud initial $v_0$, nous avons tenté de guider au mieux le début de la recherche. Pour ce faire nous précédons de la manière suivante: si $o_1$ (resp. $o_2$) est le noeud objectif de $J_1$ (resp. $J_2$) on construit dans un premier temps le chemin le plus court de $v_0$ à $o_1$, si ce chemin n'enfreint pas le critère pour être un équilibre de Nash, alors on lance le best-first search à partir du chemin $v_0 ... o_1$. Si par contre le chemin ainsi constitué enfreint le critère ou si la recherche prend trop temps, on recommence à partir du plus court chemin entre $v_0$ et $o_2$.
+Au lieu de commencer l'exploration à partir du chemin composé uniquement du noeud initial $v_0$, nous avons tenté de guider au mieux le début de la recherche. Pour ce faire, nous procédons de la manière suivante: si $o_1$ (resp. $o_2$) est le noeud objectif de $J_1$ (resp. $J_2$), on construit dans un premier temps le chemin le plus court de $v_0$ à $o_1$, si ce chemin n'enfreint pas le critère pour être un équilibre de Nash, alors on lance le best-first search à partir du chemin $v_0 ... o_1$. Si par contre le chemin ainsi constitué enfreint le critère ou si la recherche prend trop temps, on recommence à partir du plus court chemin entre $v_0$ et $o_2$.
 
 
 \input{resultat}

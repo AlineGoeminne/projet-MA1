@@ -5,7 +5,7 @@
 
 %DEFINITION: jeu d'atteignabilité à objectif qualitatif
 
-Nous nous attardons dans un premier temps sur les \emph{jeux d'atteignabilité à objectif qualitatif}. Ce sont des jeux sur graphe tels que chaque joueur tente d'atteindre un élément de son ensemble objectif. Nous nous intéressons alors à savoir si à partir d'un noeud du graphe un joueur peut toujours s'assurer d'atteindre un élément de son ensemble objectif et ce quelle que soit les stratégies adoptées par les autres joueurs. La réponse à cette question est alors binaire: soit oui, soit non. Dans le cas où celle-ci est positive, nous disons que ce joueur possède une \emph{stratégie gagnante} et que ce noeud de départ est un \emph{état gagnant}.
+Nous nous attardons dans un premier temps sur les \emph{jeux d'atteignabilité à objectif qualitatif}. Ce sont des jeux sur graphe tels que chaque joueur tente d'atteindre un élément de son ensemble objectif. Nous nous intéressons alors à savoir si à partir d'un noeud du graphe un joueur peut toujours s'assurer d'atteindre un élément de son ensemble objectif et ce quelles que soient les stratégies adoptées par les autres joueurs. La réponse à cette question est alors binaire: soit oui, soit non. Dans le cas où celle-ci est positive, nous disons que ce joueur possède une \emph{stratégie gagnante} et que ce noeud de départ est un \emph{état gagnant}.
 	
 	\begin{defi}[Jeu d'atteignabilité à objectif qualitatif]
 		Un \textit{jeu d'atteignabilité à objectif qualitatif} est un jeu sur graphe $\mathcal{G} = (\mathcal{A}, (Goal_{i})_{i \in \Pi},(\Omega _{i})_{i \in \Pi})$ où :
@@ -27,7 +27,7 @@ Nous nous attardons dans un premier temps sur les \emph{jeux d'atteignabilité �
 	
 	\begin{defi}
 		Soit $\mathcal{G} = (\Pi,(V,E),(V_{i})_{i \in \Pi}, (Goal_{i})_{i \in \Pi},(\Omega _{i})_{i \in \Pi})$,\\
-		$W_{i} = \{ v_{j} |v_j \in V$ et $\exists \sigma _{i}$ une stratégie gagnantes pour $J_{i}$ à partir de $v_{j}\}$ est \textit{l'ensemble des états gagnants} de $J_{i}$. C'est l'ensemble des sommets de $\mathcal{G}$ à partir desquels $J_{i}$ est assuré d'atteindre son objectif.
+		$W_{i} = \{ v_{j} |v_j \in V$ et $\exists \sigma _{i}$ une stratégie gagnante pour $J_{i}$ à partir de $v_{j}\}$ est \textit{l'ensemble des états gagnants} de $J_{i}$. C'est l'ensemble des sommets de $\mathcal{G}$ à partir desquels $J_{i}$ est assuré d'atteindre son objectif.
 	\end{defi}
 	
 	
@@ -122,7 +122,7 @@ Cette première propriété signifie simplement qu'un noeud du jeu ne peut pas �
 		Pour prouver ~\eqref{line1} et ~\eqref{line2} nous allons procéder en plusieurs étapes en prouvant chaque inclusion séparément.
 		Nous commençons par montrer que $Attr(F) \subseteq W_{1}$ puis que $V \backslash Attr(F) \subseteq W_{2}$ et enfin nous concluons en prouvant que $W_{1} \subseteq Attr(F)$ et $W_{2} \subseteq V\backslash Attr(F)$. De ces quatre inclusions nous pouvons alors conclure les égalités recherchées. \\
 		
-		\noindent$\mathbf{Attr(F) \subseteq W_{1}}$: Soit $v \in Attr(F)$ alors par la propriété \ref{prop:suiteUltConst} on a \linebreak : $Attr(F) = X_{N}$ pour un certain $N \in \mathbb{N}$. Montrons par récurrence sur $n$ que dans ce cas, pour tout $n \in \mathbb{N}$ tel que $X_{n} \subseteq Attr(F)$ on peut construire une stratégie $\sigma _{1}$ pour $J_{1}$ telle que pour tout $\sigma_2 \in \Sigma_2$, $\langle \sigma _{1},\sigma _{2}\rangle_v \in \Omega _{1}$.
+		\noindent$\mathbf{Attr(F) \subseteq W_{1}}$: Soit $v \in Attr(F)$ alors par la propriété \ref{prop:suiteUltConst} on a : \linebreak  $Attr(F) = X_{N}$ pour un certain $N \in \mathbb{N}$. Montrons par récurrence sur $n$ que dans ce cas, pour tout $n \in \mathbb{N}$ tel que $X_{n} \subseteq Attr(F)$ on peut construire une stratégie $\sigma _{1}$ pour $J_{1}$ telle que pour tout $\sigma_2 \in \Sigma_2$, $\langle \sigma _{1},\sigma _{2}\rangle_v \in \Omega _{1}$.
 		\begin{enumerate}
 			\item[$\star$] Pour $n=0$: alors $v \in X_{0} = F$ et l'objectif est atteint par $J_{1}$. $\sigma_1$ peut alors être définie de n'importe quelle manière puisque l'objectif est atteint.
 			
@@ -136,7 +136,7 @@ Cette première propriété signifie simplement qu'un noeud du jeu ne peut pas �
 		\end{enumerate}
 		Par cette preuve par récurrence, l'assertion est bien vérifiée.\\
 		
-		\noindent$\mathbf{V \backslash Attr(F) \subseteq W_{2}}$: Soit $v \in V \backslash Attr(F)$. Une stratégie gagnante pour $J_{2}$ est une stratégie telle que à chaque tour de jeu le sommet $s$ considéré soit dans l'ensemble $V\backslash Attr(F)$. En effet, puisque $F \subseteq Attr(F)$, en s'assurant de rester en dehors de l'attracteur on est certain de ne pas atteindre un élément de $F$.\\
+		\noindent$\mathbf{V \backslash Attr(F) \subseteq W_{2}}$: Soit $v \in V \backslash Attr(F)$. Une stratégie gagnante pour $J_{2}$ est une stratégie telle que à chaque tour de jeu le sommet $s$ considéré soit dans l'ensemble $V\backslash Attr(F)$. En effet, puisque $F \subseteq Attr(F)$, en s'assurant de rester en dehors de l'attracteur, on est certain de ne pas atteindre un élément de $F$.\\
 		
 		Si $v \in V_1$ alors cela signifie que $\forall v'$ tel que $(v,v') \in E$ on a $v' \in V\backslash Attr(F)$. Tandis que si $v \in V_2$ alors $ \exists v'$ tel que $ (v, v') \in E$ et $ v' \in V\backslash Attr(F)$. On définit donc $\sigma_2(v) = v'$. Pour construire la stratégie gagnante $\sigma_2$ de $J_2$, on réitère cet argument.\\
 		
@@ -166,9 +166,9 @@ Appliquons sur l'exemple ci-dessous, le principe de l'attracteur.
 
 Au vu de la définition de l'attracteur d'un ensemble, l'implémentation de la résolution d'un jeu d'atteignabilité à deux joueurs avec objectif qualitatif en découle aisément. En effet, si nous possédons un algorithme permettant de calculer $Pre(X)$ pour tout sous-ensemble $X$ de sommets du graphe, il suffit alors d'appeler plusieurs fois cet algorithme afin de générer la suite $(X_k)_{k \in \mathbb{N}}$ conformément à la définition~\ref{def:predecesseur} jusqu'à ce que celle-ci soit constante. Nous donnons ci-après le pseudo-code d'un algorithme permettant de résoudre ce type de jeu. \\
 
-Soit $\mathcal{G} = ((V,E),V_{1},V_{2}, F, \Omega _{1}, \Omega _{2})$, nous supposons que $V$ comprend $n$ sommets numérotés de $0$ à $n-1$ et que le graphe $G = (V,E)$ est encodé sur base de sa \textit{liste d'adjacence}: adj - \emph{i.e.,} pour chaque sommet indicé par $k$ on possède une liste des sommets $v_l$ tels que $0 \leq l \leq n-1$ et $(v_k, v_l) \in E$.\\
+Soit $\mathcal{G} = ((V,E),V_{1},V_{2}, F, \Omega _{1}, \Omega _{2})$, nous supposons que $V$ comprend $n$ sommets numérotés de $0$ à $n-1$ et que le graphe $G = (V,E)$ est encodé sur base de sa \textit{liste d'adjacence}: adj - \emph{i.e.,} pour chaque sommet indicé par $k$, on possède une liste des sommets $v_l$ tels que $0 \leq l \leq n-1$ et $(v_k, v_l) \in E$.\\
 
-Un premier algorithme (algorithme~\ref{algo:preX}) calcule à partir d'un sous ensemble $X \subseteq V$ de $V$ l'ensemble $Pre(X)$ comme défini en \ref{def:predecesseur}. Le principe de cet algorithme est le suivant: pour tout sommet $v\in V_{1}$ on teste s'il existe un arc sortant de $v$ vers un sommet de $X$. Si c'est le cas, alors $v\in Pre(X)$. On traite ensuite tous les sommets $v \in V_{2}$. Pour qu'un tel sommet $v$ appartienne à $Pre(X)$ il faut que tous les arcs sortant de $v$ atteignent un sommet de $X$.
+Un premier algorithme (algorithme~\ref{algo:preX}) calcule à partir d'un sous ensemble $X \subseteq V$ de $V$ l'ensemble $Pre(X)$ comme défini en \ref{def:predecesseur}. Le principe de cet algorithme est le suivant: pour tout sommet $v\in V_{1}$ on teste s'il existe un arc sortant de $v$ vers un sommet de $X$. Si c'est le cas, alors $v\in Pre(X)$. On traite ensuite tous les sommets $v \in V_{2}$. Pour qu'un tel sommet $v$ appartienne à $Pre(X)$ il faut que tous les arcs sortants de $v$ atteignent un sommet de $X$.
 
 \begin{notations}
 	Pour l'écriture de cet algorithme nous adoptons les conventions de notation suivantes:
@@ -255,9 +255,9 @@ $ $\\
 
 Terminons en abordant brièvement la complexité de ces algorithmes. Posons $n$ (respectivement $m$) le nombre de sommets du graphe (respectivement le nombre d'arcs).
 \begin{description}
-	\item[Algorithme~\ref{algo:preX}] Pour chaque noeud du graphe, on parcourt sa liste de successeurs. Dans le pire des cas on doit parcourir toute cette liste et donc effectuer un test pour chaque successeur de chaque noeud. Chacun de ses tests et des opérations qui en découlent sont en $\mathcal{O}(1)$ et sont effectuées dans le pire cas $m$ fois. La complexité de cet algorithme est donc en $\mathcal{O}(m)$.
+	\item[Algorithme~\ref{algo:preX}] Pour chaque noeud du graphe, on parcourt sa liste de successeurs. Dans le pire des cas, on doit parcourir toute cette liste et donc effectuer un test pour chaque successeur de chaque noeud. Chacun de ses tests et des opérations qui en découlent sont en $\mathcal{O}(1)$ et sont effectuées dans le pire cas $m$ fois. La complexité de cet algorithme est donc en $\mathcal{O}(m)$.
 	
-	\item[Algorithme~\ref{algo:attrF}] Supposons que nous utilisons une structure de données telle que l'on puisse récupérer la taille des ensembles en $\mathcal{O}(1)$, alors la complexité de cet algorithme est en $\mathcal{O}(m.n)$. En effet, dans le pire cas on part d'un ensemble $F$ de cardinalité égale à 1 et on ne rajoute qu'un seul élément à la suite $(X_k)_{k \in \mathbb{N}}$ à chaque étape du calcul de $Pre(X_k)$ jusqu'à obtenir un ensemble de cardinalité $n$. Dès lors, dans ce cas on fait appel $n-1$ fois à l'algorithme~\ref{algo:preX} et on obtient bien un algorithme en $\mathcal{O}(m.n)$.
+	\item[Algorithme~\ref{algo:attrF}] Supposons que nous utilisons une structure de données telle que l'on puisse récupérer la taille des ensembles en $\mathcal{O}(1)$, alors la complexité de cet algorithme est en $\mathcal{O}(m.n)$. En effet, dans le pire cas, on part d'un ensemble $F$ de cardinalité égale à 1 et on ne rajoute qu'un seul élément à la suite $(X_k)_{k \in \mathbb{N}}$ à chaque étape du calcul de $Pre(X_k)$ jusqu'à obtenir un ensemble de cardinalité $n$. Dès lors, dans ce cas, on fait appel $n-1$ fois à l'algorithme~\ref{algo:preX} et on obtient bien un algorithme en $\mathcal{O}(m.n)$.
 
 	
 \end{description}
