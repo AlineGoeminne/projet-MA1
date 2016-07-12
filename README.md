@@ -1,4 +1,4 @@
-# projet-MA1
+#Objectif d'atteignabilité et équilibres de Nash dans les jeux sur grahe (Projet-MA1)
 
 Projet réalisé dans le cadre de ma première année de master en mathématiques.
 
