@@ -2,6 +2,7 @@ from MinHeap import MinHeap
 
 
 
+
 class VertexDijk(object):
 
     def __init__(self, id, player, key=float("infinity"), index=0):

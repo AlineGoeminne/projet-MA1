@@ -13,6 +13,7 @@ from DijkstraMinMax import get_all_values
 from DijkstraMinMax import print_result
 from DijkstraMinMax import get_succ_in_opti_strat
 
+
 class ArenaError(Exception):
     def __init__(self, value):
         self.value = value
@@ -43,7 +44,7 @@ class Vertex(object):
         if id(self) == id(other):
             return True
         else:
-            return self.id == other.name
+            return self.id == other.id
 
     def __repr__(self):
         str = "v"+repr(self.id)
@@ -323,7 +324,7 @@ class ReachabilityGame(object):
 
     def get_vertex_player(self, id_player):
 
-        return self.partition[id_player-1]
+        return self.part[id_player-1]
 
     def get_goal_player(self, id_player):
         return self.goal[id_player-1]
@@ -342,7 +343,7 @@ class ReachabilityGame(object):
             goal_set = self.goal[player]
 
             if v.id in goal_set:
-                return True , player + 1
+                return True, player + 1
 
         return False, None
 
@@ -362,7 +363,7 @@ class ReachabilityGame(object):
                 (succ,w) = list_succ[j]
                 sum = sum + w - 1
 
-        return (self.player + 1)* (len(self.graph.vertex) + sum)
+        return (self.player + 1)*(len(self.graph.vertex) + sum)
 
     @staticmethod
     def path_vertex_to_path_index(path):
@@ -444,7 +445,7 @@ class ReachabilityGame(object):
         coalitions = {}
         for i in range(0, nbr):
             new_path = self.random_path(length)
-            (is_Nash, coalitions) = self.is_a_Nash_equilibrium(new_path,None, coalitions)
+            (is_Nash, coalitions) = self.is_a_Nash_equilibrium(new_path, None, coalitions)
             if is_Nash:
                 en_path.append(new_path)
         return en_path
@@ -610,7 +611,28 @@ class ReachabilityGame(object):
 
 
 
-    #test d'un parcours d'arbre un peu plus intelligent
+    @staticmethod
+    def find_loop(path, index):
+        counter = set([])
+        loop = False
+        res = None
+
+        while(not loop and index<len(path)):
+
+            vertex = path[index]
+
+            if vertex in counter:
+                loop = True
+                res = path[0:index+1]
+
+            else:
+                counter.add(vertex)
+
+            index += 1
+
+        return res
+
+    # test d'un parcours d'arbre un peu plus intelligent
 
 
     def best_first_search(self, heuristic, frontier = None, allowed_time = float("infinity")):
@@ -623,6 +645,8 @@ class ReachabilityGame(object):
         start = time.time()
 
         max_length = self.compute_max_length()
+
+        last_goal_index = 0
 
 
         if frontier is None:
@@ -679,6 +703,7 @@ class ReachabilityGame(object):
                     new_path.append(succ_vertex)
 
                     (goal, player) = self.is_a_goal(succ_vertex)
+
 
                     if goal and player not in candidate_node.cost:
 
@@ -1479,6 +1504,10 @@ def test():
     cost = game.cost_for_all_players(path)
     print cost
 
+def find_loop_test():
+
+    path = [0,1,2,1,4,5,6,7,2,7,8,0,9]
+    print ReachabilityGame.find_loop(path,2)
 
 if __name__ == '__main__':
 
@@ -1495,4 +1524,6 @@ if __name__ == '__main__':
 
     #generate_vertex_uniform()
 
-    test()
+    #test()
+
+    find_loop_test()
