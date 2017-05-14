@@ -4,9 +4,9 @@ sys.path.insert(1, os.path.join(sys.path[0], '..'))
 
 import unittest
 
-from DijkstraMinMax import convertPred2NbrSucc
-from DijkstraMinMax import dijkstraMinMax
-from DijkstraMinMax import print_result
+from Value import convertPred2NbrSucc
+from Value import dijkstraMinMax
+from Value import print_result
 from GraphGame import ReachabilityGame
 from GraphGame import Graph
 from GraphGame import Vertex
