@@ -5,13 +5,13 @@ import copy
 import time
 
 
-from DijkstraMinMax import dijkstraMinMax
-from DijkstraMinMax import VertexDijkPlayerMax
-from DijkstraMinMax import VertexDijkPlayerMin
-from DijkstraMinMax import convertPred2NbrSucc
-from DijkstraMinMax import get_all_values
-from DijkstraMinMax import print_result
-from DijkstraMinMax import get_succ_in_opti_strat
+from Value import dijkstraMinMax
+from Value import VertexDijkPlayerMax
+from Value import VertexDijkPlayerMin
+from Value import convertPred2NbrSucc
+from Value import get_all_values
+from Value import print_result
+from Value import get_succ_in_opti_strat
 
 
 class ArenaError(Exception):
@@ -28,6 +28,19 @@ class BestFirstSearchError(Exception):
     def __str__(self):
         return repr(self.value)
 
+class NegativeCircuitError(Exception):
+    def __init__(self,value):
+        self.value = value
+
+    def __str__(self):
+        return repr(self.value)
+
+class GraphError(Exception):
+    def __init__(self, value):
+        self.value = value
+
+    def __str__(self):
+        return repr(self.value)
 
 
 class Vertex(object):
@@ -110,11 +123,9 @@ class Graph(object):
                 for j in range(0, nbr_vertex):
 
                     weight = random.randint(a, b)
-                    #weight_decimal = random.random()
-                    weight_decimal = 0
 
                     if i != j:
-                        line.append(weight + weight_decimal)
+                        line.append(weight)
                     else:
                         line.append(0)
 
@@ -126,12 +137,10 @@ class Graph(object):
                 new_succ = []
                 for j in range(0, nbr_vertex):
                     weight = random.randint(a, b)
-                    #weight_decimal = random.random()
-                    weight_decimal = 0
 
 
                     if i != j:
-                        new_succ.append((j, weight + weight_decimal))
+                        new_succ.append((j, weight))
 
                 res.append(new_succ)
             return res
@@ -141,12 +150,10 @@ class Graph(object):
                 new_pred = []
                 for j in range(0, nbr_vertex):
                     weight = random.randint(a, b)
-                    #weight_decimal = random.random()
-                    weight_decimal = 0
 
 
                     if i != j:
-                        new_pred.append((j, weight + weight_decimal))
+                        new_pred.append((j, weight))
 
                 res.append(new_pred)
             return res
@@ -267,6 +274,32 @@ class Graph(object):
         for i in range(0, nb_vertex):
             string = string + str(mat[i]) + "\n"
         return string
+
+
+    def floyd_warshall(self):
+
+        """ Calcule le plus court chemin entre chaque paire de sommet du graphe."""
+
+        if self.mat == None:
+            raise GraphError(" Pas de representation matricielle du graphe")
+
+        M = self.mat
+        n = len(M)
+
+        for i in xrange(n):
+           M[i][i] = 0
+
+        for k in xrange(n):
+            for i in xrange(n):
+                for j in xrange(n):
+                    M[i][j]= min(M[i][j], M[i][k]+ M[k][j])
+                    if i == j and M[i][j] < 0:
+                        raise NegativeCircuitError("Il y a un circuit de poids strictement negatif dans le graphe")
+
+
+        return M
+
+
 
 
 
@@ -486,7 +519,7 @@ class ReachabilityGame(object):
     @staticmethod
     def graph_transformer_real_dijkstra(graph):
         """
-         A partir d'un graphe, modelise le graphe du jeu min-max tel que le joueur voulant minimiser est min_player
+         A partir d'un graphe, modelise le graphe du jeu ou tous les noeuds appartiennent au joueur Min.
 
         """
 

@@ -289,6 +289,7 @@ def parser_houses(file_name):
 
             else:
                 if task_begin:
+                    print res
                     pref = map(int, res.split(" "))
                     pref_set = set()
                     for i in range(1,len(pref)):
