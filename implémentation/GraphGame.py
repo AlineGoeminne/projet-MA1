@@ -64,6 +64,34 @@ class Vertex(object):
         return str
 
 
+class Weight(object):
+    def __init__(self, w):
+        self.w = w
+
+    def __str__(self):
+        return repr(self.w)
+
+
+
+
+class UniqueWeight(Weight):
+
+    def __init__(self, w):
+        Weight.__init__(self,w)
+
+    def get_weight(self,p=None):
+        return self.w
+
+
+
+class TupleWeight(Weight):
+    def __init__(self,w):
+       Weight.__init__(self,w)
+
+    def get_weight(self,p):
+        return self.w[p-1]
+
+
 class Graph(object):
 
     """
@@ -276,14 +304,18 @@ class Graph(object):
         return string
 
 
-    def floyd_warshall(self):
+    def floyd_warshall(self,tuple=False,compo=None):
 
         """ Calcule le plus court chemin entre chaque paire de sommet du graphe."""
 
         if self.mat == None:
             raise GraphError(" Pas de representation matricielle du graphe")
 
-        M = self.mat
+        if tuple:
+            M = Graph.mat_proj_componant(self.mat,compo)
+        else:
+            M = self.mat
+
         n = len(M)
 
         for i in xrange(n):
@@ -298,6 +330,23 @@ class Graph(object):
 
 
         return M
+
+    @staticmethod
+    def mat_proj_componant(mat,compo):
+
+        new_M = []
+        n = len(mat)
+
+        for i in xrange(n):
+            new_M.append([])
+            for j in xrange(n):
+                new_M[i] .append( mat[i][j][compo])
+
+        return new_M
+
+
+
+
 
 
 
