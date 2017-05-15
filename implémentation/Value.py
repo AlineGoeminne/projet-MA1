@@ -309,10 +309,14 @@ def get_all_values(T):
 
 
 
-def compute_value_with_negative_weight(graph, goal):
+def compute_value_with_negative_weight(graph, goal, tuple = False, compo=0):
 
     V = len(graph.vertex)
-    W = graph.max_weight
+
+    if tuple:
+        W = graph.max_weight[compo]
+    else:
+        W = graph.max_weight
 
     tab_value = [float("infinity")] * V
     min_1 = {}
@@ -325,7 +329,7 @@ def compute_value_with_negative_weight(graph, goal):
     iter = 0
     old_tab_value = []
     while(old_tab_value != tab_value):
-        print tab_value
+        #print tab_value
         old_tab_value = copy.deepcopy(tab_value)
         iter +=1
 
@@ -336,7 +340,7 @@ def compute_value_with_negative_weight(graph, goal):
 
 
                 if v.player == 1: # on cherche a minimiser
-                    compute_min = min_succ_value(graph.succ[v.id], old_tab_value)
+                    compute_min = min_succ_value(graph.succ[v.id], old_tab_value,tuple,compo)
                     tab_value[v.id] = compute_min[0]
                     if tab_value[v.id] != old_tab_value[v.id]:
                         min_1[v.id] = compute_min[1]
@@ -346,7 +350,7 @@ def compute_value_with_negative_weight(graph, goal):
 
 
                 else: # on cherche a maximiser
-                    compute_max = max_succ_value(graph.succ[v.id], old_tab_value)
+                    compute_max = max_succ_value(graph.succ[v.id], old_tab_value,tuple,compo)
                     tab_value[v.id] = compute_max[0]
                     max[v.id] = compute_max[1]
 
@@ -363,20 +367,22 @@ def compute_value_with_negative_weight(graph, goal):
 
 
 
-def min_succ_value(succ, tab_value):
+def min_succ_value(succ, tab_value, tuple=False, compo=0):
 
     min = float("infinity")
     arg_min = None
 
     for p in succ:
 
-        temp = p[1] + tab_value[p[0]]
+        temp = p[1][compo] if tuple else p[1]
+        temp += tab_value[p[0]]
+
         if temp < min:
             min = temp
             arg_min = p[0]
     return (min, arg_min)
 
-def max_succ_value(succ, tab_value):
+def max_succ_value(succ, tab_value, tuple=False, compo=0):
 
 
     max = - float("infinity")
@@ -384,7 +390,8 @@ def max_succ_value(succ, tab_value):
 
     for p in succ:
 
-        temp = p[1] + tab_value[p[0]]
+        temp = p[1][compo] if tuple else p[1]
+        temp += tab_value[p[0]]
         if temp > max:
             max = temp
             arg_max = p[0]
