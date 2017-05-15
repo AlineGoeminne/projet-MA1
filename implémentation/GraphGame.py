@@ -155,7 +155,7 @@ class Graph(object):
                     if i != j:
                         line.append(weight)
                     else:
-                        line.append(0)
+                        line.append(float("infinity"))
 
                 res.append(line)
             return res
@@ -209,7 +209,7 @@ class Graph(object):
             for j in range(0, nbr_edge):
 
                 weight = mat[i][j]
-                if weight != 0:
+                if weight != float("infinity"):
                     new_succ.append((j, weight))
 
             list_succ.append(new_succ)
@@ -234,7 +234,7 @@ class Graph(object):
             for i in range(0, nbr_edge):
 
                 weight = mat[i][j]
-                if weight != 0:
+                if weight != float("infinity"):
                     new_pred.append((i, weight))
 
             list_pred.append(new_pred)
@@ -261,7 +261,7 @@ class Graph(object):
 
         for i in range(0, len(list_succ)):
             succ_i = list_succ[i]
-            line = [0] * len(list_succ)
+            line = [float("infinity")] * len(list_succ)
             for j in range(0, len(succ_i)):
                 (succ,w) = succ_i[j]
                 line[succ] = w
