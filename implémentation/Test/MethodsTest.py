@@ -3,11 +3,13 @@ import sys
 sys.path.insert(1, os.path.join(sys.path[0], '..'))
 
 from GraphGame import *
+import numpy as np
 
 
 
 def a_star_test1():
-    mat = [[0, 7, 9, 5, 4],[5, 0, 2, 9, 3],[6, 4, 0, 9, 3],[2, 7, 2, 0, 10],[8, 9, 7, 3, 0]]
+    mat = [[np.inf, 7, 9, 5, 4],[5, np.inf, 2, 9, 3],[6, 4, np.inf, 9, 3],[2, 7, 2, np.inf, 10],[8, 9, 7, 3, np.inf]]
+    #mat = [[0, 7, 9, 5, 4],[5, 0, 2, 9, 3],[6, 4, 0, 9, 3],[2, 7, 2, 0, 10],[8, 9, 7, 3, 0]]
 
     list_pred = Graph.matrix_to_list_pred(mat)
     list_succ = Graph.list_pred_to_list_succ(list_pred)
@@ -104,7 +106,7 @@ def a_star_test1():
 
 
 def a_star_test2():
-    mat = [[0, 9, 3, 3, 5],[3, 0, 3, 9, 1],[9, 8, 0, 10, 1],[8, 6, 3, 0, 8],[4, 4, 9, 4, 0]]
+    mat = [[np.inf, 9, 3, 3, 5],[3, np.inf, 3, 9, 1],[9, 8, np.inf, 10, 1],[8, 6, 3, np.inf, 8],[4, 4, 9, 4, np.inf]]
 
     list_pred = Graph.matrix_to_list_pred(mat)
     list_succ = Graph.list_pred_to_list_succ(list_pred)
@@ -410,7 +412,7 @@ def echec_init():
 
     init = v2
 
-    mat  = [[0, 62, 16, 50, 25, 72, 19, 53, 13, 96],[65, 0, 87, 48, 99, 9, 98, 21, 67, 87],[25, 8, 0, 79, 92, 27, 62, 8, 80, 80],[86, 60, 96, 0, 78, 11, 78, 67, 61, 28],[19, 76, 56, 87, 0, 29, 11, 7, 42, 60],[20, 56, 58, 28, 63, 0, 86, 71, 65, 8],[63, 51, 1, 58, 5, 63, 0, 54, 81, 9],[6, 24, 70, 69, 7, 53, 5, 0, 93, 24],[79, 7, 41, 91, 11, 28, 92, 91, 0, 51],[72, 88, 63, 80, 30, 9, 94, 57, 42, 0]]
+    mat  = [[np.inf, 62, 16, 50, 25, 72, 19, 53, 13, 96],[65, np.inf, 87, 48, 99, 9, 98, 21, 67, 87],[25, 8, np.inf, 79, 92, 27, 62, 8, 80, 80],[86, 60, 96, np.inf, 78, 11, 78, 67, 61, 28],[19, 76, 56, 87, np.inf, 29, 11, 7, 42, 60],[20, 56, 58, 28, 63, np.inf, 86, 71, 65, 8],[63, 51, 1, 58, 5, 63, np.inf, 54, 81, 9],[6, 24, 70, 69, 7, 53, 5, np.inf, 93, 24],[79, 7, 41, 91, 11, 28, 92, 91, np.inf, 51],[72, 88, 63, 80, 30, 9, 94, 57, 42, np.inf]]
     list_pred = Graph.matrix_to_list_pred(mat)
     list_succ = Graph.list_pred_to_list_succ(list_pred)
     graph = Graph(vertex, mat, list_pred, list_succ, 100)
@@ -460,7 +462,7 @@ def test_slide():
 
 if __name__ == '__main__':
 
-    #a_star_test1()
+    a_star_test1()
     #a_star_test2()
 
     #test_best_first_search()
@@ -468,6 +470,6 @@ if __name__ == '__main__':
     #test_best_first_search3()
 
     #general_test()
-    test_slide()
+    #test_slide()
 
     #echec_init()
