@@ -413,7 +413,6 @@ class ReachabilityGame(object):
 
     def is_a_goal(self, v):
 
-        # /!\ ici on suppose que les ensembles Goal_i sont disjoints
         """
         Teste si le noeud teste correspond a un etat objectif.
         Si oui renvoie (True, player) ou player est l'ensemble des joueurs ayant atteint cet objectif.
@@ -427,7 +426,6 @@ class ReachabilityGame(object):
 
             for p in xrange(1,self.player+1):
                 if self.is_a_goal_for(v,p):
-                    print v.id,"c'est un goal pour", p
                     goal = True
                     players.add(p)
 
@@ -533,6 +531,10 @@ class ReachabilityGame(object):
         coalitions = {}
         for i in range(0, nbr):
             new_path = self.random_path(length)
+            #cost = self.cost_for_all_players(new_path,True)
+            #index = self.find_index_last_goal(new_path,len(cost))
+            #lasso = ReachabilityGame.find_circuit(new_path,index+1)
+
             (is_Nash, coalitions) = self.is_a_Nash_equilibrium(new_path, None, coalitions)
             if is_Nash:
                 en_path.append(new_path)
@@ -703,19 +705,33 @@ class ReachabilityGame(object):
         return res
 
 
+    def find_index_last_goal(self,path, nb_reach_obj):
+        print path
+        print nb_reach_obj
+        i = -1
+        reach_player = set()
+        while (nb_reach_obj > 0):
+            i += 1
+            v = path[i]
+            (goal, player) = self.is_a_goal(v)
+            if goal:
+                diff = reach_player - player
+                nb_reach_obj - len(diff)
+                reach_player.union(diff)
+        return i
 
     @staticmethod
-    def find_loop(path, index):
+    def find_circuit(path, index):
         counter = set([])
-        loop = False
+        circuit = False
         res = None
 
-        while(not loop and index<len(path)):
+        while(not circuit and index<len(path)):
 
             vertex = path[index]
 
             if vertex in counter:
-                loop = True
+                circuit = True
                 res = path[0:index+1]
 
             else:
@@ -752,8 +768,8 @@ class ReachabilityGame(object):
 
 
             if goal:
-                p = player.pop()
-                initial_node.cost[p] = 0
+                for p in player:
+                    initial_node.cost[p] = 0
             value = heuristic(self, initial_node.cost,0, 1, self.init, all_dijk)
             initial_node.value = value
             frontier = []
@@ -801,20 +817,27 @@ class ReachabilityGame(object):
 
                     (goal, player) = self.is_a_goal(succ_vertex)
 
-                    if goal: p = player.pop()
-                    if goal and p not in candidate_node.cost:
+                    if goal:
+                        new_reach = player - set(candidate_node.cost.keys())
 
-                        (nash, coalitions) = self.is_a_Nash_equilibrium_one_player(new_path, p)
+                        if len(new_reach)!= 0:
+                            nash = True
+                            for p in new_reach:
 
-                        if nash:
+                                (nash_, coalitions) = self.is_a_Nash_equilibrium_one_player(new_path, p)
+                                if not nash_:
+                                    nash = False
 
-                            new_cost = copy.deepcopy(candidate_node.cost)
-                            new_cost[p] = epsilon
-                            value = heuristic(self, new_cost,epsilon, len(new_path), succ_vertex, all_dijk)
 
-                            new_node = Node(new_path, candidate_node, epsilon, new_cost, value)
+                            if nash:
 
-                            heapq.heappush(frontier, new_node)
+                                new_cost = copy.deepcopy(candidate_node.cost)
+                                new_cost[p] = epsilon
+                                value = heuristic(self, new_cost,epsilon, len(new_path), succ_vertex, all_dijk)
+
+                                new_node = Node(new_path, candidate_node, epsilon, new_cost, value)
+
+                                heapq.heappush(frontier, new_node)
 
                     else:
                         value = heuristic(self, candidate_node.cost,epsilon, len(new_path), succ_vertex, all_dijk)
@@ -919,7 +942,6 @@ class ReachabilityGame(object):
             return value + penality + tab_result[last_vertex.id]
 
 
-    #todo: attention pas compatabile avec le nouveau is_a_goal
     def init_search(self):
 
 
@@ -954,7 +976,7 @@ class ReachabilityGame(object):
                     goal_is_reached = True
 
             return path, player
-    #TODO : attention pas compatible avec le nouveau is_a_goal
+
     def init_search_goal(self, goal):
 
         """
@@ -982,13 +1004,14 @@ class ReachabilityGame(object):
 
             return path
 
-    #TODO attention: pas compatible avec le nouveau is_a_goal
     def best_first_search_with_init_path(self, evaluation, allowed_time=float("infinity")):
 
         (path, player) = self.init_search()
-
-        (nash, coalition) = self.is_a_Nash_equilibrium_one_player(path, player)
-
+        nash = True
+        for p in player:
+            (nash_, coalition) = self.is_a_Nash_equilibrium_one_player(path, p)
+            if not nash_:
+                nash = False
         if nash:
             cost = self.cost_for_all_players(path,True)
             epsilon = self.compute_epsilon(path)
@@ -1002,7 +1025,7 @@ class ReachabilityGame(object):
 
         else:
             return None
-    #TODO: attention pas compatible avec le nouveau is_a_goal
+
     def best_first_search_with_init_path_both_two(self, evaluation, allowed_time=float("infinity")):
 
         """
@@ -1026,7 +1049,6 @@ class ReachabilityGame(object):
 
         return None
 
-    #TODO attention: pas compatible avec le nouveau is_a_goal
     def best_first_search_with_init_path_both_two_aux(self, evaluation, goal, allowed_time=float("infinity")):
 
         if evaluation is ReachabilityGame.a_star:
@@ -1037,7 +1059,12 @@ class ReachabilityGame(object):
         (is_goal,player) = self.is_a_goal(goal)
         path = self.init_search_goal(goal)
 
-        (nash, coalition) = self.is_a_Nash_equilibrium_one_player(path, player)
+        nash = True
+        for p in player:
+
+            (nash_, coalition) = self.is_a_Nash_equilibrium_one_player(path, p)
+            if not  nash_:
+                nash = False
 
         if nash:
             cost = self.cost_for_all_players(path, True)
@@ -1094,9 +1121,10 @@ class ReachabilityGame(object):
         reach_goals = set()
         (goal, player) = self.is_a_goal(path[0])
         if goal:
-            cost[player] = weight
-            reach_goals_player.add(player)
-            reach_goals.add(path[0].id)
+            for p in player:
+                cost[p] = weight
+                reach_goals_player.add(p)
+                reach_goals.add(path[0].id)
 
         for i in range(1, len(path)):
 
@@ -1107,10 +1135,11 @@ class ReachabilityGame(object):
             # on teste si on ne vient pas d atteindre un nouvel etat objectif
             if v.id not in reach_goals:
                 (goal, player) = self.is_a_goal(v)
-                if goal and player not in reach_goals_player:
-                    cost[player] = weight
-                    reach_goals_player.add(player)
-                    reach_goals.add(v.id)
+                for p in player:
+                    if goal and p not in reach_goals_player:
+                        cost[p] = weight
+                        reach_goals_player.add(p)
+                        reach_goals.add(v.id)
 
         if (not only_reached):
             for p in range(1, self.player + 1):
