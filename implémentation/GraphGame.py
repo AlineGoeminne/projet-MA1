@@ -416,18 +416,32 @@ class ReachabilityGame(object):
         # /!\ ici on suppose que les ensembles Goal_i sont disjoints
         """
         Teste si le noeud teste correspond a un etat objectif.
-        Si oui renvoie (True, player) ou player est le joueur ayant atteint son objectif
+        Si oui renvoie (True, player) ou player est l'ensemble des joueurs ayant atteint cet objectif.
         Si non renvoie (False, None)
         """
 
         for player in range(0, len(self.goal)):
 
-            goal_set = self.goal[player]
+            goal = False
+            players = set()
 
-            if v.id in goal_set:
-                return True, player + 1
+            for p in xrange(1,self.player+1):
+                if self.is_a_goal_for(v,p):
+                    print v.id,"c'est un goal pour", p
+                    goal = True
+                    players.add(p)
 
-        return False, None
+
+        return goal,players
+
+    def is_a_goal_for(self,v,p):
+
+        """
+        Teste si le noeud v correspond a un etat objectif du joueur p.
+
+        """
+
+        return v.id in self.goal[p-1]
 
 
 
@@ -436,16 +450,8 @@ class ReachabilityGame(object):
         """
         Calcule la longueur maximale de l outcome d un EN
         """
-        sum = 0
-        adj = self.graph.succ
 
-        for i in range(0, len(adj)):
-            list_succ = adj[i]
-            for j in range(0,len(list_succ)):
-                (succ,w) = list_succ[j]
-                sum = sum + w - 1
-
-        return (self.player + 1)*(len(self.graph.vertex) + sum)
+        return (self.player + 1)*len(self.graph.vertex)
 
     @staticmethod
     def path_vertex_to_path_index(path):
@@ -602,6 +608,8 @@ class ReachabilityGame(object):
 
     def breadth_first_search(self, first=True, allowed_time= float("infinity")):
 
+        #/!\ ici on suppose les ensembles objectifs disjoints
+
         start = time.time()
 
         max_length = self.compute_max_length()
@@ -617,12 +625,13 @@ class ReachabilityGame(object):
         (goal, player) = self.is_a_goal(self.init)
 
         if goal:
-            initial_node.cost[player] = 0
+            p = player.pop()
+            initial_node.cost[p] = 0
 
         frontier = []
         frontier.append(initial_node)
 
-        while True and time.time() - start < allowed_time:
+        while time.time() - start < allowed_time:
 
             if len(frontier) == 0:
                 raise BestFirstSearchError(" Plus d'elements dans la frontiere")
@@ -672,13 +681,15 @@ class ReachabilityGame(object):
 
                     (goal, player) = self.is_a_goal(succ_vertex)
 
-                    if goal and player not in candidate_node.cost:
+                    if goal: p = player.pop()
 
-                        (nash, coalitions) = self.is_a_Nash_equilibrium_one_player(new_path, player)
+                    if goal and p not in candidate_node.cost:
+
+                        (nash, coalitions) = self.is_a_Nash_equilibrium_one_player(new_path, p)
 
                         if nash:
                             new_cost = copy.deepcopy(candidate_node.cost)
-                            new_cost[player] = epsilon
+                            new_cost[p] = epsilon
 
                             new_node = Node(new_path, candidate_node, epsilon, new_cost)
 
@@ -719,6 +730,8 @@ class ReachabilityGame(object):
 
     def best_first_search(self, heuristic, frontier = None, allowed_time = float("infinity")):
 
+        #ici on suppose l'ensemble des objectifs disjoints
+
         if heuristic is ReachabilityGame.a_star:
             all_dijk = self.compute_all_dijkstra()
         else:
@@ -737,14 +750,16 @@ class ReachabilityGame(object):
 
             (goal, player) = self.is_a_goal(self.init)
 
+
             if goal:
-                initial_node.cost[player] = 0
+                p = player.pop()
+                initial_node.cost[p] = 0
             value = heuristic(self, initial_node.cost,0, 1, self.init, all_dijk)
             initial_node.value = value
             frontier = []
             heapq.heappush(frontier, initial_node)
 
-        while True and time.time() - start < allowed_time:
+        while time.time() - start < allowed_time:
 
             if len(frontier) == 0:
                 raise BestFirstSearchError(" Plus d'elements dans la frontiere")
@@ -786,15 +801,15 @@ class ReachabilityGame(object):
 
                     (goal, player) = self.is_a_goal(succ_vertex)
 
+                    if goal: p = player.pop()
+                    if goal and p not in candidate_node.cost:
 
-                    if goal and player not in candidate_node.cost:
-
-                        (nash, coalitions) = self.is_a_Nash_equilibrium_one_player(new_path, player)
+                        (nash, coalitions) = self.is_a_Nash_equilibrium_one_player(new_path, p)
 
                         if nash:
 
                             new_cost = copy.deepcopy(candidate_node.cost)
-                            new_cost[player] = epsilon
+                            new_cost[p] = epsilon
                             value = heuristic(self, new_cost,epsilon, len(new_path), succ_vertex, all_dijk)
 
                             new_node = Node(new_path, candidate_node, epsilon, new_cost, value)
@@ -904,8 +919,9 @@ class ReachabilityGame(object):
             return value + penality + tab_result[last_vertex.id]
 
 
-
+    #todo: attention pas compatabile avec le nouveau is_a_goal
     def init_search(self):
+
 
         """
         On va tester le chemin du noeud initial -> l'objectif le plus proche, si cela respecte tjs les conditions pour
@@ -938,7 +954,7 @@ class ReachabilityGame(object):
                     goal_is_reached = True
 
             return path, player
-
+    #TODO : attention pas compatible avec le nouveau is_a_goal
     def init_search_goal(self, goal):
 
         """
@@ -966,7 +982,7 @@ class ReachabilityGame(object):
 
             return path
 
-
+    #TODO attention: pas compatible avec le nouveau is_a_goal
     def best_first_search_with_init_path(self, evaluation, allowed_time=float("infinity")):
 
         (path, player) = self.init_search()
@@ -986,7 +1002,7 @@ class ReachabilityGame(object):
 
         else:
             return None
-
+    #TODO: attention pas compatible avec le nouveau is_a_goal
     def best_first_search_with_init_path_both_two(self, evaluation, allowed_time=float("infinity")):
 
         """
@@ -1010,6 +1026,7 @@ class ReachabilityGame(object):
 
         return None
 
+    #TODO attention: pas compatible avec le nouveau is_a_goal
     def best_first_search_with_init_path_both_two_aux(self, evaluation, goal, allowed_time=float("infinity")):
 
         if evaluation is ReachabilityGame.a_star:

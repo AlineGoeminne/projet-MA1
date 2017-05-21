@@ -2,6 +2,8 @@ from GraphGame import ReachabilityGame
 from GraphGame import Vertex
 from GraphGame import Graph
 from GraphToDotConverter import graph_house_to_dot
+from GraphToDotConverter import tree_house_to_dot
+from GraphToDotConverter import backward_house_to_dot
 import random
 import copy
 
@@ -15,7 +17,7 @@ class Task(object):
 
 
     def __str__(self):
-        return repr(self.id) + ","+repr(self.eC)
+        return repr(self.id)
 
 class TaskFactory(object):
     number_tasks = 0
@@ -84,11 +86,14 @@ class MemoHousesVertex(object):
 
 class HousesVertexFactory(object):
 
-    number_houses_vertex = 0
+    #number_houses_vertex = 0
+
+    def __init__(self, nb_init = 0):
+        self.number_houses_vertex = nb_init
 
     def create_houses_vertex(self, player,time,list_pref_tasks_for_all):
-        vertex = HousesVertex(HousesVertexFactory.number_houses_vertex,player, time, list_pref_tasks_for_all)
-        HousesVertexFactory.number_houses_vertex += 1
+        vertex = HousesVertex(self.number_houses_vertex,player, time, list_pref_tasks_for_all)
+        self.number_houses_vertex += 1
         return vertex
 
 class Wraping2GenerateHousesGame(object):
@@ -121,31 +126,197 @@ class HousesGame(ReachabilityGame):
                 return False
         return True
 
-    def aux_generate_houses_game(self,nb_player,
-                                 nbr_interval,
-                                 list_pref_tasks_for_all,
-                                 time,
-                                 all_vertices,
-                                 list_succ,
-                                 goal,
-                                 memo,
-                                 factory,
-                                 turn_player,
-                                 max_iter = 10000000):
+    def aux_generate_houses_game_tree(self,nb_player,
+                                      nb_interval,
+                                      list_pref_tasks,
+                                      time,
+                                      all_vertices,
+                                      list_succ,
+                                      goal,
+                                      factory,
+                                      turn_player,
+                                      partial_weight):
+        player = turn_player[-1]
+
+        vertex = factory.create_houses_vertex(player, time, list_pref_tasks)
+        all_vertices.append(vertex)
+        list_succ.append([])
+
+        for p in xrange(1, nb_player + 1):
+
+            if HousesGame.is_an_objective(vertex, p):
+                goal[p - 1].add(vertex.id)
+
+        if time == nb_interval+1 : #temps ecoule
+
+            list_succ[vertex.id].append((vertex.id,(0,)*nb_player))
+            return vertex
+
+        else:
+            new_turn_player = None
+            time_changed = len(turn_player) == 1
+            if time_changed: #il reste un unique joueur qui doit jouer
+                new_turn_player = range(1,nb_player+1)
+                #random.shuffle(new_turn_player)
+
+            for a in list_pref_tasks[player - 1]:
+                if time in a.pref_set:
+                    new_list = copy.deepcopy(list_pref_tasks)
+                    new_list[player - 1].remove(a)
+                    up_partial_weight = HousesGame.update_partial_weight(partial_weight, a.task.eC, player)
+
+                    if not (time_changed):
+                        turn = copy.copy(turn_player)
+                        turn.pop()
+
+
+                        succ = self.aux_generate_houses_game_tree(nb_player,
+                                                                      nb_interval,
+                                                                      new_list,
+                                                                      time,
+                                                                      all_vertices,
+                                                                      list_succ,
+                                                                      goal,
+                                                                      factory,
+                                                                      turn,
+                                                                      up_partial_weight)
+                        list_succ[vertex.id].append((succ.id, (0,) * nb_player))
+
+                    else:
+                        turn = copy.copy(new_turn_player)
+                        reinitialize_partial_weight = [0] * nb_player
+                        succ = self.aux_generate_houses_game_tree(nb_player,
+                                                                      nb_interval,
+                                                                      new_list,
+                                                                      time + 1,
+                                                                      all_vertices,
+                                                                      list_succ,
+                                                                      goal,
+                                                                      factory,
+                                                                      turn,
+                                                                      reinitialize_partial_weight)
+
+                        list_succ[vertex.id].append((succ.id, self.compute_real_weight(up_partial_weight)))
+
+            new_list = copy.deepcopy(list_pref_tasks)
+            up_partial_weight = copy.copy(partial_weight)
+
+            if not (time_changed):
+                turn = copy.copy(turn_player)
+                turn.pop()
+
+                succ = self.aux_generate_houses_game_tree(nb_player,
+                                                          nb_interval,
+                                                          new_list,
+                                                          time,
+                                                          all_vertices,
+                                                          list_succ,
+                                                          goal,
+                                                          factory,
+                                                          turn,
+                                                          up_partial_weight)
+                list_succ[vertex.id].append((succ.id, (0,) * nb_player))
+
+            else:
+                turn = copy.copy(new_turn_player)
+                new_partial_weight = [0]*nb_player
+                succ = self.aux_generate_houses_game_tree(nb_player,
+                                                          nb_interval,
+                                                          new_list,
+                                                          time + 1,
+                                                          all_vertices,
+                                                          list_succ,
+                                                          goal,
+                                                          factory,
+                                                          turn,
+                                                          new_partial_weight)
+
+                list_succ[vertex.id].append((succ.id, self.compute_real_weight(up_partial_weight)))
+
+            return vertex
+
+
+    def generate_houses_game_tree(self, nb_player,
+                                  nb_interval,
+                                  list_pref_tasks):
+
+        turn = range(1, nb_player + 1)
+        #random.shuffle(turn)
+        goal = []
+        for x in xrange(nb_player):
+            goal.append(set())
+        time = 1
+        all_vertices = []
+        list_succ = []
+        partial_weight = [0]*self.player
+        factory = HousesVertexFactory()
+        self.aux_generate_houses_game_tree(nb_player,nb_interval,list_pref_tasks,time,all_vertices,list_succ,goal,factory,turn,partial_weight)
+        graph = Graph(all_vertices, None, None, list_succ)
+        return graph, all_vertices[0], goal, None
+
+
+
+    @staticmethod
+    def update_partial_weight(partial_weight,weight,player):
+        new_partial_weight = copy.copy(partial_weight)
+        new_partial_weight[player-1] += weight
+        return new_partial_weight
+
+    def compute_real_weight(self, partial_weight):
+
+        res = [0] * self.player
+
+        totC = 0
+        totO = 0
+
+        for i in xrange(0,self.player):
+
+            totC += max(0, partial_weight[i] - self.eP)
+            totO += partial_weight[i]
+        totO -= self.player* self.eP
+        bTot = (totC - totO) * self.cIn + totO* self.cOut
+
+        if totC != 0:
+            ratio = bTot / totC
+
+            for i in xrange(0,self.player):
+
+                res[i] = ratio * (partial_weight[i] - self.eP)
+
+        #todo trouver une solution acceptable
+        else:
+            for i in xrange(0,self.player):
+                res[i] = partial_weight[i] - self.eP
+                #res[i] = 42
+
+        return tuple(res)
+
+
+
+
+    #TODO:retirer le max_iter
+    def aux_generate_houses_game_dag(self, nb_player,
+                                     nbr_interval,
+                                     list_pref_tasks_for_all,
+                                     time,
+                                     all_vertices,
+                                     list_succ,
+                                     goal,
+                                     memo,
+                                     factory,
+                                     turn_player,
+                                     max_iter = 10000000):
         max_iter -=1
         time_changed = False
         new_vertex = False
 
         player = turn_player[-1]
-        vertex = None
-        #vertex = memo.get_memo(time, turn_player, list_pref_tasks_for_all)
-        vertex = memo.all_vertices.get((time, tuple(turn_player), tuple(map(tuple,list_pref_tasks_for_all))))
-        print "vertex apres get", vertex
+        vertex = memo.get_memo(time, turn_player, list_pref_tasks_for_all)
+        #vertex = memo.all_vertices.get((time, tuple(turn_player), tuple(map(tuple,list_pref_tasks_for_all))))
 
         if vertex is None:
             new_vertex = True
             vertex = factory.create_houses_vertex(player, time, list_pref_tasks_for_all)
-            print "nouveau vertex ", vertex.id
             all_vertices.append(vertex)
             list_succ.append([])
             memo.put_memo(time, turn_player, list_pref_tasks_for_all, vertex)
@@ -158,11 +329,11 @@ class HousesGame(ReachabilityGame):
 
         turn_player.pop()
 
-        if (time == nbr_interval and len(turn_player) == 0)\
-                or HousesGame.all_compleated(list_pref_tasks_for_all)\
-                or max_iter ==0:
+        if (time == nbr_interval and len(turn_player) == 0):
+                #or HousesGame.all_compleated(list_pref_tasks_for_all)\
+                #or max_iter ==0:
             if new_vertex:
-                list_succ[vertex.id].append((vertex.id,self.compute_weight(vertex,vertex)))
+                list_succ[vertex.id].append((vertex.id,self.compute_weight_old(vertex, vertex)))
 
             return vertex
 
@@ -190,15 +361,15 @@ class HousesGame(ReachabilityGame):
 
                         new_list[player - 1].remove(a)
                         if time_changed:
-                            succ = self.aux_generate_houses_game(nb_player, nbr_interval, new_list, time + 1,
-                                                                   all_vertices, list_succ, goal, memo, factory,
-                                                                   new_turn, max_iter)
+                            succ = self.aux_generate_houses_game_dag(nb_player, nbr_interval, new_list, time + 1,
+                                                                     all_vertices, list_succ, goal, memo, factory,
+                                                                     new_turn, max_iter)
                         else:
-                            succ = self.aux_generate_houses_game(nb_player, nbr_interval, new_list, time,
-                                                                   all_vertices, list_succ, goal, memo, factory,
-                                                                   new_turn, max_iter)
+                            succ = self.aux_generate_houses_game_dag(nb_player, nbr_interval, new_list, time,
+                                                                     all_vertices, list_succ, goal, memo, factory,
+                                                                     new_turn, max_iter)
 
-                        list_succ[vertex.id].append((succ.id, self.compute_weight(vertex,succ)))
+                        list_succ[vertex.id].append((succ.id, self.compute_weight_old(vertex, succ)))
 
                 # on considere maintenant ne rien faire comme une action
                 new_list = []
@@ -209,16 +380,16 @@ class HousesGame(ReachabilityGame):
                 time = new_time
 
                 if time_changed:
-                    succ =self.aux_generate_houses_game(nb_player, nbr_interval, new_list, time + 1, all_vertices,
-                                                           list_succ, goal, memo, factory, new_turn, max_iter)
+                    succ =self.aux_generate_houses_game_dag(nb_player, nbr_interval, new_list, time + 1, all_vertices,
+                                                            list_succ, goal, memo, factory, new_turn, max_iter)
                 else:
-                    succ = self.aux_generate_houses_game(nb_player, nbr_interval, new_list, time, all_vertices,
-                                                           list_succ, goal, memo, factory, new_turn, max_iter)
+                    succ = self.aux_generate_houses_game_dag(nb_player, nbr_interval, new_list, time, all_vertices,
+                                                             list_succ, goal, memo, factory, new_turn, max_iter)
 
-                list_succ[vertex.id].append((succ.id, self.compute_weight(vertex,succ)))
+                list_succ[vertex.id].append((succ.id, self.compute_weight_old(vertex, succ)))
             return vertex
 
-    def generate_houses_game(self,nb_player, nbr_interval, list_pref_tasts_for_all):
+    def generate_houses_game_dag(self, nb_player, nbr_interval, list_pref_tasts_for_all):
         turn = range(1, nb_player + 1)
         random.shuffle(turn)
         goal = []
@@ -230,13 +401,12 @@ class HousesGame(ReachabilityGame):
         memo = MemoHousesVertex()
         factory = HousesVertexFactory()
         #wrap = Wraping2GenerateHousesGame(1, [], [], goal, MemoHousesVertex(), HousesVertexFactory(), turn)
-        self.aux_generate_houses_game(nb_player, nbr_interval, list_pref_tasts_for_all, 1, all_vertices, list_succ, goal, memo, factory, turn)
+        self.aux_generate_houses_game_dag(nb_player, nbr_interval, list_pref_tasts_for_all, 1, all_vertices, list_succ, goal, memo, factory, turn)
         graph = Graph(all_vertices,None,None,list_succ)
-        print factory.number_houses_vertex
         return graph,all_vertices[0],goal,None
 
 
-    def compute_weight(self,first_vertex, second_vertex):
+    def compute_weight_old(self, first_vertex, second_vertex):
         p = first_vertex.player
         nb_p = len(first_vertex.tasks)
 
@@ -247,19 +417,113 @@ class HousesGame(ReachabilityGame):
 
         consumption = 0
         for t in diff:
-            consumption -= t.eC
+            consumption += t.eC
 
-        consumption += self.eP
+        consumption -= self.eP
         res = [0] * nb_p
         res[p - 1] = consumption
 
         return tuple(res)
 
-    def __init__(self, player, nbr_interval, energy_production, list_pref_tasks_for_all):
+    def __init__(self, player, nbr_interval, energy_production, list_pref_tasks_for_all, cIn = None, cOut = None):
 
+        self.cIn = cIn
+        self.cOut = cOut
         self.eP = energy_production
-        (graph, init, goal, partition) = self.generate_houses_game(player,nbr_interval,list_pref_tasks_for_all)
+        self.player = player
+        (graph, init, goal, partition) = self.generate_houses_game_tree(player, nbr_interval, list_pref_tasks_for_all)
         ReachabilityGame.__init__(self,player,graph,init,goal,partition)
+
+
+    @staticmethod
+    def choice_action(cost, player):
+
+        return HousesGame.all_the_best_actions(cost, player)
+
+
+    @staticmethod
+    def one_of_the_best_action(cost, player):
+        pass
+
+    @staticmethod
+    def all_the_best_actions(actions, player):
+        (best,cost) = actions.popitem()
+
+
+        res = {best}
+        for a in iter(actions):
+            new_cost = actions[a][player-1]
+            if new_cost < cost[player-1]:
+                res = set()
+                res.add(a)
+                cost = actions[a]
+            if new_cost == cost[player-1]:
+                res.add(a)
+
+        return res, cost
+    @staticmethod
+    def minimize_the_sum_action(cost):
+
+        pass
+
+    def aux_backward(self, vertex,  strategies):
+
+        vertex_id = vertex.id
+
+        if self.graph.succ[vertex_id][0][0] == vertex_id: # boucle -> etat terminal
+            res = [0]*self.player
+            for p in xrange(1, self.player+1):
+                if vertex.id not in self.goal[p-1]:
+                    res[p-1] = float("infinity")
+
+            strategies[vertex_id] = ([vertex_id],res)
+            return res
+
+        else:
+            all_succ = self.graph.succ[vertex_id]
+            all_possibilities = {}
+            for tuple_s in all_succ:
+                s = self.graph.vertex[tuple_s[0]]
+                sub_values = self.aux_backward(s, strategies)
+                print "sub_values",vertex_id, sub_values
+                goal,players = self.is_a_goal(vertex)
+                print players,  self.goal
+                values = HousesGame.sum_two_vector_of_weight(sub_values, tuple_s[1],players)
+                all_possibilities[s.id] = values
+            (choices, cost) = HousesGame.choice_action(all_possibilities, vertex.player)
+            strategies[vertex_id] = (choices,cost)
+            return cost
+
+
+    @staticmethod
+
+    def sum_two_vector_of_weight(v1,v2, not_for):
+
+        n = len(v1)
+        res = [0]*n
+
+        for i in xrange(n):
+            if i+1 not in not_for:
+                res[i] = v1[i] + v2[i]
+        return res
+
+
+
+    def backward(self):
+
+        init = self.graph.vertex[0]
+        strategies = {}
+        self.aux_backward(init,strategies)
+        return strategies
+
+
+
+
+
+
+
+
+
 
 
 
@@ -289,7 +553,6 @@ def parser_houses(file_name):
 
             else:
                 if task_begin:
-                    print res
                     pref = map(int, res.split(" "))
                     pref_set = set()
                     for i in range(1,len(pref)):
@@ -312,12 +575,27 @@ def parser_houses(file_name):
 def run_generate_graph_houses(inpout,outpout):
 
     nb_houses, energy_production, nb_intervalle, pref_tasks_list = parser_houses(inpout)
-    game = HousesGame(nb_houses, nb_intervalle, energy_production, pref_tasks_list)
+    game = HousesGame(nb_houses, nb_intervalle, energy_production, pref_tasks_list,2,4)
     graph_house_to_dot(game,outpout)
 
 
+def test_backward(inpout):
+    nb_houses, energy_production, nb_intervalle, pref_tasks_list = parser_houses(inpout)
+    game = HousesGame(nb_houses, nb_intervalle, energy_production, pref_tasks_list, 2, 4)
+    strategies = game.backward()
+    backward_house_to_dot(game,strategies, "backward.dot")
+    print strategies
 
 
+
+
+def test_dag_to_tree(inpout, output_dag, output_tree):
+
+    nb_houses, energy_production, nb_intervalle, pref_tasks_list = parser_houses(inpout)
+    game = HousesGame(nb_houses,nb_intervalle, energy_production, pref_tasks_list)
+    new_succ, new_vertices = game.dag_to_tree()
+    tree_house_to_dot(new_succ,game.goal,[],game.graph.vertex,new_vertices,output_tree)
+    graph_house_to_dot(game, output_dag)
 
 
 
@@ -382,12 +660,27 @@ def memo_test():
     print "memo", memo
     print memo.get((1,(1,2),tuple([tuple(list2),tuple([])])))
 
+def test():
+
+    v1 = HousesVertex(1,2,3,[])
+    v2 = HousesVertex(v1.id,v1.player, v1.time, v1.tasks)
+
+    v2.time = 42
+    v2.tasks.append(3)
+
+    print v1.time, v2.time
+    print v1.tasks
+
 
 
 if __name__ == '__main__':
 
+
+
     #first_simple_test()
     #parser_test()
-    run_dot_parser_test()
+    #run_dot_parser_test()
     #memo_test()
+    #test_dag_to_tree("file_houses.txt", "graph_houses.dot","tree_houses.dot")
+    test_backward("file_houses.txt")
 

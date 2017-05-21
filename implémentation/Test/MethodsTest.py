@@ -462,7 +462,7 @@ def test_slide():
 
 if __name__ == '__main__':
 
-    a_star_test1()
+    #a_star_test1()
     #a_star_test2()
 
     #test_best_first_search()
@@ -470,6 +470,6 @@ if __name__ == '__main__':
     #test_best_first_search3()
 
     #general_test()
-    #test_slide()
+    test_slide()
 
     #echec_init()
