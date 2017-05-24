@@ -1293,14 +1293,21 @@ class ReachabilityGame(object):
         nash = True # le chemin est un equilibre de Nash
         ind = 0 # indice du noeud courant dans le chemin
 
-        (goal,player) = self.is_a_goal(path[0])
-        if goal:
-            for p in player:
-                path_cost[p] = 0
+        #(goal,player) = self.is_a_goal(path[0])
+        #if goal:
+            #for p in player:
+                #path_cost[p] = 0
+
+
 
         current = path[ind]
+        already_visit_players = set()
+
         pred = None
         while nash and ind < len(path):
+
+            (goal,player) = self.is_a_goal(path[ind])
+            already_visit_players = already_visit_players.union(player)
 
             if ind != 0:
                 pred = current
@@ -1309,7 +1316,7 @@ class ReachabilityGame(object):
                 epsilon = tuple(ReachabilityGame.sum_two_vector_of_weight(epsilon,res)) if tuple_ else epsilon + res
                 #epsilon += Graph.get_weight_pred(current, pred, self.graph.pred)
 
-            if current.player not in already_test: #alors il faut tester pour ce joueur s'il s'agit d'un EN
+            if (current.player not in already_test) and (current.player not in already_visit_players): #alors il faut tester pour ce joueur s'il s'agit d'un EN
                 if current.player in coalitions:  #on a deja calcule les valeurs du jeu ou player joue contre la collation Pi\{player}
                     val = coalitions[current.player][current.id]
 
@@ -1380,21 +1387,28 @@ class ReachabilityGame(object):
         current = path[ind]
         while nash and ind < len(path):
 
-            if ind != 0:
-                pred = current
-                current = path[ind]
-                res = Graph.get_weight_pred(current, pred, self.graph.pred)
-                epsilon = tuple(ReachabilityGame.sum_two_vector_of_weight(res,epsilon, set())) if tuple_ else epsilon + res
+            (goal, player_g) = self.is_a_goal(path[ind])
+            reach = player in player_g
+            print reach
 
-            if current.player == player :
-                val = values_player[current.id]
-                partial = epsilon[player-1] if tuple_ else epsilon
-                if ReachabilityGame.respect_property(val, partial, path_cost):
-                    ind += 1  # on respecte les conditions de la propriete pour etre un EN
+            if not reach:
+                if ind != 0:
+                    pred = current
+                    current = path[ind]
+                    res = Graph.get_weight_pred(current, pred, self.graph.pred)
+                    epsilon = tuple(ReachabilityGame.sum_two_vector_of_weight(res,epsilon, set())) if tuple_ else epsilon + res
+
+                if current.player == player :
+                    val = values_player[current.id]
+                    partial = epsilon[player-1] if tuple_ else epsilon
+                    if ReachabilityGame.respect_property(val, partial, path_cost):
+                        ind += 1  # on respecte les conditions de la propriete pour etre un EN
+                    else:
+                        nash = False  # on ne respecte pas la condition pour au moins un noeud -> pas un EN
                 else:
-                    nash = False  # on ne respecte pas la condition pour au moins un noeud -> pas un EN
+                    ind += 1
             else:
-                ind += 1
+                ind = len(path)
         return nash, coalitions
 
     def get_info_path(self, path):
