@@ -367,6 +367,7 @@ def compute_value_with_negative_weight(graph, goal, tuple = False, compo=0):
 
 
 
+
 def min_succ_value(succ, tab_value, tuple=False, compo=0):
 
     min = float("infinity")

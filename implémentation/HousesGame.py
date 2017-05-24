@@ -117,6 +117,17 @@ class HousesGame(ReachabilityGame):
 
         return len(vertex.tasks[player - 1]) == 0
 
+
+    @staticmethod
+
+    def keep_max(max_values, new_values):
+
+        n = len(max_values)
+        for i in xrange(n):
+            abs_new = abs(new_values[i])
+            if abs_new > max_values[i]:
+                max_values[i] = abs_new
+
     @staticmethod
     def all_compleated(list_pref_task_for_all):
 
@@ -135,17 +146,19 @@ class HousesGame(ReachabilityGame):
                                       goal,
                                       factory,
                                       turn_player,
-                                      partial_weight):
+                                      partial_weight,
+                                      max_values,
+                                      fixed_order = False):
         player = turn_player[-1]
 
         vertex = factory.create_houses_vertex(player, time, list_pref_tasks)
         all_vertices.append(vertex)
         list_succ.append([])
+        if len(turn_player) == self.player:
+            for p in xrange(1, nb_player + 1):
 
-        for p in xrange(1, nb_player + 1):
-
-            if HousesGame.is_an_objective(vertex, p):
-                goal[p - 1].add(vertex.id)
+                if HousesGame.is_an_objective(vertex, p):
+                    goal[p - 1].add(vertex.id)
 
         if time == nb_interval+1 : #temps ecoule
 
@@ -157,7 +170,8 @@ class HousesGame(ReachabilityGame):
             time_changed = len(turn_player) == 1
             if time_changed: #il reste un unique joueur qui doit jouer
                 new_turn_player = range(1,nb_player+1)
-                #random.shuffle(new_turn_player)
+                if not fixed_order:
+                    random.shuffle(new_turn_player)
 
             for a in list_pref_tasks[player - 1]:
                 if time in a.pref_set:
@@ -179,7 +193,8 @@ class HousesGame(ReachabilityGame):
                                                                       goal,
                                                                       factory,
                                                                       turn,
-                                                                      up_partial_weight)
+                                                                      up_partial_weight,
+                                                                      max_values)
                         list_succ[vertex.id].append((succ.id, (0,) * nb_player))
 
                     else:
@@ -194,9 +209,12 @@ class HousesGame(ReachabilityGame):
                                                                       goal,
                                                                       factory,
                                                                       turn,
-                                                                      reinitialize_partial_weight)
+                                                                      reinitialize_partial_weight,
+                                                                      max_values)
 
-                        list_succ[vertex.id].append((succ.id, self.compute_real_weight(up_partial_weight)))
+                        weight = self.compute_real_weight(up_partial_weight)
+                        HousesGame.keep_max(max_values, weight)
+                        list_succ[vertex.id].append((succ.id,weight))
 
             new_list = copy.deepcopy(list_pref_tasks)
             up_partial_weight = copy.copy(partial_weight)
@@ -214,7 +232,8 @@ class HousesGame(ReachabilityGame):
                                                           goal,
                                                           factory,
                                                           turn,
-                                                          up_partial_weight)
+                                                          up_partial_weight,
+                                                          max_values)
                 list_succ[vertex.id].append((succ.id, (0,) * nb_player))
 
             else:
@@ -229,7 +248,8 @@ class HousesGame(ReachabilityGame):
                                                           goal,
                                                           factory,
                                                           turn,
-                                                          new_partial_weight)
+                                                          new_partial_weight,
+                                                          max_values)
 
                 list_succ[vertex.id].append((succ.id, self.compute_real_weight(up_partial_weight)))
 
@@ -238,10 +258,12 @@ class HousesGame(ReachabilityGame):
 
     def generate_houses_game_tree(self, nb_player,
                                   nb_interval,
-                                  list_pref_tasks):
+                                  list_pref_tasks,
+                                  fixed_order = False):
 
         turn = range(1, nb_player + 1)
-        #random.shuffle(turn)
+        if not fixed_order:
+            random.shuffle(turn)
         goal = []
         for x in xrange(nb_player):
             goal.append(set())
@@ -250,8 +272,9 @@ class HousesGame(ReachabilityGame):
         list_succ = []
         partial_weight = [0]*self.player
         factory = HousesVertexFactory()
-        self.aux_generate_houses_game_tree(nb_player,nb_interval,list_pref_tasks,time,all_vertices,list_succ,goal,factory,turn,partial_weight)
-        graph = Graph(all_vertices, None, None, list_succ)
+        max_values = [-float("infinity")]*nb_player
+        self.aux_generate_houses_game_tree(nb_player,nb_interval,list_pref_tasks,time,all_vertices,list_succ,goal,factory,turn,partial_weight, max_values)
+        graph = Graph(all_vertices, None, None, list_succ, tuple(max_values))
         return graph, all_vertices[0], goal, None
 
 
@@ -482,30 +505,21 @@ class HousesGame(ReachabilityGame):
         else:
             all_succ = self.graph.succ[vertex_id]
             all_possibilities = {}
+            goal, players = self.is_a_goal(vertex)
+
             for tuple_s in all_succ:
                 s = self.graph.vertex[tuple_s[0]]
                 sub_values = self.aux_backward(s, strategies)
-                print "sub_values",vertex_id, sub_values
-                goal,players = self.is_a_goal(vertex)
-                print players,  self.goal
-                values = HousesGame.sum_two_vector_of_weight(sub_values, tuple_s[1],players)
+                values = ReachabilityGame.sum_two_vector_of_weight(sub_values, tuple_s[1],players)
+                for p in players:
+                    values[p-1] = 0
                 all_possibilities[s.id] = values
             (choices, cost) = HousesGame.choice_action(all_possibilities, vertex.player)
             strategies[vertex_id] = (choices,cost)
             return cost
 
 
-    @staticmethod
 
-    def sum_two_vector_of_weight(v1,v2, not_for):
-
-        n = len(v1)
-        res = [0]*n
-
-        for i in xrange(n):
-            if i+1 not in not_for:
-                res[i] = v1[i] + v2[i]
-        return res
 
 
 
@@ -515,6 +529,24 @@ class HousesGame(ReachabilityGame):
         strategies = {}
         self.aux_backward(init,strategies)
         return strategies
+
+    @staticmethod
+
+    def get_SPE(strategies, nb_interval, nb_player):
+
+        length = nb_interval * nb_player + 1 # puisque c'est un  arbre on arrete a la profondeur
+
+        res = [0]
+        v_current_id = 0
+        while len(res) < length:
+            v_current_id = strategies[v_current_id][0].pop()
+            res.append(v_current_id)
+
+        return res
+
+
+
+
 
 
 
@@ -532,6 +564,8 @@ def parser_houses(file_name):
     nb_intervalle = 0
     nb_houses = 0
     energy_production = 0
+    p_in = 0
+    p_out = 0
     task_factory = TaskFactory()
 
     pref_tasks_list = []
@@ -553,6 +587,7 @@ def parser_houses(file_name):
 
             else:
                 if task_begin:
+                    #print res.split(" ")
                     pref = map(int, res.split(" "))
                     pref_set = set()
                     for i in range(1,len(pref)):
@@ -565,33 +600,45 @@ def parser_houses(file_name):
                 res = res.split(" ")
                 nb_intervalle = int(res[0])
                 energy_production = int(res[1])
+                p_out = int(res[2])
+                p_in = int(res[3])
+
 
 
     file.close()
 
-    return nb_houses, energy_production, nb_intervalle, pref_tasks_list
+    return nb_houses, energy_production, nb_intervalle, pref_tasks_list, p_out, p_in
 
 
 def run_generate_graph_houses(inpout,outpout):
 
-    nb_houses, energy_production, nb_intervalle, pref_tasks_list = parser_houses(inpout)
-    game = HousesGame(nb_houses, nb_intervalle, energy_production, pref_tasks_list,2,4)
+    nb_houses, energy_production, nb_intervalle, pref_tasks_list, p_out, p_in = parser_houses(inpout)
+    game = HousesGame(nb_houses, nb_intervalle, energy_production, pref_tasks_list,p_in,p_out)
     graph_house_to_dot(game,outpout)
 
 
 def test_backward(inpout):
-    nb_houses, energy_production, nb_intervalle, pref_tasks_list = parser_houses(inpout)
-    game = HousesGame(nb_houses, nb_intervalle, energy_production, pref_tasks_list, 2, 4)
+    nb_houses, energy_production, nb_intervalle, pref_tasks_list, p_out, p_in = parser_houses(inpout)
+    game = HousesGame(nb_houses, nb_intervalle, energy_production, pref_tasks_list, p_in, p_out)
     strategies = game.backward()
     backward_house_to_dot(game,strategies, "backward.dot")
-    print strategies
+
+
+    mat = game.graph.list_succ_to_mat(game.graph.succ, True, game.player)
+    game.graph.mat = mat
+
+    list_pred = Graph.matrix_to_list_pred(mat)
+    game.graph.pred = list_pred
+    print game.graph.max_weight
+    a_star = game.best_first_search(ReachabilityGame.a_star_negative,None, float("infinity"), True, True)
+    print "SOL", a_star
 
 
 
 
 def test_dag_to_tree(inpout, output_dag, output_tree):
 
-    nb_houses, energy_production, nb_intervalle, pref_tasks_list = parser_houses(inpout)
+    nb_houses, energy_production, nb_intervalle, pref_tasks_list, p_out, p_in = parser_houses(inpout)
     game = HousesGame(nb_houses,nb_intervalle, energy_production, pref_tasks_list)
     new_succ, new_vertices = game.dag_to_tree()
     tree_house_to_dot(new_succ,game.goal,[],game.graph.vertex,new_vertices,output_tree)

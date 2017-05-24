@@ -12,6 +12,7 @@ from Value import convertPred2NbrSucc
 from Value import get_all_values
 from Value import print_result
 from Value import get_succ_in_opti_strat
+from Value import compute_value_with_negative_weight
 
 
 class ArenaError(Exception):
@@ -64,32 +65,6 @@ class Vertex(object):
         return str
 
 
-class Weight(object):
-    def __init__(self, w):
-        self.w = w
-
-    def __str__(self):
-        return repr(self.w)
-
-
-
-
-class UniqueWeight(Weight):
-
-    def __init__(self, w):
-        Weight.__init__(self,w)
-
-    def get_weight(self,p=None):
-        return self.w
-
-
-
-class TupleWeight(Weight):
-    def __init__(self,w):
-       Weight.__init__(self,w)
-
-    def get_weight(self,p):
-        return self.w[p-1]
 
 
 class Graph(object):
@@ -256,12 +231,16 @@ class Graph(object):
 
     @staticmethod
 
-    def list_succ_to_mat(list_succ):
+    def list_succ_to_mat(list_succ, tuple= False, nb_player = 0):
         mat = []
 
         for i in range(0, len(list_succ)):
             succ_i = list_succ[i]
-            line = [float("infinity")] * len(list_succ)
+            if tuple:
+                t = (float("infinity"),)* nb_player
+                line = [t] * len(list_succ)
+            else:
+                line = [float("infinity")] * len(list_succ)
             for j in range(0, len(succ_i)):
                 (succ,w) = succ_i[j]
                 line[succ] = w
@@ -571,7 +550,7 @@ class ReachabilityGame(object):
 
             newVertices[i] = dijkVert
 
-        return Graph(newVertices, graph.mat, graph.pred, graph.succ)
+        return Graph(newVertices, graph.mat, graph.pred, graph.succ, graph.max_weight)
 
     @staticmethod
     def graph_transformer_real_dijkstra(graph):
@@ -683,19 +662,25 @@ class ReachabilityGame(object):
 
                     (goal, player) = self.is_a_goal(succ_vertex)
 
-                    if goal: p = player.pop()
+                    if goal:
+                        new_reach = player - set(candidate_node.cost.keys())
 
-                    if goal and p not in candidate_node.cost:
+                        if len(new_reach) != 0:
+                            nash = True
 
-                        (nash, coalitions) = self.is_a_Nash_equilibrium_one_player(new_path, p)
+                            for p in new_reach:
+                                (nash_, coalitions) = self.is_a_Nash_equilibrium_one_player(new_path, p)
+                                if not nash_ :
+                                    nash = False
 
-                        if nash:
-                            new_cost = copy.deepcopy(candidate_node.cost)
-                            new_cost[p] = epsilon
+                            if nash:
+                                new_cost = copy.deepcopy(candidate_node.cost)
+                                for p in new_reach:
+                                    new_cost[p] = epsilon
 
-                            new_node = Node(new_path, candidate_node, epsilon, new_cost)
+                                new_node = Node(new_path, candidate_node, epsilon, new_cost)
 
-                            frontier.append(new_node)
+                                frontier.append(new_node)
 
                     else:
 
@@ -706,8 +691,7 @@ class ReachabilityGame(object):
 
 
     def find_index_last_goal(self,path, nb_reach_obj):
-        print path
-        print nb_reach_obj
+
         i = -1
         reach_player = set()
         while (nb_reach_obj > 0):
@@ -741,17 +725,32 @@ class ReachabilityGame(object):
 
         return res
 
+    @staticmethod
+    def sum_two_vector_of_weight(v1, v2, not_for):
+
+        n = len(v1)
+        res = [0] * n
+
+        for i in xrange(n):
+            if i + 1 not in not_for:
+                res[i] = v1[i] + v2[i]
+        return res
+
+
     # test d'un parcours d'arbre un peu plus intelligent
 
 
-    def best_first_search(self, heuristic, frontier = None, allowed_time = float("infinity")):
+    def best_first_search(self, heuristic, frontier = None, allowed_time = float("infinity"), tuple_ = False, negative_weight = False, coalitions = None):
 
-        #ici on suppose l'ensemble des objectifs disjoints
 
-        if heuristic is ReachabilityGame.a_star:
+        if heuristic is ReachabilityGame.a_star_positive:
             all_dijk = self.compute_all_dijkstra()
-        else:
-            all_dijk = None
+
+        else :
+            if heuristic is ReachabilityGame.a_star_negative:
+                all_dijk = self.compute_all_floyd()
+            else:
+                all_dijk = None
 
         start = time.time()
 
@@ -761,8 +760,9 @@ class ReachabilityGame(object):
 
 
         if frontier is None:
-            parent = Node([], None, 0, {})
-            initial_node = Node([self.init], parent, 0, {})
+            eps = (0,) * self.player if tuple_ else 0
+            parent = Node([], None, eps, {})
+            initial_node = Node([self.init], parent, eps, {})
 
             (goal, player) = self.is_a_goal(self.init)
 
@@ -770,15 +770,15 @@ class ReachabilityGame(object):
             if goal:
                 for p in player:
                     initial_node.cost[p] = 0
-            value = heuristic(self, initial_node.cost,0, 1, self.init, all_dijk)
+            value = heuristic(self, initial_node.cost,eps, 1, self.init, all_dijk)
             initial_node.value = value
             frontier = []
             heapq.heappush(frontier, initial_node)
-
         while time.time() - start < allowed_time:
 
             if len(frontier) == 0:
                 raise BestFirstSearchError(" Plus d'elements dans la frontiere")
+
 
             candidate_node = heapq.heappop(frontier)
             candidate_path = candidate_node.current
@@ -792,7 +792,7 @@ class ReachabilityGame(object):
                 #Il se peut que ce soit un equilibre de Nash tel que tous les joueurs n'ont pas vu leur objectif mais
                 #tel que la longueur max est atteinte: il faut donc tester pour ceux qui n'ont pas encore atteint leur obj
 
-                (nash,coalition) = self.is_a_Nash_equilibrium(candidate_path, candidate_node.cost.keys())
+                (nash,coalition) = self.is_a_Nash_equilibrium(candidate_path, candidate_node.cost.keys(), coalitions, tuple_, negative_weight)
                 if nash:
 
                     return candidate_path
@@ -807,8 +807,7 @@ class ReachabilityGame(object):
 
                     (succ, w) = succ_last_vertex[i]
 
-                    epsilon = candidate_node.eps + w
-
+                    epsilon = ReachabilityGame.sum_two_vector_of_weight(candidate_node.eps,w,set()) if tuple_ else candidate_node.eps +w
                     new_path = []
                     new_path[0 : len(candidate_path)] = candidate_path
 
@@ -823,29 +822,36 @@ class ReachabilityGame(object):
                         if len(new_reach)!= 0:
                             nash = True
                             for p in new_reach:
-
-                                (nash_, coalitions) = self.is_a_Nash_equilibrium_one_player(new_path, p)
+                                (nash_, coalition) = self.is_a_Nash_equilibrium_one_player(new_path, p, coalitions, tuple_, negative_weight)
                                 if not nash_:
                                     nash = False
-
-
                             if nash:
-
                                 new_cost = copy.deepcopy(candidate_node.cost)
-                                new_cost[p] = epsilon
+                                for p in new_reach:
+                                    new_cost[p] = epsilon[p-1] if tuple_ else epsilon
                                 value = heuristic(self, new_cost,epsilon, len(new_path), succ_vertex, all_dijk)
 
                                 new_node = Node(new_path, candidate_node, epsilon, new_cost, value)
+                                heapq.heappush(frontier, new_node)
 
+                            else:
+                                value = float("infinity")
+                                new_node = Node(new_path, candidate_node, epsilon, candidate_node.cost, value)
                                 heapq.heappush(frontier, new_node)
 
                     else:
                         value = heuristic(self, candidate_node.cost,epsilon, len(new_path), succ_vertex, all_dijk)
-
                         new_node = Node(new_path, candidate_node, epsilon, candidate_node.cost, value)
+                        f = len(frontier)
                         heapq.heappush(frontier, new_node)
+                        if len(frontier) - f != 1:
+                            raise ValueError
+
 
         return
+
+    def do_something(self):
+        pass
 
     def compute_all_dijkstra(self):
         """
@@ -864,9 +870,19 @@ class ReachabilityGame(object):
 
         return result
 
+    def compute_all_floyd(self):
+
+        result = {}
+
+        for p in xrange(0, self.player):
+
+            res = self.graph.floyd_warshall(True,p)
+            result[p+1] = res
+
+        return result
     @staticmethod
 
-    def a_star(game, cost, epsilon, length_path, last_vertex = None, all_dijk = None):
+    def a_star_positive(game, cost, epsilon, length_path, last_vertex = None, all_dijk = None):
 
 
         nbr_player_notreached = game.player - len(cost)
@@ -890,6 +906,53 @@ class ReachabilityGame(object):
                 h_n += min(res[last_vertex.id], max_length * max_weight + 1)
 
         return g_n + h_n
+
+    @staticmethod
+
+    def a_star_negative(game,cost,epsilon, length_path, last_vertex = None, all_floyd =None):
+
+        player_reach = set(cost.keys())
+        all_player = set(range(1,game.player))
+        not_reach_player = all_player - player_reach
+
+        max_length = game.compute_max_length()
+        max_weight = game.graph.max_weight
+
+
+        g_n = 0
+        for i in cost : # on ajoute les couts de cx qui ont atteint leur objectif
+            g_n += cost[i]
+
+        for j in not_reach_player: #ajout du cout partiel pour les autres
+            g_n += epsilon[j-1]
+
+        h_n = 0
+        for p in not_reach_player:
+
+            short = ReachabilityGame.find_short_path_to_goal(all_floyd[p], game.goal[p-1], last_vertex)
+            h_n += min(short, max_length* max_weight[p-1]+1)
+
+
+        return g_n + h_n
+
+
+
+    @staticmethod
+
+    def find_short_path_to_goal(short_mat, goal, vertex):
+
+        new_goal = copy.copy(goal)
+        g = new_goal.pop()
+
+        res = short_mat[vertex.id][g]
+
+        while len(new_goal) != 0 :
+
+            g = new_goal.pop()
+            res = min(res, short_mat[vertex.id][g])
+
+        return res
+
 
 
 
@@ -1051,7 +1114,7 @@ class ReachabilityGame(object):
 
     def best_first_search_with_init_path_both_two_aux(self, evaluation, goal, allowed_time=float("infinity")):
 
-        if evaluation is ReachabilityGame.a_star:
+        if evaluation is ReachabilityGame.a_star_positive:
             all_dijk = self.compute_all_dijkstra()
         else:
             all_dijk = None
@@ -1073,7 +1136,6 @@ class ReachabilityGame(object):
             eps = self.compute_epsilon(path)
             node = Node(path, Node([], None, 0, cost, value), eps, cost, value)
             frontier = [node]
-
             res = self.best_first_search(evaluation, frontier, allowed_time)
             return res
 
@@ -1081,19 +1143,21 @@ class ReachabilityGame(object):
             return None
 
 
-    def compute_epsilon(self, path):
+    def compute_epsilon(self, path, tuple_ = False):
 
         """
         Calcule le poids d'un chemin
         :param path: un chemin
         :return: poids du chemin path
         """
-        eps = 0
+        eps = (0,)*  self.player if tuple_ else 0
         for i in range(1, len(path)):
 
             v = path[i]
             pred_v = path[i - 1]
-            eps += Graph.get_weight_pred(v, pred_v, self.graph.pred)
+
+            res = Graph.get_weight_pred(v, pred_v, self.graph.pred)
+            eps = tuple(ReachabilityGame.sum_two_vector_of_weight(eps,res, set())) if tuple_ else eps + res
 
         return eps
 
@@ -1102,7 +1166,7 @@ class ReachabilityGame(object):
 
 
 
-    def cost_for_all_players(self, path, only_reached=False):
+    def cost_for_all_players(self, path, only_reached=False, tuple_= False):
 
         """
         Calcule le cout du chemin pour chaque jouer
@@ -1115,29 +1179,34 @@ class ReachabilityGame(object):
         """
 
         cost = {}
-        weight = 0
+
+        weight = (0,)*self.player if tuple_ else 0
 
         reach_goals_player = set()
         reach_goals = set()
         (goal, player) = self.is_a_goal(path[0])
         if goal:
             for p in player:
-                cost[p] = weight
+                cost[p] = weight[p-1] if tuple_ else weight
                 reach_goals_player.add(p)
                 reach_goals.add(path[0].id)
 
         for i in range(1, len(path)):
 
             v = path[i]
-            pred_v = path[i-1]
-            weight += Graph.get_weight_pred(v, pred_v, self.graph.pred)
+            pred_v = path[i - 1]
+
+            res = Graph.get_weight_pred(v, pred_v, self.graph.pred)
+            weight = tuple(ReachabilityGame.sum_two_vector_of_weight(weight,res, set())) if tuple_ else weight + res
+
+            #weight += Graph.get_weight_pred(v, pred_v, self.graph.pred)
 
             # on teste si on ne vient pas d atteindre un nouvel etat objectif
             if v.id not in reach_goals:
                 (goal, player) = self.is_a_goal(v)
                 for p in player:
                     if goal and p not in reach_goals_player:
-                        cost[p] = weight
+                        cost[p] = weight[p-1] if tuple_ else weight
                         reach_goals_player.add(p)
                         reach_goals.add(v.id)
 
@@ -1148,7 +1217,7 @@ class ReachabilityGame(object):
 
         return cost
 
-    def cost_for_one_player(self, path, player):
+    def cost_for_one_player(self, path, player, tuple_ = False):
 
         """
         Calcule le cout d un chemin pour un certain joueur
@@ -1158,7 +1227,7 @@ class ReachabilityGame(object):
         """
 
         cost = float("infinity")
-        weight = 0
+        weight = (0,)* self.player if tuple_ else 0
         goal_player = self.goal[player-1]
 
         if path[0].id in goal_player:
@@ -1169,11 +1238,13 @@ class ReachabilityGame(object):
 
             v = path[i]
             pred_v = path[i - 1]
-            weight += Graph.get_weight_pred(v, pred_v, self.graph.pred)
+
+            res = Graph.get_weight_pred(v, pred_v, self.graph.pred)
+            weight = tuple(ReachabilityGame.sum_two_vector_of_weight(weight, res, set())) if tuple_ else weight + res
 
             # on teste si on ne vient pas d atteindre un objectif
             if v.id in goal_player:
-                return weight
+                return weight[player-1] if tuple_ else weight
 
         return cost
 
@@ -1201,7 +1272,7 @@ class ReachabilityGame(object):
             return False
 
 
-    def is_a_Nash_equilibrium(self, path, already_test = None, coalitions = None):
+    def is_a_Nash_equilibrium(self, path, already_test = None, coalitions = None, tuple_ = False, negative_weight = False):
 
         """
         A partir d un chemin (path), determine s il sagit de l outcome d un EN.
@@ -1210,7 +1281,7 @@ class ReachabilityGame(object):
 
         """
 
-        path_cost = self.cost_for_all_players(path) #calcule les couts de tous les joueurs
+        path_cost = self.cost_for_all_players(path,False, tuple_) #calcule les couts de tous les joueurs
 
         if coalitions is None:
             coalitions = {}
@@ -1218,13 +1289,14 @@ class ReachabilityGame(object):
             already_test = set([])
 
 
-        epsilon = 0 # poids du chemin jusqu'au noeud courant
+        epsilon = (0,)* self.player if tuple_  else 0 # poids du chemin jusqu'au noeud courant
         nash = True # le chemin est un equilibre de Nash
         ind = 0 # indice du noeud courant dans le chemin
 
         (goal,player) = self.is_a_goal(path[0])
         if goal:
-            path_cost[player] = 0
+            for p in player:
+                path_cost[p] = 0
 
         current = path[ind]
         pred = None
@@ -1233,27 +1305,36 @@ class ReachabilityGame(object):
             if ind != 0:
                 pred = current
                 current = path[ind]
-                epsilon += Graph.get_weight_pred(current, pred, self.graph.pred)
+                res = Graph.get_weight_pred(current, pred, self.graph.pred)
+                epsilon = tuple(ReachabilityGame.sum_two_vector_of_weight(epsilon,res)) if tuple_ else epsilon + res
+                #epsilon += Graph.get_weight_pred(current, pred, self.graph.pred)
 
             if current.player not in already_test: #alors il faut tester pour ce joueur s'il s'agit d'un EN
                 if current.player in coalitions:  #on a deja calcule les valeurs du jeu ou player joue contre la collation Pi\{player}
                     val = coalitions[current.player][current.id]
 
-                    if ReachabilityGame.respect_property(val, epsilon, path_cost[current.player]):
+                    if ReachabilityGame.respect_property(val, epsilon[current.player-1] if tuple_ else epsilon, path_cost[current.player]):
                         ind += 1 # on respecte les conditions de la propriete pour etre un EN
                     else:
                         nash = False # on ne respcte pas la condition pour au moins un noeud -> pas un EN
                 else:  # il faut au prealable calculer les valeurs du jeu min-max associe
 
                     graph_min_max = ReachabilityGame.graph_transformer(self.graph, current.player)
-                    result_dijk_min_max = dijkstraMinMax(graph_min_max, self.goal[current.player - 1])
-                    tab_result = get_all_values(result_dijk_min_max)
-                    coalitions[current.player] = tab_result
+
+                    if not negative_weight:
+                        result_dijk_min_max = dijkstraMinMax(graph_min_max, self.goal[current.player - 1])
+                        values_player = get_all_values(result_dijk_min_max)
+                        coalitions[current.player] = values_player
+                    else:
+
+                        values_player = compute_value_with_negative_weight(graph_min_max, self.goal[current.player - 1], tuple_,
+                                                                           current.player - 1)[0]
+                        coalitions[current.player] = values_player
 
                     val = coalitions[current.player][current.id]
 
 
-                    if ReachabilityGame.respect_property(val, epsilon, path_cost[current.player]):
+                    if ReachabilityGame.respect_property(val, epsilon[current.player -1] if tuple_ else epsilon, path_cost[current.player]):
                         ind += 1  # on respecte les conditions de la propriete pour etre un EN
 
 
@@ -1263,7 +1344,7 @@ class ReachabilityGame(object):
                 ind += 1
         return nash, coalitions
 
-    def is_a_Nash_equilibrium_one_player(self, path, player, coalitions=None):
+    def is_a_Nash_equilibrium_one_player(self, path, player, coalitions=None, tuple_ = False, negative_weight = False):
 
         """
         A partir d un chemin (path), determine si la condition d'etre un EN est respectue sur le chemin "path" pour
@@ -1271,8 +1352,7 @@ class ReachabilityGame(object):
         Coalition contient, si elles ont deja ete calculees, les valeurs des noeuds pour les jeux de coalition
 
         """
-
-        path_cost = self.cost_for_one_player(path, player)  # calcule les couts de tous les joueurs
+        path_cost = self.cost_for_one_player(path, player, tuple_)  # calcule les couts de tous les joueurs
         if coalitions is None:
             coalitions = {}
 
@@ -1281,10 +1361,19 @@ class ReachabilityGame(object):
             values_player = coalitions[player]
         else:
             graph_min_max = ReachabilityGame.graph_transformer(self.graph, player)
-            result_dijk_min_max = dijkstraMinMax(graph_min_max, self.goal[player - 1])
-            values_player = get_all_values(result_dijk_min_max)
-            coalitions[player] = values_player
-        epsilon = 0  # poids du chemin jusqu'au noeud courant
+
+            if not negative_weight:
+                result_dijk_min_max = dijkstraMinMax(graph_min_max, self.goal[player - 1])
+                values_player = get_all_values(result_dijk_min_max)
+                coalitions[player] = values_player
+            else:
+
+                values_player = compute_value_with_negative_weight(graph_min_max, self.goal[player -1], tuple_, player-1)[0]
+                coalitions[player] = values_player
+
+
+
+        epsilon = (0,) * self.player if tuple_ else 0  # poids du chemin jusqu'au noeud courant
         nash = True  # le chemin est un equilibre de Nash
         ind = 0  # indice du noeud courant dans le chemin
 
@@ -1294,12 +1383,13 @@ class ReachabilityGame(object):
             if ind != 0:
                 pred = current
                 current = path[ind]
-                epsilon += Graph.get_weight_pred(current, pred, self.graph.pred)
+                res = Graph.get_weight_pred(current, pred, self.graph.pred)
+                epsilon = tuple(ReachabilityGame.sum_two_vector_of_weight(res,epsilon, set())) if tuple_ else epsilon + res
 
             if current.player == player :
                 val = values_player[current.id]
-
-                if ReachabilityGame.respect_property(val, epsilon, path_cost):
+                partial = epsilon[player-1] if tuple_ else epsilon
+                if ReachabilityGame.respect_property(val, partial, path_cost):
                     ind += 1  # on respecte les conditions de la propriete pour etre un EN
                 else:
                     nash = False  # on ne respecte pas la condition pour au moins un noeud -> pas un EN
@@ -1635,7 +1725,7 @@ def test():
 def find_loop_test():
 
     path = [0,1,2,1,4,5,6,7,2,7,8,0,9]
-    print ReachabilityGame.find_loop(path,2)
+    print ReachabilityGame.find_circuit(path,2)
 
 if __name__ == '__main__':
 

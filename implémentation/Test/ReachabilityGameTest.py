@@ -223,7 +223,7 @@ class TestReachabilityGame(unittest.TestCase):
         init = v1
         game = ReachabilityGame(2, graph, init, goals, None)
 
-        a_star = game.best_first_search(ReachabilityGame.a_star, None, 5)
+        a_star = game.best_first_search(ReachabilityGame.a_star_positive, None, 5)
 
         self.assertEqual(a_star, [v1, v2, v3, v0])
 

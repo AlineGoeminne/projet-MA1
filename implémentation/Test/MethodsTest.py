@@ -27,14 +27,21 @@ def a_star_test1():
     goals = [{0}, {4}]
 
     game = ReachabilityGame(2, graph, v3, goals, None)
+    a_star = None
+    a_star = game.best_first_search(ReachabilityGame.a_star_positive, None, 5)
+    init = None
 
-    a_star = game.best_first_search(ReachabilityGame.a_star, None, 5)
-    init = game.best_first_search_with_init_path_both_two(ReachabilityGame.a_star, 5)
+    init = game.best_first_search_with_init_path_both_two(ReachabilityGame.a_star_positive, 5)
+    candidate = None
     candidate = game.best_first_search(ReachabilityGame.short_path_evaluation, None, 5)
+    first = None
     first = game.breadth_first_search()
+    breadth = None
     breadth = game.breadth_first_search(False, 1)
+    breadth_result = None
     breadth_result = game.filter_best_result(breadth)
 
+    random_result = None
     random = game.test_random_path(100, game.compute_max_length())
     random_result = game.filter_best_result(random)
 
@@ -125,12 +132,12 @@ def a_star_test2():
 
     game = ReachabilityGame(2, graph, v3, goals, None)
 
-    res = game.best_first_search(ReachabilityGame.a_star,None, 5)
+    res = game.best_first_search(ReachabilityGame.a_star_positive, None, 5)
 
     print "a_star", str(res)
     print "EN ? ", game.is_a_Nash_equilibrium(res)
 
-    res2 = game.best_first_search_with_init_path_both_two(ReachabilityGame.a_star, 5)
+    res2 = game.best_first_search_with_init_path_both_two(ReachabilityGame.a_star_positive, 5)
 
     print "Init ", str(res2)
     print "En? ", game.is_a_Nash_equilibrium(res2)
@@ -161,12 +168,12 @@ def test_best_first_search():
         game = ReachabilityGame(2, graph, v0, goal, None)
 
         candidate = game.best_first_search(ReachabilityGame.short_path_evaluation, None, 5)
-        candidate_a_star = game.best_first_search(ReachabilityGame.a_star, None, 5)
+        candidate_a_star = game.best_first_search(ReachabilityGame.a_star_positive, None, 5)
 
         random = game.test_random_path(100, game.compute_max_length())
         random_result = game.filter_best_result(random)
 
-        init = game.best_first_search_with_init_path_both_two(ReachabilityGame.a_star, 5)
+        init = game.best_first_search_with_init_path_both_two(ReachabilityGame.a_star_positive, 5)
 
         print "A_star :", str(candidate_a_star)
         (nash1, coal) = game.is_a_Nash_equilibrium(candidate_a_star)
@@ -221,12 +228,12 @@ def test_best_first_search_2():
     init = v1
     game = ReachabilityGame(2, graph, init, goals, None)
 
-    a_star = game.best_first_search(ReachabilityGame.a_star, None, 5)
+    a_star = game.best_first_search(ReachabilityGame.a_star_positive, None, 5)
 
 
     random = game.test_random_path(100, game.compute_max_length())
     path_random = game.filter_best_result(random)
-    init = game.best_first_search_with_init_path_both_two(ReachabilityGame.a_star, 5)
+    init = game.best_first_search_with_init_path_both_two(ReachabilityGame.a_star_positive, 5)
     candidate = game.best_first_search(ReachabilityGame.short_path_evaluation, None, 5)
 
 
@@ -294,7 +301,7 @@ def test_best_first_search3():
     goal = [{6}, {0}]
     game = ReachabilityGame(2, graph, v3, goal, None)
 
-    a_star = game.best_first_search(ReachabilityGame.a_star, None, 5)
+    a_star = game.best_first_search(ReachabilityGame.a_star_positive, None, 5)
 
 
     random = game.test_random_path(100, game.compute_max_length())
@@ -347,7 +354,7 @@ def general_test():
 
 
 
-    init = game.best_first_search_with_init_path_both_two(ReachabilityGame.a_star, allowed_time)
+    init = game.best_first_search_with_init_path_both_two(ReachabilityGame.a_star_positive, allowed_time)
     if init is not None:
         print "init :", str(init)
         (cout1, atteint1) = game.get_info_path(init)
@@ -358,7 +365,7 @@ def general_test():
     else:
         print "init a echoue \n"
 
-    a_star = game.best_first_search(ReachabilityGame.a_star,None, allowed_time)
+    a_star = game.best_first_search(ReachabilityGame.a_star_positive, None, allowed_time)
     if a_star is not None:
         print "A_star :", str(a_star)
         (cout2, atteint2) = game.get_info_path(a_star)
@@ -418,9 +425,9 @@ def echec_init():
     graph = Graph(vertex, mat, list_pred, list_succ, 100)
     game = ReachabilityGame(2, graph, init, [{6},{8}] , None)
 
-    res = game.best_first_search_with_init_path_both_two(ReachabilityGame.a_star,30)
+    res = game.best_first_search_with_init_path_both_two(ReachabilityGame.a_star_positive, 30)
     print res
-    res2 = game.best_first_search(ReachabilityGame.a_star, None, 30)
+    res2 = game.best_first_search(ReachabilityGame.a_star_positive, None, 30)
     print res2
     print game.is_a_Nash_equilibrium(res2)
 
@@ -454,13 +461,14 @@ def test_slide():
     init = v3
 
     game = ReachabilityGame(2, graph, init, [goal1, goal2] , None)
-    a_star = game.best_first_search(ReachabilityGame.a_star, None, 30)
+    a_star = game.best_first_search(ReachabilityGame.a_star_positive, None, 30)
     print a_star
 
 
 
 
 if __name__ == '__main__':
+
 
     #a_star_test1()
     #a_star_test2()
@@ -469,7 +477,7 @@ if __name__ == '__main__':
     #test_best_first_search_2()
     #test_best_first_search3()
 
-    #general_test()
-    test_slide()
+    general_test()
+    #test_slide()
 
     #echec_init()
