@@ -19,7 +19,7 @@ def minMax_graph_to_dot(game,value, file_name):
                 file.write(output)
         for v_list_index in xrange(len(graph.succ)):
             for s_tuple in graph.succ[v_list_index]:
-                output ="v"+str(v_list_index)+" ->  v"+str(s_tuple[0])+" [label = "+str(s_tuple[1])+" ]\n"
+                output ="v"+str(v_list_index)+" ->  v"+str(s_tuple[0])+" [label = \""+str(s_tuple[1])+"\" ]\n"
                 file.write(output)
 
 

@@ -249,6 +249,48 @@ class TestValueWithNegWeight(unittest.TestCase):
         self.assertEqual(res[0],[46,np.inf,45,50,1,0])
 
 
+    def test_a_star_vs_backward(self):
+        v0 = Vertex(0, 1)
+        v1 = Vertex(1, 2)
+        v2 = Vertex(2, 2)
+        v3 = Vertex(3, 1)
+        v4 = Vertex(4, 1)
+        v5 = Vertex(5, 1)
+        v6 = Vertex(6, 1)
+
+        all_vertices = [v0, v1, v2, v3, v4, v5, v6]
+
+        succ0 = [(1, (0, 0)), (2, (0, 0))]
+        succ1 = [(3, (1, 2)), (4, (4, 0))]
+        succ2 = [(5, (5, 4)), (6, (3, 2))]
+        succ3 = [(3, (0, 0))]
+        succ4 = [(4, (0, 0))]
+        succ5 = [(5, (0, 0))]
+        succ6 = [(6, (0, 0))]
+
+        succ = [succ0, succ1, succ2, succ3, succ4, succ5, succ6]
+
+        mat = Graph.list_succ_to_mat(succ, True, 2)
+        pred = Graph.matrix_to_list_pred(mat)
+
+
+        W = (5, 2)
+        graph = Graph(all_vertices, mat,pred, succ, W)
+
+        target = {3,4,5,6}
+
+        res1 = compute_value_with_negative_weight(graph, target, True, 0)
+        graph_min_max = ReachabilityGame.graph_transformer(graph, 2)
+
+        res2 = compute_value_with_negative_weight(graph_min_max, target, True, 1)
+
+        self.assertEqual(res1[0], [4,4,5,0,0,0,0])
+        self.assertEqual(res2[0], [2,0,2,0,0,0,0])
+
+
+
+
+
 if __name__ == '__main__':
 
     unittest.main()

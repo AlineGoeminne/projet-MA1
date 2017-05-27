@@ -13,6 +13,7 @@ def a_star_test1():
 
     list_pred = Graph.matrix_to_list_pred(mat)
     list_succ = Graph.list_pred_to_list_succ(list_pred)
+    print list_succ
 
     v0 = Vertex(0, 1)
     v1 = Vertex(1, 2)
@@ -477,7 +478,7 @@ if __name__ == '__main__':
     #test_best_first_search_2()
     #test_best_first_search3()
 
-    general_test()
-    #test_slide()
+    #general_test()
+    test_slide()
 
     #echec_init()

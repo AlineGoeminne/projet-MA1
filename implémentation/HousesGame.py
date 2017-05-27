@@ -4,6 +4,10 @@ from GraphGame import Graph
 from GraphToDotConverter import graph_house_to_dot
 from GraphToDotConverter import tree_house_to_dot
 from GraphToDotConverter import backward_house_to_dot
+from GraphToDotConverter import minMax_graph_to_dot
+from Value  import *
+import math
+
 import random
 import copy
 
@@ -65,7 +69,8 @@ class HousesVertex(Vertex):
     def __str__(self):
         return "(id: "+ str(self.id) +",t: "+ str(self.time)+ ",p :" + str(self.player) +",tasks: "+str(self.tasks)+")"
 
-
+    def __eq__(self, other):
+        return self.id == other.id
 
 
 
@@ -116,6 +121,29 @@ class HousesGame(ReachabilityGame):
     def is_an_objective(vertex, player):
 
         return len(vertex.tasks[player - 1]) == 0
+    @staticmethod
+    def is_an_objective_for(vertex, nb_player):
+
+        obj_for = set()
+
+        for p in xrange(1, nb_player+1):
+            if HousesGame.is_an_objective(vertex, p):
+                obj_for.add(p)
+        return obj_for
+
+
+    @staticmethod
+    def set_to_objective(vertex, goal, nb_player, all = False):
+
+        obj_for = HousesGame.is_an_objective_for(vertex,nb_player)
+
+        if all and len(obj_for) == nb_player:
+            for p in obj_for:
+                goal[p-1].add(vertex.id)
+        if not all:
+            for p in obj_for:
+                goal[p-1].add(vertex.id)
+
 
 
     @staticmethod
@@ -155,10 +183,13 @@ class HousesGame(ReachabilityGame):
         all_vertices.append(vertex)
         list_succ.append([])
         if len(turn_player) == self.player:
-            for p in xrange(1, nb_player + 1):
+            #for p in xrange(1, nb_player + 1):
 
-                if HousesGame.is_an_objective(vertex, p):
-                    goal[p - 1].add(vertex.id)
+                #if HousesGame.is_an_objective(vertex, p):
+                    #goal[p - 1].add(vertex.id)
+            HousesGame.set_to_objective(vertex,goal,nb_player, True)
+
+
 
         if time == nb_interval+1 : #temps ecoule
 
@@ -288,28 +319,75 @@ class HousesGame(ReachabilityGame):
     def compute_real_weight(self, partial_weight):
 
         res = [0] * self.player
+        G_pos = set() #ensemble des maisons ayant un gain positif weight- prod > 0
+        G_neg = set() # ensemble des maisons ayant un gain negatif weight- prod < 0
+        for p in xrange(1, self.player+1):
+            if self.eP - partial_weight[p-1] > 0:
+                G_pos.add(p)
+            if self.eP - partial_weight[p-1] < 0:
+                G_neg.add(p)
 
-        totC = 0
-        totO = 0
+        benef = 0 #consommation superflue d energie pour toutes les maisons
 
-        for i in xrange(0,self.player):
+        for p in G_pos:
+            benef += self.eP - partial_weight[p-1]
 
-            totC += max(0, partial_weight[i] - self.eP)
-            totO += partial_weight[i]
-        totO -= self.player* self.eP
-        bTot = (totC - totO) * self.cIn + totO* self.cOut
+        defi = 0 # deficit d energie pour toutes les maisons
 
-        if totC != 0:
-            ratio = bTot / totC
+        for p in G_neg:
+            defi += partial_weight[p-1] - self.eP
 
-            for i in xrange(0,self.player):
+        if benef - defi >= 0:
 
-                res[i] = ratio * (partial_weight[i] - self.eP)
+            for p in G_neg:
+
+                res[p-1] = (self.eP - partial_weight[p-1])* self.cIn
+
+            for p in G_pos:
+                temp = self.eP - partial_weight[p-1]
+                res[p-1] = int(math.floor((temp/benef)*defi * self.cIn))
+                #res[p-1] = (1.0*temp/benef)*defi * self.cIn
+
+
+        else : #benef - defi < 0
+
+            for p in G_pos:
+                res[p-1] = (self.eP - partial_weight[p-1])*self.cIn
+            for p in G_neg:
+                #temp = ((1.0*(self.eP - partial_weight[p-1]))/defi)*benef
+                temp = ((self.eP - partial_weight[p-1])/defi)*benef
+                res[p-1] = int(math.floor(temp*self.cIn + (self.eP - partial_weight[p-1]- temp)*self.cOut))
+                #res[p - 1] = temp * self.cIn + (self.eP - partial_weight[p - 1] - temp) * self.cOut
+
+
+
+        res = map(lambda x: -x, res )
+
+
+
+
+
+        #totC = 0
+        #totO = 0
+
+        #for i in xrange(0,self.player):
+
+            #totC += max(0, partial_weight[i] - self.eP)
+            #totO += partial_weight[i]
+        #totO -= self.player* self.eP
+        #bTot = (totC - totO) * self.cIn + totO* self.cOut
+
+        #if totC != 0:
+            #ratio = bTot / totC
+
+         #   for i in xrange(0,self.player):
+
+        #        res[i] = ratio * (partial_weight[i] - self.eP)
 
         #todo trouver une solution acceptable
-        else:
-            for i in xrange(0,self.player):
-                res[i] = partial_weight[i] - self.eP
+        #else:
+        #    for i in xrange(0,self.player):
+        #        res[i] = partial_weight[i] - self.eP
                 #res[i] = 42
 
         return tuple(res)
@@ -499,7 +577,7 @@ class HousesGame(ReachabilityGame):
                 if vertex.id not in self.goal[p-1]:
                     res[p-1] = float("infinity")
 
-            strategies[vertex_id] = ([vertex_id],res)
+            strategies[vertex_id] = (set([vertex_id]),res)
             return res
 
         else:
@@ -528,6 +606,7 @@ class HousesGame(ReachabilityGame):
         init = self.graph.vertex[0]
         strategies = {}
         self.aux_backward(init,strategies)
+        print "STRAT", strategies
         return strategies
 
     @staticmethod
@@ -540,9 +619,66 @@ class HousesGame(ReachabilityGame):
         v_current_id = 0
         while len(res) < length:
             v_current_id = strategies[v_current_id][0].pop()
+
             res.append(v_current_id)
 
         return res
+
+    def get_SPE_until_last_reach(self,strategies,nb_interval,nb_player):
+
+        length = nb_interval * nb_player + 1  # puisque c'est un  arbre on arrete a la profondeur
+        reach_player = set()
+        (goal, players) = self.is_a_goal(self.init)
+        reach_player = reach_player.union(players)
+
+        res = [self.init]
+        v_current_id = 0
+        while len(res) < length and len(reach_player) != self.player:
+            v_current_id = strategies[v_current_id][0].pop()
+            v_current = self.graph.vertex[v_current_id]
+            (goal, players) = self.is_a_goal(v_current)
+            reach_player = reach_player.union(players)
+            res.append(v_current)
+        return res
+
+    def get_all_SPE_until_last_reach(self, strategies,nb_interval, nb_player):
+
+        reach_player = set()
+        res = [self.init]
+
+        all_SPE = set()
+        temp = {}
+        temp[tuple(res)] = reach_player
+        while len(temp) != 0:
+
+            temp = self.get_all_SPE_until_last_reach_aux(strategies,nb_interval,nb_player, temp,all_SPE)
+        return all_SPE
+
+
+
+
+    def get_all_SPE_until_last_reach_aux(self,strategies,nb_interval, nb_player,temp, all_SPE):
+
+
+        length = nb_interval * nb_player + 1  # puisque c'est un  arbre on arrete a la profondeur
+        new_temp = {}
+        for p in temp.keys(): # on recupere tous les chemins en court de construction
+            path = list(p)
+            reach_player = temp[p]
+            for n in strategies[path[-1].id][0]: #on recupere tous les sucesseurs possibles
+                new_vertex = self.graph.vertex[n]
+                (goal, players) = self.is_a_goal(new_vertex)
+                new_reach_player = reach_player.union(players)
+                new_path = copy.deepcopy(path)
+                new_path.append(new_vertex)
+
+                if len(new_path) >= length or len(new_reach_player)== self.player: #on a un SPE complet
+                    all_SPE.add(tuple(new_path))
+
+                else:
+                    new_temp[tuple(new_path)] = new_reach_player
+
+        return new_temp
 
 
 
@@ -624,14 +760,37 @@ def test_backward(inpout):
     backward_house_to_dot(game,strategies, "backward.dot")
 
 
+
+
     mat = game.graph.list_succ_to_mat(game.graph.succ, True, game.player)
     game.graph.mat = mat
 
     list_pred = Graph.matrix_to_list_pred(mat)
     game.graph.pred = list_pred
-    print game.graph.max_weight
+
+    strat_ = copy.deepcopy(strategies)
+    SPE = game.get_SPE_until_last_reach(strat_, nb_intervalle, nb_houses)
+    print "SPE", SPE, "INFO", game.get_info_path(SPE)
     a_star = game.best_first_search(ReachabilityGame.a_star_negative,None, float("infinity"), True, True)
-    print "SOL", a_star
+    print "ALL SPE :"
+    strat_ = copy.deepcopy(strategies)
+
+    all_SPE = game.get_all_SPE_until_last_reach(strat_,nb_intervalle,nb_houses)
+
+    for s in all_SPE:
+        print list(s), game.get_info_path(list(s))
+    print "---------------"
+    print "A_STAR", a_star,"info", game.get_info_path(a_star)
+    graph_min_max = ReachabilityGame.graph_transformer(game.graph, game.init.player)
+    values_player = compute_value_with_negative_weight(graph_min_max, game.goal[game.init.player - 1], True, game.init.player - 1)[0]
+    print "---------------"
+    print "VALUES", values_player
+    for v in a_star:
+        print "v",v.id, " value: ", values_player[v.id]
+    minMax_graph_to_dot(game, values_player,"min_max_back.dot")
+
+
+    print game.is_a_Nash_equilibrium(a_star,None,None,True,True)
 
 
 

@@ -742,6 +742,7 @@ class ReachabilityGame(object):
 
     def best_first_search(self, heuristic, frontier = None, allowed_time = float("infinity"), tuple_ = False, negative_weight = False, coalitions = None):
 
+        #file = open("parcourt_a_star.txt", "a")
 
         if heuristic is ReachabilityGame.a_star_positive:
             all_dijk = self.compute_all_dijkstra()
@@ -776,12 +777,17 @@ class ReachabilityGame(object):
             heapq.heappush(frontier, initial_node)
         while time.time() - start < allowed_time:
 
+            #file.write("frontiere " + str(frontier) + "\n")
+            #print frontier
             if len(frontier) == 0:
                 raise BestFirstSearchError(" Plus d'elements dans la frontiere")
 
 
             candidate_node = heapq.heappop(frontier)
+
             candidate_path = candidate_node.current
+
+            #file.write("POP :"+str(candidate_path)+"\n")
 
             if len(candidate_node.cost) == self.player:
 
@@ -847,11 +853,10 @@ class ReachabilityGame(object):
                         if len(frontier) - f != 1:
                             raise ValueError
 
-
+        #file.close()
         return
 
-    def do_something(self):
-        pass
+
 
     def compute_all_dijkstra(self):
         """
@@ -1313,7 +1318,7 @@ class ReachabilityGame(object):
                 pred = current
                 current = path[ind]
                 res = Graph.get_weight_pred(current, pred, self.graph.pred)
-                epsilon = tuple(ReachabilityGame.sum_two_vector_of_weight(epsilon,res)) if tuple_ else epsilon + res
+                epsilon = tuple(ReachabilityGame.sum_two_vector_of_weight(epsilon,res,set())) if tuple_ else epsilon + res
                 #epsilon += Graph.get_weight_pred(current, pred, self.graph.pred)
 
             if (current.player not in already_test) and (current.player not in already_visit_players): #alors il faut tester pour ce joueur s'il s'agit d'un EN
@@ -1336,6 +1341,7 @@ class ReachabilityGame(object):
 
                         values_player = compute_value_with_negative_weight(graph_min_max, self.goal[current.player - 1], tuple_,
                                                                            current.player - 1)[0]
+                        print "Values", values_player
                         coalitions[current.player] = values_player
 
                     val = coalitions[current.player][current.id]
@@ -1389,7 +1395,6 @@ class ReachabilityGame(object):
 
             (goal, player_g) = self.is_a_goal(path[ind])
             reach = player in player_g
-            print reach
 
             if not reach:
                 if ind != 0:
@@ -1421,10 +1426,9 @@ class ReachabilityGame(object):
          objectif
         """
 
-
+        tuple_ = type(self.graph.succ[0][0][1]) is tuple
         player_goal = []
-
-        cost = self.cost_for_all_players(path)
+        cost = self.cost_for_all_players(path,False,tuple_)
 
         for i in cost.keys():
 
