@@ -112,6 +112,14 @@ class Wraping2GenerateHousesGame(object):
         self.factory = houses_factory
         self.turn_player = turn_player_list
 
+class WrappingConstHousesGame(object):
+    def __init__(self, nb_player,nb_interval,eP,pIn,pOut):
+
+        self.player = nb_player
+        self.nb_interval = nb_interval
+        self.eP = eP
+        self.pIn = pIn
+        self.pOut = pOut
 
 
 
@@ -165,8 +173,8 @@ class HousesGame(ReachabilityGame):
                 return False
         return True
 
-    def aux_generate_houses_game_tree(self,nb_player,
-                                      nb_interval,
+    @staticmethod
+    def aux_generate_houses_game_tree( wrap,
                                       list_pref_tasks,
                                       time,
                                       all_vertices,
@@ -182,25 +190,25 @@ class HousesGame(ReachabilityGame):
         vertex = factory.create_houses_vertex(player, time, list_pref_tasks)
         all_vertices.append(vertex)
         list_succ.append([])
-        if len(turn_player) == self.player:
+        if len(turn_player) == wrap.player:
             #for p in xrange(1, nb_player + 1):
 
                 #if HousesGame.is_an_objective(vertex, p):
                     #goal[p - 1].add(vertex.id)
-            HousesGame.set_to_objective(vertex,goal,nb_player, True)
+            HousesGame.set_to_objective(vertex,goal,wrap.player, True)
 
 
 
-        if time == nb_interval+1 : #temps ecoule
+        if time == wrap.nb_interval+1 : #temps ecoule
 
-            list_succ[vertex.id].append((vertex.id,(0,)*nb_player))
+            list_succ[vertex.id].append((vertex.id,(0,) * wrap.player))
             return vertex
 
         else:
             new_turn_player = None
             time_changed = len(turn_player) == 1
             if time_changed: #il reste un unique joueur qui doit jouer
-                new_turn_player = range(1,nb_player+1)
+                new_turn_player = range(1,wrap.player + 1)
                 if not fixed_order:
                     random.shuffle(new_turn_player)
 
@@ -215,9 +223,7 @@ class HousesGame(ReachabilityGame):
                         turn.pop()
 
 
-                        succ = self.aux_generate_houses_game_tree(nb_player,
-                                                                      nb_interval,
-                                                                      new_list,
+                        succ = HousesGame.aux_generate_houses_game_tree(wrap,                                                                                                                                          new_list,
                                                                       time,
                                                                       all_vertices,
                                                                       list_succ,
@@ -226,13 +232,12 @@ class HousesGame(ReachabilityGame):
                                                                       turn,
                                                                       up_partial_weight,
                                                                       max_values)
-                        list_succ[vertex.id].append((succ.id, (0,) * nb_player))
+                        list_succ[vertex.id].append((succ.id, (0,) * wrap.player))
 
                     else:
                         turn = copy.copy(new_turn_player)
-                        reinitialize_partial_weight = [0] * nb_player
-                        succ = self.aux_generate_houses_game_tree(nb_player,
-                                                                      nb_interval,
+                        reinitialize_partial_weight = [0] * wrap.player
+                        succ = HousesGame.aux_generate_houses_game_tree(wrap,
                                                                       new_list,
                                                                       time + 1,
                                                                       all_vertices,
@@ -243,7 +248,7 @@ class HousesGame(ReachabilityGame):
                                                                       reinitialize_partial_weight,
                                                                       max_values)
 
-                        weight = self.compute_real_weight(up_partial_weight)
+                        weight = HousesGame.compute_real_weight(wrap,up_partial_weight)
                         HousesGame.keep_max(max_values, weight)
                         list_succ[vertex.id].append((succ.id,weight))
 
@@ -254,8 +259,7 @@ class HousesGame(ReachabilityGame):
                 turn = copy.copy(turn_player)
                 turn.pop()
 
-                succ = self.aux_generate_houses_game_tree(nb_player,
-                                                          nb_interval,
+                succ = HousesGame.aux_generate_houses_game_tree(wrap,
                                                           new_list,
                                                           time,
                                                           all_vertices,
@@ -265,13 +269,12 @@ class HousesGame(ReachabilityGame):
                                                           turn,
                                                           up_partial_weight,
                                                           max_values)
-                list_succ[vertex.id].append((succ.id, (0,) * nb_player))
+                list_succ[vertex.id].append((succ.id, (0,) * wrap.player))
 
             else:
                 turn = copy.copy(new_turn_player)
-                new_partial_weight = [0]*nb_player
-                succ = self.aux_generate_houses_game_tree(nb_player,
-                                                          nb_interval,
+                new_partial_weight = [0] * wrap.player
+                succ = HousesGame.aux_generate_houses_game_tree(wrap,
                                                           new_list,
                                                           time + 1,
                                                           all_vertices,
@@ -282,29 +285,28 @@ class HousesGame(ReachabilityGame):
                                                           new_partial_weight,
                                                           max_values)
 
-                list_succ[vertex.id].append((succ.id, self.compute_real_weight(up_partial_weight)))
+                list_succ[vertex.id].append((succ.id, HousesGame.compute_real_weight(wrap,up_partial_weight)))
 
             return vertex
 
-
-    def generate_houses_game_tree(self, nb_player,
-                                  nb_interval,
+    @staticmethod
+    def generate_houses_game_tree(wrap,
                                   list_pref_tasks,
                                   fixed_order = False):
 
-        turn = range(1, nb_player + 1)
+        turn = range(1, wrap.player + 1)
         if not fixed_order:
             random.shuffle(turn)
         goal = []
-        for x in xrange(nb_player):
+        for x in xrange(wrap.player):
             goal.append(set())
         time = 1
         all_vertices = []
         list_succ = []
-        partial_weight = [0]*self.player
+        partial_weight = [0] * wrap.player
         factory = HousesVertexFactory()
-        max_values = [-float("infinity")]*nb_player
-        self.aux_generate_houses_game_tree(nb_player,nb_interval,list_pref_tasks,time,all_vertices,list_succ,goal,factory,turn,partial_weight, max_values)
+        max_values = [-float("infinity")] * wrap.player
+        HousesGame.aux_generate_houses_game_tree(wrap,list_pref_tasks,time,all_vertices,list_succ,goal,factory,turn,partial_weight, max_values)
         graph = Graph(all_vertices, None, None, list_succ, tuple(max_values))
         return graph, all_vertices[0], goal, None
 
@@ -316,48 +318,49 @@ class HousesGame(ReachabilityGame):
         new_partial_weight[player-1] += weight
         return new_partial_weight
 
-    def compute_real_weight(self, partial_weight):
+    @staticmethod
+    def compute_real_weight(wrap, partial_weight):
 
-        res = [0] * self.player
+        res = [0] * wrap.player
         G_pos = set() #ensemble des maisons ayant un gain positif weight- prod > 0
         G_neg = set() # ensemble des maisons ayant un gain negatif weight- prod < 0
-        for p in xrange(1, self.player+1):
-            if self.eP - partial_weight[p-1] > 0:
+        for p in xrange(1, wrap.player+1):
+            if wrap.eP - partial_weight[p-1] > 0:
                 G_pos.add(p)
-            if self.eP - partial_weight[p-1] < 0:
+            if wrap.eP - partial_weight[p-1] < 0:
                 G_neg.add(p)
 
         benef = 0 #consommation superflue d energie pour toutes les maisons
 
         for p in G_pos:
-            benef += self.eP - partial_weight[p-1]
+            benef += wrap.eP - partial_weight[p-1]
 
         defi = 0 # deficit d energie pour toutes les maisons
 
         for p in G_neg:
-            defi += partial_weight[p-1] - self.eP
+            defi += partial_weight[p-1] - wrap.eP
 
         if benef - defi >= 0:
 
             for p in G_neg:
 
-                res[p-1] = (self.eP - partial_weight[p-1])* self.cIn
+                res[p-1] = (wrap.eP - partial_weight[p-1])* wrap.pIn
 
             for p in G_pos:
-                temp = self.eP - partial_weight[p-1]
-                res[p-1] = int(math.floor((temp/benef)*defi * self.cIn))
-                #res[p-1] = (1.0*temp/benef)*defi * self.cIn
+                temp = wrap.eP - partial_weight[p-1]
+                res[p-1] = int(math.floor((temp/benef)*defi * wrap.pIn))
+                #res[p-1] = (1.0*temp/benef)*defi * self.pIn
 
 
         else : #benef - defi < 0
 
             for p in G_pos:
-                res[p-1] = (self.eP - partial_weight[p-1])*self.cIn
+                res[p-1] = (wrap.eP - partial_weight[p-1]) * wrap.pIn
             for p in G_neg:
                 #temp = ((1.0*(self.eP - partial_weight[p-1]))/defi)*benef
-                temp = ((self.eP - partial_weight[p-1])/defi)*benef
-                res[p-1] = int(math.floor(temp*self.cIn + (self.eP - partial_weight[p-1]- temp)*self.cOut))
-                #res[p - 1] = temp * self.cIn + (self.eP - partial_weight[p - 1] - temp) * self.cOut
+                temp = ((wrap.eP - partial_weight[p-1])/defi)*benef
+                res[p-1] = int(math.floor(temp * wrap.pIn + (wrap.eP - partial_weight[p-1]- temp) * wrap.pOut))
+                #res[p - 1] = temp * self.pIn + (self.eP - partial_weight[p - 1] - temp) * self.pOut
 
 
 
@@ -526,13 +529,14 @@ class HousesGame(ReachabilityGame):
 
         return tuple(res)
 
-    def __init__(self, player, nbr_interval, energy_production, list_pref_tasks_for_all, cIn = None, cOut = None):
+    def __init__(self, player, nbr_interval, energy_production, list_pref_tasks_for_all, pIn, pOut):
 
-        self.cIn = cIn
-        self.cOut = cOut
+        self.pIn = pIn
+        self.pOut = pOut
         self.eP = energy_production
         self.player = player
-        (graph, init, goal, partition) = self.generate_houses_game_tree(player, nbr_interval, list_pref_tasks_for_all)
+        wrap = WrappingConstHousesGame(player,nbr_interval,energy_production,pIn,pOut)
+        (graph, init, goal, partition) = HousesGame.generate_houses_game_tree(wrap, list_pref_tasks_for_all)
         ReachabilityGame.__init__(self,player,graph,init,goal,partition)
 
 
