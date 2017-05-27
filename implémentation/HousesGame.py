@@ -125,6 +125,16 @@ class WrappingConstHousesGame(object):
 
 class HousesGame(ReachabilityGame):
 
+    def __init__(self, player, nbr_interval, energy_production, list_pref_tasks_for_all, pIn, pOut, test=False):
+
+        self.pIn = pIn
+        self.pOut = pOut
+        self.eP = energy_production
+        self.player = player
+        wrap = WrappingConstHousesGame(player, nbr_interval, energy_production, pIn, pOut)
+        (graph, init, goal, partition) = HousesGame.generate_houses_game_tree(wrap, list_pref_tasks_for_all,test)
+        ReachabilityGame.__init__(self, player, graph, init, goal, partition)
+
     @staticmethod
     def is_an_objective(vertex, player):
 
@@ -529,15 +539,7 @@ class HousesGame(ReachabilityGame):
 
         return tuple(res)
 
-    def __init__(self, player, nbr_interval, energy_production, list_pref_tasks_for_all, pIn, pOut):
 
-        self.pIn = pIn
-        self.pOut = pOut
-        self.eP = energy_production
-        self.player = player
-        wrap = WrappingConstHousesGame(player,nbr_interval,energy_production,pIn,pOut)
-        (graph, init, goal, partition) = HousesGame.generate_houses_game_tree(wrap, list_pref_tasks_for_all)
-        ReachabilityGame.__init__(self,player,graph,init,goal,partition)
 
 
     @staticmethod
@@ -689,7 +691,16 @@ class HousesGame(ReachabilityGame):
 
 
 
+class HousesGameTest(HousesGame):
 
+    """
+        Cette classe est uniquement utilisee pour les tests, afin d obtenir tout le temps le meme jeu en fixant
+        l ordre des joueurs. Si n est le nombre de joueur alors l'ordre est : n , n-1, n-2, ..., 1.
+    """
+
+    def __init__(self,player,nbr_interval, energy_production, list_pref_tasks_for_all, pIn, pOut, True):
+
+        HousesGame.__init__(player, nbr_interval, energy_production, list_pref_tasks_for_all, pIn, pOut,True)
 
 
 
