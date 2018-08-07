@@ -21,7 +21,7 @@
 # BibTeX
 *.bbl
 *.blg
-implémentation/Main.py
+
 implémentation/Test/parcours.txt
 implémentation/Test/parcours_arbre.txt
 implémentation/Test/parcours_best.txt
