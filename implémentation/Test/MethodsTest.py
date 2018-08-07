@@ -9,11 +9,17 @@ import numpy as np
 
 def a_star_test1():
     mat = [[np.inf, 7, 9, 5, 4],[5, np.inf, 2, 9, 3],[6, 4, np.inf, 9, 3],[2, 7, 2, np.inf, 10],[8, 9, 7, 3, np.inf]]
-    #mat = [[0, 7, 9, 5, 4],[5, 0, 2, 9, 3],[6, 4, 0, 9, 3],[2, 7, 2, 0, 10],[8, 9, 7, 3, 0]]
+
+    #mat_np = np.matrix(mat)
+    #G2_sparse = csgraph_from_dense(mat_np, null_value=np.inf)
+
+    #res = sparse.csgraph.johnson(G2_sparse)
+    #print "PLUS COURTS CHEMINS ", res
+
+
 
     list_pred = Graph.matrix_to_list_pred(mat)
     list_succ = Graph.list_pred_to_list_succ(list_pred)
-    print list_succ
 
     v0 = Vertex(0, 1)
     v1 = Vertex(1, 2)
@@ -28,21 +34,15 @@ def a_star_test1():
     goals = [{0}, {4}]
 
     game = ReachabilityGame(2, graph, v3, goals, None)
-    a_star = None
     a_star = game.best_first_search(ReachabilityGame.a_star_positive, None, 5)
-    init = None
 
-    init = game.best_first_search_with_init_path_both_two(ReachabilityGame.a_star_positive, 5)
-    candidate = None
+    init = game.best_first_search_with_init_path_both_two(ReachabilityGame.a_star_positive, 30)
+
     candidate = game.best_first_search(ReachabilityGame.short_path_evaluation, None, 5)
-    first = None
     first = game.breadth_first_search()
-    breadth = None
     breadth = game.breadth_first_search(False, 1)
-    breadth_result = None
     breadth_result = game.filter_best_result(breadth)
 
-    random_result = None
     random = game.test_random_path(100, game.compute_max_length())
     random_result = game.filter_best_result(random)
 
@@ -141,7 +141,8 @@ def a_star_test2():
     res2 = game.best_first_search_with_init_path_both_two(ReachabilityGame.a_star_positive, 5)
 
     print "Init ", str(res2)
-    print "En? ", game.is_a_Nash_equilibrium(res2)
+    if not res2 is None:
+        print "En? ", game.is_a_Nash_equilibrium(res2)
 
 def test_best_first_search():
 
@@ -478,7 +479,7 @@ if __name__ == '__main__':
     #test_best_first_search_2()
     #test_best_first_search3()
 
-    #general_test()
-    test_slide()
+    general_test()
+    #test_slide()
 
     #echec_init()

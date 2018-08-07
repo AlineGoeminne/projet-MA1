@@ -110,7 +110,7 @@ class TestReachabilityGame(unittest.TestCase):
         list_succ = Graph.list_pred_to_list_succ(list_pred)
 
         graph = Graph(vertex, None, list_pred, list_succ, 4)
-        goals = [set([3]), set([0])]
+        goals = [{3}, {0}]
         init = v1
 
         game = ReachabilityGame(2, graph, init, goals, None)
@@ -226,6 +226,53 @@ class TestReachabilityGame(unittest.TestCase):
         a_star = game.best_first_search(ReachabilityGame.a_star_positive, None, 5)
 
         self.assertEqual(a_star, [v1, v2, v3, v0])
+
+
+    def test_negative_slides(self):
+        v0 = Vertex(0, 2)
+        v1 = Vertex(1, 1)
+        v2 = Vertex(2, 1)
+        v3 = Vertex(3, 2)
+        v4 = Vertex(4, 1)
+        v5 = Vertex(5, 2)
+        v6 = Vertex(6, 1)
+
+        all_vertices = [v0, v1, v2, v3, v4, v5, v6]
+
+        succ0 = [(1, (1, 1)), (3, (1, 1))]
+        succ1 = [(2, (-1, -1))]
+        succ2 = [(1, (4, 4)), (3, (2, 2)), (4, (1, 1))]
+        succ3 = [(4, (1, 1)), (6, (1, 1))]
+        succ4 = [(5, (1, 1)), (6, (-1, -1))]
+        succ5 = [(3, (3, 3)), (5, (1, 1))]
+        succ6 = [(0, (2, 2)), (5, (1, 1))]
+
+        succ = [succ0, succ1, succ2, succ3, succ4, succ5, succ6]
+
+        mat = Graph.list_succ_to_mat(succ, True, 2)
+        pred = Graph.matrix_to_list_pred(mat)
+
+        W = (4, 4)
+        graph = Graph(all_vertices, mat, pred, succ, W)
+
+        target1 = {6}
+        target2 = {5}
+
+        goals = [target1, target2]
+
+        init = v0
+
+        game = ReachabilityGame(2,graph,init,goals,None)
+
+        a_star = game.best_first_search(ReachabilityGame.a_star_negative,None,30,True, True, None, None)
+
+        en = [v0,v3,v6,v5]
+
+        print en, "est un EN ", game.is_a_Nash_equilibrium(en, None,None,True,True)[0], " info ", game.get_info_path(en)
+
+        print "A_star", a_star, "info ", game.get_info_path(a_star)
+
+
 
 if __name__ == '__main__':
 

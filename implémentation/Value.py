@@ -1,6 +1,15 @@
 from MinHeap import MinHeap
 import copy
 
+"""
+Ce module permet de calculer les valeurs des reachability-price games.
+
+dijkstraMinMax : /!\ uniquement si pas de poids negatifs ET si pas de tuple pour le poids des arcs
+compute_value_with_negative_weight : peut etre utilises si les poids sont negatifs ET gere la presence de tuple sur les
+arcs
+
+"""
+
 
 class VertexDijk(object):
 
@@ -54,17 +63,17 @@ class VertexDijkPlayerMax(VertexDijk):
 
 
 
-"""
-
-Cette classe represente les objets qui seront stockes dans chaque tas S de chaque vertex.
-Pour un certain vertex v, on possede un tas S composes d objets successeurs.
-Un objet successeur possede un attribut ID qui represente un successeur s de v et un attribut key qui represente la valeur
-si en v on passe par s.
-
-"""
 
 
 class Successor(object):
+    """
+
+    Cette classe represente les objets qui seront stockes dans chaque tas S de chaque vertex.
+    Pour un certain vertex v, on possede un tas S composes d objets successeurs.
+    Un objet successeur possede un attribut ID qui represente un successeur s de v et un attribut key qui represente la valeur
+    si en v on passe par s.
+
+    """
 
     def __init__(self, id, key):
 
@@ -207,6 +216,17 @@ def convertPred2NbrSucc(pred):
 
     return nbrSucc
 
+def convertSucc2NbrSucc(succ):
+    """
+    A partir de la liste des successuers retourne le nombre de successeurs de chaque noeud.
+    """
+
+    nbrSucc = [0] * len(succ)
+    for i in range(0,len(succ)):
+        nbrSucc[i] = len(succ[i])
+
+    return nbrSucc
+
 
 
 
@@ -262,6 +282,15 @@ def print_result(T, goal, succ):
 
 def get_succ_in_opti_strat(T, goal, succ):
 
+    """
+        Pour chaque noeud du graphe determine quel successeur est choisi selon les strategies optimales des joueurs Min
+        et Max determinees par l algorithme dijkstraMinMax.
+
+        :param T: resultat de l algorithme dijkstraMinMax
+        :param goal: liste des ensembles objectifs
+        :param succ: liste de listes de successeurs pour chaque noeud du graphe du jeu
+    """
+
     successor = [0]* len(T)
     for v in T:
 
@@ -310,6 +339,19 @@ def get_all_values(T):
 
 
 def compute_value_with_negative_weight(graph, goal, tuple = False, compo=0):
+
+    """
+        Etant donne le graphe du jeu et les ensembles objectifs pour chaque joueur, calcule la valeur de chaque noeud.
+        :param graph: graphe du jeu donne par sa matrice de successeurs
+        :param goal: liste des ensembles objectifs de chaque joueur
+        :param tuple_: boolean permettant de savoir s'il y a des tuples pour ponderer les arcs
+        :param compo : precise, si tuple_ est True, quelle composante on considere pour le calcul des valeurs
+
+        :return (tab_value, min_1, min_2, max): tab_value -> tableau des valeurs de chaque noeud, min_1 et min_2 -> per-
+        mettent de retrouver la strategie optimale pour le joueur Min, max -> permet de retrouver la strategie optimale pr
+        le joueur Max
+
+    """
 
     V = len(graph.vertex)
 

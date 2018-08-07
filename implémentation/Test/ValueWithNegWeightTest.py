@@ -38,7 +38,7 @@ class TestValueWithNegWeight(unittest.TestCase):
 
         game = ReachabilityGame(2, graph, None, target, None)
 
-        minMax_graph_to_dot(game, res[0], "test.dot")
+        #minMax_graph_to_dot(game, res[0], "DOT/test.dot")
 
         self.assertEqual(res[0], [-W,-W,0])
 
@@ -67,7 +67,7 @@ class TestValueWithNegWeight(unittest.TestCase):
 
         game = ReachabilityGame(2,graph,None,target,None)
 
-        minMax_graph_to_dot(game,res[0], "test2.dot")
+        #minMax_graph_to_dot(game,res[0], "DOT/test2.dot")
 
         self.assertEqual(res[0],[-np.inf,-np.inf,0,np.inf])
 
@@ -104,7 +104,7 @@ class TestValueWithNegWeight(unittest.TestCase):
 
         game = ReachabilityGame(2, graph, None, target, None)
 
-        minMax_graph_to_dot(game, res[0], "from_master_thesis_example.dot")
+        #minMax_graph_to_dot(game, res[0], "DOT/from_master_thesis_example.dot")
 
 
         self.assertEqual(res[0],[np.inf,np.inf,np.inf,-2,-np.inf,-1,-np.inf,0])
@@ -146,7 +146,7 @@ class TestValueWithNegWeight(unittest.TestCase):
 
         game = ReachabilityGame(2, graph, None, target, None)
 
-        minMax_graph_to_dot(game, res[0], "from_master_thesis_example_bis.dot")
+        #minMax_graph_to_dot(game, res[0], "DOT/from_master_thesis_example_bis.dot")
 
     def test_example_with_tuple(self):
 
@@ -212,7 +212,7 @@ class TestValueWithNegWeight(unittest.TestCase):
 
         game = ReachabilityGame(2, graph, None, target, None)
 
-        minMax_graph_to_dot(game, res[0], "test3.dot")
+        #minMax_graph_to_dot(game, res[0], "DOT/test3.dot")
 
 
     def test_is_there_infinite_value_test(self):
@@ -244,7 +244,7 @@ class TestValueWithNegWeight(unittest.TestCase):
 
         game = ReachabilityGame(2, graph, None, target, None)
 
-        minMax_graph_to_dot(game, res[0], "no_inifinity.dot")
+        #minMax_graph_to_dot(game, res[0], "DOT/no_inifinity.dot")
 
         self.assertEqual(res[0],[46,np.inf,45,50,1,0])
 
@@ -287,6 +287,47 @@ class TestValueWithNegWeight(unittest.TestCase):
         self.assertEqual(res1[0], [4,4,5,0,0,0,0])
         self.assertEqual(res2[0], [2,0,2,0,0,0,0])
 
+    def test_slides(self):
+
+        v0 = Vertex(0,2)
+        v1 = Vertex(1,1)
+        v2 = Vertex(2,1)
+        v3 = Vertex(3,2)
+        v4 = Vertex(4,1)
+        v5 = Vertex(5,2)
+        v6 = Vertex(6,1)
+
+        all_vertices = [v0,v1,v2,v3,v4,v5,v6]
+
+        succ0 = [(1,(1,1)),(3,(1,1))]
+        succ1 = [(2,(-1,-1))]
+        succ2 = [(1,(4,4)),(3,(2,2)),(4,(1,1))]
+        succ3 = [(4,(1,1)),(6,(1,1))]
+        succ4 = [(5,(1,1)),(6,(-1,-1))]
+        succ5 = [(3,(3,3)),(5,(1,1))]
+        succ6 =[(0,(2,2)),(5,(1,1))]
+
+        succ = [succ0, succ1, succ2, succ3, succ4, succ5, succ6]
+
+        mat = Graph.list_succ_to_mat(succ, True, 2)
+        pred = Graph.matrix_to_list_pred(mat)
+
+        W = (4, 4)
+        graph = Graph(all_vertices, mat, pred, succ, W)
+
+        target1 = {6}
+        target2 = {5}
+
+        res1 = compute_value_with_negative_weight(graph, target1, True, 0)
+        graph_min_max = ReachabilityGame.graph_transformer(graph, 2)
+
+        res2 = compute_value_with_negative_weight(graph_min_max, target2, True, 1)
+
+        #print res1
+        #print res2
+
+        self.assertEqual([2, -1, 0, 1, -1, np.inf, 0], res1[0])
+        self.assertEqual([np.inf,np.inf,np.inf,np.inf,np.inf,0,np.inf], res2[0])
 
 
 

@@ -9,10 +9,15 @@ from Value import dijkstraMinMax
 from Value import VertexDijkPlayerMax
 from Value import VertexDijkPlayerMin
 from Value import convertPred2NbrSucc
+from Value import convertSucc2NbrSucc
 from Value import get_all_values
 from Value import print_result
 from Value import get_succ_in_opti_strat
 from Value import compute_value_with_negative_weight
+
+import numpy as np
+from scipy import sparse
+from scipy.sparse.csgraph import csgraph_from_dense
 
 
 class ArenaError(Exception):
@@ -249,22 +254,29 @@ class Graph(object):
         return mat
 
     @staticmethod
-    def get_weight_pred(current, pred, list_pred):
+    def get_weight_pred(current, pred, graph):
 
-        """ Etant donne un noeud courant, un certain predecesseur et la liste des predecesseurs, donne le poids entre
+        """ Etant donne un noeud courant, un certain predecesseur et un graphe, donne le poids entre
         les deux noeuds consideres"""
 
-        pred_current = list_pred[current.id]
-        weight = None
-        for i in pred_current:
-            (_pred, w) = i
-            if _pred == pred.id:
-                weight = w
+        if graph.mat is None:
 
-        return weight
+            pred_current = graph.pred[current.id]
+            weight = None
+            for i in pred_current:
+                (_pred, w) = i
+                if _pred == pred.id:
+                    weight = w
+
+            return weight
+        else:
+            return graph.mat[pred.id][current.id]
 
     @staticmethod
     def get_weight_succ(current, succ, list_succ):
+
+        """ Etant donne un noeud courant, un certain successeur et la liste des successeurs, donne le poids entre
+            les deux noeuds consideres"""
         succ_current = list_succ[current.id]
         weight = None
         for i in succ_current:
@@ -283,14 +295,18 @@ class Graph(object):
         return string
 
 
-    def floyd_warshall(self,tuple=False,compo=None):
+    def floyd_warshall(self,tuple_=False,compo=None):
 
-        """ Calcule le plus court chemin entre chaque paire de sommet du graphe."""
+        """ Calcule le plus court chemin entre chaque paire de sommet du graphe en utilisant l'algorithme de Floyd-
+        Warshall
+
+        :param tuple_: True si les arcs sont ponderes par des tuples, False sinon
+        :param compo : si tuple_ est True, calcule les plus courts chemins en fonction de la composante compo"""
 
         if self.mat == None:
             raise GraphError(" Pas de representation matricielle du graphe")
 
-        if tuple:
+        if tuple_:
             M = Graph.mat_proj_componant(self.mat,compo)
         else:
             M = self.mat
@@ -312,6 +328,16 @@ class Graph(object):
 
     @staticmethod
     def mat_proj_componant(mat,compo):
+
+        """
+            Si la matrice est ponderee par des tuples, retourne la matrice ou on ne considere que la composante compo.
+
+            :param mat: une matrice ponderee par des tuples
+            :param compo: la composante sur laquelle on veut faire la "projection"
+
+            :return une nouvelle matrice ou pour chaque arc le poids de l'arc est la composante "compo"
+
+        """
 
         new_M = []
         n = len(mat)
@@ -428,7 +454,24 @@ class ReachabilityGame(object):
         Calcule la longueur maximale de l outcome d un EN
         """
 
+
         return (self.player + 1)*len(self.graph.vertex)
+
+    def compute_max_weight_path(self, l, tuple_=False):
+
+        "Calcule le poids maximal d'un outcome d'un chemin de longueur l"
+
+        if not tuple_:
+            return l * self.graph.max_weight
+        else:
+            res = [-float("infinity")]*self.player
+            w = self.graph.max_weight
+            for i in xrange(self.player):
+                res[i] = w[i] * l
+
+            return res
+
+
 
     @staticmethod
     def path_vertex_to_path_index(path):
@@ -537,7 +580,10 @@ class ReachabilityGame(object):
         vertices = graph.vertex
         newVertices = [0] * len(vertices)
 
-        nbrSucc = convertPred2NbrSucc(graph.pred)
+        if not(graph.succ is None):
+            nbrSucc = convertSucc2NbrSucc(graph.succ)
+        else:
+            nbrSucc = convertPred2NbrSucc(graph.pred)
 
         for i in range(0, len(vertices)):
             oldVert = vertices[i]
@@ -740,24 +786,31 @@ class ReachabilityGame(object):
     # test d'un parcours d'arbre un peu plus intelligent
 
 
-    def best_first_search(self, heuristic, frontier = None, allowed_time = float("infinity"), tuple_ = False, negative_weight = False, coalitions = None):
+    def best_first_search(self, heuristic, frontier = None, allowed_time = float("infinity"), tuple_ = False, negative_weight = False, coalitions = None, short_path = None):
 
-        #file = open("parcourt_a_star.txt", "a")
+        #file = open("stat_a_star.txt", "w")
+        #file.write("------ \n")
 
         if heuristic is ReachabilityGame.a_star_positive:
             all_dijk = self.compute_all_dijkstra()
 
         else :
             if heuristic is ReachabilityGame.a_star_negative:
-                all_dijk = self.compute_all_floyd()
+
+                #j_time = time.time()
+                all_dijk = self.compute_all_johnson()
+                #j_time = time.time() - j_time
+                #file.write("Temps Johnson : " + str(j_time)+ "\n")
             else:
                 all_dijk = None
+
+
 
         start = time.time()
 
         max_length = self.compute_max_length()
 
-        last_goal_index = 0
+        iter = 0
 
 
         if frontier is None:
@@ -777,20 +830,22 @@ class ReachabilityGame(object):
             heapq.heappush(frontier, initial_node)
         while time.time() - start < allowed_time:
 
-            #file.write("frontiere " + str(frontier) + "\n")
-            #print frontier
+            iter+=1
+
             if len(frontier) == 0:
-                raise BestFirstSearchError(" Plus d'elements dans la frontiere")
+                #raise BestFirstSearchError(" Plus d'elements dans la frontiere")
+                return
 
-
+            #file.write("frontiere "+ str(frontier)+"\n")
             candidate_node = heapq.heappop(frontier)
 
             candidate_path = candidate_node.current
+            #file.write("Candidat : " + str(candidate_path)+"\n\n")
 
-            #file.write("POP :"+str(candidate_path)+"\n")
+
 
             if len(candidate_node.cost) == self.player:
-
+                #file.write("Iter : "+str(iter)+ " total time "+ str(time.time() - start) +"\n")
                 #Alors on sait qu'il s'agit d'un equilibre de Nash car tous les cost ont ete initialises
                 return candidate_path
 
@@ -804,7 +859,6 @@ class ReachabilityGame(object):
                     return candidate_path
 
             else: #len(candidate_path) < max_length et len(candidate_node.cost) != self.player
-
                 last_vertex = candidate_node.current[-1]
                 succ_last_vertex = self.graph.succ[last_vertex.id]
                 random.shuffle(succ_last_vertex)
@@ -836,22 +890,23 @@ class ReachabilityGame(object):
                                 for p in new_reach:
                                     new_cost[p] = epsilon[p-1] if tuple_ else epsilon
                                 value = heuristic(self, new_cost,epsilon, len(new_path), succ_vertex, all_dijk)
-
                                 new_node = Node(new_path, candidate_node, epsilon, new_cost, value)
                                 heapq.heappush(frontier, new_node)
 
                             else:
-                                value = float("infinity")
-                                new_node = Node(new_path, candidate_node, epsilon, candidate_node.cost, value)
-                                heapq.heappush(frontier, new_node)
+                                pass
+                                #value = float("infinity")
+                                #new_node = Node(new_path, candidate_node, epsilon, candidate_node.cost, value)
+                                #heapq.heappush(frontier, new_node)
 
                     else:
                         value = heuristic(self, candidate_node.cost,epsilon, len(new_path), succ_vertex, all_dijk)
                         new_node = Node(new_path, candidate_node, epsilon, candidate_node.cost, value)
-                        f = len(frontier)
                         heapq.heappush(frontier, new_node)
-                        if len(frontier) - f != 1:
-                            raise ValueError
+
+
+
+
 
         #file.close()
         return
@@ -885,9 +940,27 @@ class ReachabilityGame(object):
             result[p+1] = res
 
         return result
+
+    def compute_all_johnson(self):
+
+        result = {}
+        for p in xrange(0, self.player):
+            mat = Graph.mat_proj_componant(self.graph.mat, p)
+
+
+            mat_np = np.matrix(mat)
+            G2_sparse = csgraph_from_dense(mat_np, null_value=np.inf)
+            res = sparse.csgraph.johnson(G2_sparse)
+            result[p+1] = res
+
+        return result
+
+
     @staticmethod
 
     def a_star_positive(game, cost, epsilon, length_path, last_vertex = None, all_dijk = None):
+
+        "Heuristique de type A* pour des graphes munis de poids positifs."
 
 
         nbr_player_notreached = game.player - len(cost)
@@ -914,10 +987,12 @@ class ReachabilityGame(object):
 
     @staticmethod
 
-    def a_star_negative(game,cost,epsilon, length_path, last_vertex = None, all_floyd =None):
+    def a_star_negative(game, cost, epsilon, length_path, last_vertex, all_shortest_paths):
+
+        "Heuristique de type A*, avec deds poids pouvant etre negatifs"
 
         player_reach = set(cost.keys())
-        all_player = set(range(1,game.player))
+        all_player = set(range(1,game.player+1))
         not_reach_player = all_player - player_reach
 
         max_length = game.compute_max_length()
@@ -933,9 +1008,9 @@ class ReachabilityGame(object):
 
         h_n = 0
         for p in not_reach_player:
-
-            short = ReachabilityGame.find_short_path_to_goal(all_floyd[p], game.goal[p-1], last_vertex)
-            h_n += min(short, max_length* max_weight[p-1]+1)
+            #calcul du plus court chemin du noeud courant vers chaque objectif
+            short = ReachabilityGame.find_shortest_path_to_goal(all_shortest_paths[p], game.goal[p - 1], last_vertex)
+            h_n += min(short, max_length* max_weight[p-1] - epsilon[p-1] +1)
 
 
         return g_n + h_n
@@ -944,7 +1019,7 @@ class ReachabilityGame(object):
 
     @staticmethod
 
-    def find_short_path_to_goal(short_mat, goal, vertex):
+    def find_shortest_path_to_goal(short_mat, goal, vertex):
 
         new_goal = copy.copy(goal)
         g = new_goal.pop()
@@ -1055,6 +1130,7 @@ class ReachabilityGame(object):
 
         goal_id = goal.id
         T = dijkstraMinMax(graph_dijk, {goal_id})
+
         successor = get_succ_in_opti_strat(T,{goal_id}, self.graph.succ)
         goal_is_reached = False
         path = [self.init]
@@ -1087,7 +1163,6 @@ class ReachabilityGame(object):
             eps = self.compute_epsilon(path)
             node = Node(path, Node([], None, 0, cost, value), eps, cost, value)
             frontier = [node]
-
             res = self.best_first_search(evaluation, frontier, allowed_time)
             return res
 
@@ -1107,6 +1182,7 @@ class ReachabilityGame(object):
         for i in range(1, len(self.goal)):
             union_goal = union_goal.union(self.goal[i])
 
+
         for i in range(0, len(union_goal)):
             goal = union_goal.pop()
             goal_vertex = self.graph.vertex[goal]
@@ -1124,15 +1200,16 @@ class ReachabilityGame(object):
         else:
             all_dijk = None
 
-        (is_goal,player) = self.is_a_goal(goal)
         path = self.init_search_goal(goal)
+        (cost, reach) = self.get_info_path(path)
 
         nash = True
-        for p in player:
+        for p in reach:
 
             (nash_, coalition) = self.is_a_Nash_equilibrium_one_player(path, p)
             if not  nash_:
                 nash = False
+
 
         if nash:
             cost = self.cost_for_all_players(path, True)
@@ -1148,6 +1225,206 @@ class ReachabilityGame(object):
             return None
 
 
+    #---------
+    # Backward induction
+    #---------
+
+    @staticmethod
+    def choice_action(possibilities, player, max_weight=None):
+
+        """
+            Choisit entre differentes possibilites d 'action.
+
+        """
+
+        return ReachabilityGame.minimize_the_sum_action(possibilities, player, max_weight)
+        # return HousesGame.all_the_best_actions(cost, player)
+
+
+
+    @staticmethod
+    def minimize_the_sum_action(actions, player, max_weight):
+
+        """
+            Choisit la meilleure action pour player et s'il en existe plusieurs ayant le meme cout, choisit celle
+            qui optimise le bien-etre social.
+
+        """
+        (best, cost) = actions.popitem()
+
+        res = {best}
+        for a in iter(actions):
+            new_cost = actions[a][player - 1]
+            if new_cost < cost[player - 1]:
+                res = set()
+                res.add(a)
+                cost = actions[a]
+            if new_cost == cost[player - 1]:
+                cost_ = copy.copy(cost)
+                actions_ = list(copy.copy(actions[a]))
+                for i in xrange(len(cost)):
+                    if cost[i] == float("infinity"):
+                        cost_[i] = max_weight[player-1]
+
+                    if actions[a][i] == float("infinity"):
+                        actions_[i] = max_weight[player-1]
+                old_sum = reduce(lambda x, y: x + y, cost_)
+                new_sum = reduce(lambda x, y: x + y, actions_)
+                if new_sum == old_sum:
+                    res.add(a)
+                if new_sum < old_sum:
+                    res = set()
+                    cost = actions[a]
+                    res.add(a)
+        if len(res) > 1:
+            new_res = set()
+            sol = random.choice(list(res))
+            new_res.add(sol)
+            res = new_res
+        return res, cost
+
+    @staticmethod
+    def all_the_best_actions(actions, player):
+
+        (best, cost) = actions.popitem()
+
+        res = {best}
+        for a in iter(actions):
+            new_cost = actions[a][player - 1]
+            if new_cost < cost[player - 1]:
+                res = set()
+                res.add(a)
+                cost = actions[a]
+            if new_cost == cost[player - 1]:
+                res.add(a)
+
+        return res, cost
+
+    def aux_backward(self, vertex, strategies):
+
+        """
+            Algorithme auxiliaire de l algorithme backward.
+
+        """
+
+        vertex_id = vertex.id
+
+        if self.graph.succ[vertex_id][0][0] == vertex_id:  # boucle -> etat terminal
+            res = [0] * self.player
+            for p in xrange(1, self.player + 1):
+                if vertex.id not in self.goal[p - 1]:
+                    res[p - 1] = float("infinity")
+
+            strategies[vertex_id] = ({vertex_id}, res)
+            return res
+
+        else:
+            all_succ = self.graph.succ[vertex_id]
+            all_possibilities = {}
+            goal, players = self.is_a_goal(vertex)
+
+            for tuple_s in all_succ:
+                s = self.graph.vertex[tuple_s[0]]
+                sub_values = self.aux_backward(s, strategies)
+                values = ReachabilityGame.sum_two_vector_of_weight(sub_values, tuple_s[1], players)
+                for p in players:
+                    values[p - 1] = 0
+                all_possibilities[s.id] = values
+            (choices, cost) = ReachabilityGame.choice_action(all_possibilities, vertex.player, self.compute_max_weight_path(self.compute_max_length(),True))
+            strategies[vertex_id] = (choices, cost)
+            return cost
+
+    def backward(self):
+
+        """
+        Algorithme de backward induction a appliquer sur un jeu ayant un graphe en forme d'arbre.
+        :return: un dictionnaire pour lequel pour chaque noeud est associe l'arc a choisir.
+        """
+
+        init = self.graph.vertex[0]
+        strategies = {}
+        self.aux_backward(init, strategies)
+        return strategies
+
+    @staticmethod
+    def get_SPE(strategies, length, nb_player):
+
+        """
+         A partir des strategies calculees par l algo backward calcule l outcome de ces strategies
+        """
+
+        #length = nb_interval * nb_player + 1  # puisque c'est un  arbre on arrete a la profondeur
+
+        res = [0]
+        v_current_id = 0
+        while len(res) < length:
+            v_current_id = strategies[v_current_id][0].pop()
+
+            res.append(v_current_id)
+
+        return res
+
+    def get_SPE_until_last_reach(self, strategies, length, nb_player):
+
+        """
+         A partie des strategies calculees par l algo backward calcule l outcome de ces strategies et s arrete
+         une fois que tous les joueurs ont atteint leur objectif (si c'est le cas).
+        """
+
+        #length = nb_interval * nb_player + 1  # puisque c'est un  arbre on arrete a la profondeur
+        reach_player = set()
+        (goal, players) = self.is_a_goal(self.init)
+        reach_player = reach_player.union(players)
+
+        res = [self.init]
+        v_current_id = 0
+        while len(res) < length and len(reach_player) != self.player:
+            v_current_id = strategies[v_current_id][0].pop()
+            v_current = self.graph.vertex[v_current_id]
+            (goal, players) = self.is_a_goal(v_current)
+            reach_player = reach_player.union(players)
+            res.append(v_current)
+        return res
+
+    def get_all_SPE_until_last_reach(self, strategies, nb_interval, nb_player):
+
+        reach_player = set()
+        res = [self.init]
+
+        all_SPE = set()
+        temp = {}
+        temp[tuple(res)] = reach_player
+        while len(temp) != 0:
+            temp = self.get_all_SPE_until_last_reach_aux(strategies, nb_interval, nb_player, temp, all_SPE)
+        return all_SPE
+
+    def get_all_SPE_until_last_reach_aux(self, strategies, nb_interval, nb_player, temp, all_SPE):
+
+        length = nb_interval * nb_player + 1  # puisque c'est un  arbre on arrete a la profondeur
+        new_temp = {}
+        for p in temp.keys():  # on recupere tous les chemins en court de construction
+            path = list(p)
+            reach_player = temp[p]
+            for n in strategies[path[-1].id][0]:  # on recupere tous les sucesseurs possibles
+                new_vertex = self.graph.vertex[n]
+                (goal, players) = self.is_a_goal(new_vertex)
+                new_reach_player = reach_player.union(players)
+                new_path = copy.deepcopy(path)
+                new_path.append(new_vertex)
+
+                if len(new_path) >= length or len(new_reach_player) == self.player:  # on a un SPE complet
+                    all_SPE.add(tuple(new_path))
+
+                else:
+                    new_temp[tuple(new_path)] = new_reach_player
+
+        return new_temp
+
+
+    #---------
+    # Calculs de poids de chemins
+    #----------
+
     def compute_epsilon(self, path, tuple_ = False):
 
         """
@@ -1161,15 +1438,10 @@ class ReachabilityGame(object):
             v = path[i]
             pred_v = path[i - 1]
 
-            res = Graph.get_weight_pred(v, pred_v, self.graph.pred)
+            res = Graph.get_weight_pred(v, pred_v, self.graph)
             eps = tuple(ReachabilityGame.sum_two_vector_of_weight(eps,res, set())) if tuple_ else eps + res
 
         return eps
-
-
-
-
-
 
     def cost_for_all_players(self, path, only_reached=False, tuple_= False):
 
@@ -1201,10 +1473,9 @@ class ReachabilityGame(object):
             v = path[i]
             pred_v = path[i - 1]
 
-            res = Graph.get_weight_pred(v, pred_v, self.graph.pred)
+            res = Graph.get_weight_pred(v, pred_v, self.graph)
             weight = tuple(ReachabilityGame.sum_two_vector_of_weight(weight,res, set())) if tuple_ else weight + res
 
-            #weight += Graph.get_weight_pred(v, pred_v, self.graph.pred)
 
             # on teste si on ne vient pas d atteindre un nouvel etat objectif
             if v.id not in reach_goals:
@@ -1244,7 +1515,7 @@ class ReachabilityGame(object):
             v = path[i]
             pred_v = path[i - 1]
 
-            res = Graph.get_weight_pred(v, pred_v, self.graph.pred)
+            res = Graph.get_weight_pred(v, pred_v, self.graph)
             weight = tuple(ReachabilityGame.sum_two_vector_of_weight(weight, res, set())) if tuple_ else weight + res
 
             # on teste si on ne vient pas d atteindre un objectif
@@ -1256,7 +1527,9 @@ class ReachabilityGame(object):
 
 
 
-
+    #-------
+    #Tests de la propriete d'EN
+    #-------
 
 
 
@@ -1298,17 +1571,10 @@ class ReachabilityGame(object):
         nash = True # le chemin est un equilibre de Nash
         ind = 0 # indice du noeud courant dans le chemin
 
-        #(goal,player) = self.is_a_goal(path[0])
-        #if goal:
-            #for p in player:
-                #path_cost[p] = 0
-
-
 
         current = path[ind]
         already_visit_players = set()
 
-        pred = None
         while nash and ind < len(path):
 
             (goal,player) = self.is_a_goal(path[ind])
@@ -1317,9 +1583,8 @@ class ReachabilityGame(object):
             if ind != 0:
                 pred = current
                 current = path[ind]
-                res = Graph.get_weight_pred(current, pred, self.graph.pred)
+                res = Graph.get_weight_pred(current, pred, self.graph)
                 epsilon = tuple(ReachabilityGame.sum_two_vector_of_weight(epsilon,res,set())) if tuple_ else epsilon + res
-                #epsilon += Graph.get_weight_pred(current, pred, self.graph.pred)
 
             if (current.player not in already_test) and (current.player not in already_visit_players): #alors il faut tester pour ce joueur s'il s'agit d'un EN
                 if current.player in coalitions:  #on a deja calcule les valeurs du jeu ou player joue contre la collation Pi\{player}
@@ -1330,7 +1595,6 @@ class ReachabilityGame(object):
                     else:
                         nash = False # on ne respcte pas la condition pour au moins un noeud -> pas un EN
                 else:  # il faut au prealable calculer les valeurs du jeu min-max associe
-
                     graph_min_max = ReachabilityGame.graph_transformer(self.graph, current.player)
 
                     if not negative_weight:
@@ -1341,7 +1605,6 @@ class ReachabilityGame(object):
 
                         values_player = compute_value_with_negative_weight(graph_min_max, self.goal[current.player - 1], tuple_,
                                                                            current.player - 1)[0]
-                        print "Values", values_player
                         coalitions[current.player] = values_player
 
                     val = coalitions[current.player][current.id]
@@ -1400,7 +1663,7 @@ class ReachabilityGame(object):
                 if ind != 0:
                     pred = current
                     current = path[ind]
-                    res = Graph.get_weight_pred(current, pred, self.graph.pred)
+                    res = Graph.get_weight_pred(current, pred, self.graph)
                     epsilon = tuple(ReachabilityGame.sum_two_vector_of_weight(res,epsilon, set())) if tuple_ else epsilon + res
 
                 if current.player == player :
@@ -1436,6 +1699,15 @@ class ReachabilityGame(object):
                 player_goal.append(i)
 
         return (cost, player_goal)
+
+    @staticmethod
+    def sum_cost_path(info):
+
+        c = info[0]
+        sum = 0
+        for j in iter(c):
+            sum += c[j]
+        return sum
 
 
     def filter_best_result(self, result):
@@ -1745,6 +2017,28 @@ def find_loop_test():
     path = [0,1,2,1,4,5,6,7,2,7,8,0,9]
     print ReachabilityGame.find_circuit(path,2)
 
+
+def numpy_test():
+
+    mat = [[0,-2,-5,np.inf,np.inf,np.inf,np.inf],
+           [np.inf,0,np.inf,1,3,np.inf,np.inf],
+           [np.inf,np.inf,0,np.inf,np.inf,0,-2],
+           [np.inf,np.inf,np.inf,0,np.inf,np.inf,np.inf],
+           [np.inf, np.inf, np.inf, np.inf, 0, np.inf, np.inf],
+           [np.inf, np.inf, np.inf, np.inf, np.inf, 0, np.inf],
+           [np.inf, np.inf, np.inf, np.inf, np.inf, np.inf, 0]]
+
+    mat_np = np.matrix(mat)
+    G2_sparse = csgraph_from_dense(mat_np, null_value=np.inf)
+
+    res = sparse.csgraph.johnson(G2_sparse)
+    graph = Graph(None,mat, None, None)
+    res2 = graph.floyd_warshall()
+    print res
+    print res2
+
+
+
 if __name__ == '__main__':
 
     #test_generate_game()
@@ -1762,4 +2056,5 @@ if __name__ == '__main__':
 
     #test()
 
-    find_loop_test()
+    #find_loop_test()
+    numpy_test()

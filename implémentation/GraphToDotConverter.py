@@ -2,7 +2,17 @@ from GraphGame import Graph
 from GraphGame import Vertex
 from GraphGame import ReachabilityGame
 
+"""
+
+    Ce module permet la generation de .dot pour la representation graphique de certains types de jeux. (Surtout utile
+    pour le debug)
+
+"""
 def minMax_graph_to_dot(game,value, file_name):
+
+    """
+        Genere le DOT du graphe du jeu MinMax a somme somme nulle associe a ses valeurs.
+    """
     graph = game.graph
     target = game.goal
     with open(file_name,"w") as file:
@@ -26,6 +36,10 @@ def minMax_graph_to_dot(game,value, file_name):
         file.write("}\n")
         file.close()
 def graph_house_to_dot(game,file_name):
+    """
+        Genere le DOT pour le graphe du jeu des maisons
+    """
+
     graph = game.graph
     target = game.goal
     with open(file_name,"w") as file:
@@ -46,7 +60,16 @@ def graph_house_to_dot(game,file_name):
                 file.write(output)
         file.write("}\n")
         file.close()
+
+
 def backward_house_to_dot(game, strategies,file_name):
+
+    """
+        Genere le DOT qui montre l effet de la backward induction sur l arbre du jeu 'game'
+
+    """
+
+
     graph = game.graph
     target = game.goal
     with open(file_name, "w") as file:
@@ -74,34 +97,7 @@ def backward_house_to_dot(game, strategies,file_name):
 
         file.write("}\n")
         file.close()
-def tree_house_to_dot(succ,old_goal,new_goal, old_vertices, new_vertices,file_name):
 
-    with open(file_name, "w") as file:
-        file.write("digraph G{ \n")
-        for v in old_vertices:
-            output = "v" + str(v.id) + "[label = \" " + str(v) + "\",shape = rectangle];\n"
-            file.write(output)
-        for v in new_vertices:
-            output = "v" + str(v.id) + "[label = \" " + str(v) + "\",shape = rectangle];\n"
-            file.write(output)
-
-        for t in old_goal:
-            for g in t:
-                output = "v" + str(g) + " [color = yellow, style = filled] \n"
-                file.write(output)
-
-        for t in new_goal:
-            for g in t:
-                output = "v" + str(g) + " [color = yellow, style = filled] \n"
-                file.write(output)
-
-        for v_list_index in xrange(len(succ)):
-            for s_tuple in succ[v_list_index]:
-                output = "v" + str(v_list_index) + " ->  v" + str(s_tuple[0]) + " [label = \" " + str(
-                    s_tuple[1]) + "\" ]\n"
-                file.write(output)
-        file.write("}\n")
-        file.close()
 
 if __name__ == '__main__':
 
