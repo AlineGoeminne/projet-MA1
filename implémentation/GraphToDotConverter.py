@@ -114,10 +114,10 @@ def random_graph_to_dot(game, file):
 
         output = "v" + str(v.id) + "["
         already = False
-        if v in target[0]:
+        if v.id in target[0]:
             output += "color = red"
             already = True
-        if v in target[1]:
+        if v.id in target[1]:
             if already:
                 output += ", "
             output += "style = dotted"
@@ -131,7 +131,6 @@ def random_graph_to_dot(game, file):
 
 
     file.write("}\n")
-    file.close()
 
 
 if __name__ == '__main__':
