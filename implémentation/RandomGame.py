@@ -171,6 +171,8 @@ def random_game(size, lowOutgoing, upOutgoing, probaCycle, negativeWeight, maxWe
                     target[i].append(t.id)
 
     graph = Graph(vertex, None, [], succ)
+    graph.mat = Graph.list_succ_to_mat(graph.succ, tuple=True, nb_player=2)
+    graph.pred = Graph.matrix_to_list_pred(graph.mat)
     graph.max_weight = maximumUsedWeight
 
     game = ReachabilityGame(nPlayers, graph, init, target, partition)
