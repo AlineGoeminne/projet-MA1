@@ -26,7 +26,7 @@ def random_weight(maxWeight):
         weigth = -weigth
     return weigth
 
-def random_game(size, lowOutgoing, upOutgoing, probaCycle, maxWeight, nPlayers, probaPlayers, probaTarget, maximumTarget=None):
+def random_game(size, lowOutgoing, upOutgoing, probaCycle, maxWeight, shareTarget, nPlayers, probaPlayers=None, probaTarget=None, maximumTarget=None):
     """
     Construit aleatoirement un jeu d'atteignabilite. Le graphe sous-jacent est bien construit et permet de creer des chemins infinis.
 
@@ -44,6 +44,9 @@ def random_game(size, lowOutgoing, upOutgoing, probaCycle, maxWeight, nPlayers, 
 
     :param maxWeight: le poids maximal
     :type maxWeight: integer
+
+    :param shareTarget: si plusieurs joueurs peuvent partager la meme cible ou non
+    :type shareTarget: boolean
 
     :param nPlayers: le nombre de joueurs
     :type nPlayers: integer
@@ -66,6 +69,9 @@ def random_game(size, lowOutgoing, upOutgoing, probaCycle, maxWeight, nPlayers, 
     if probaTarget is None:
         probaTarget = [0.1] * nPlayers
 
+    assert(lowOutgoing >= 0)
+    assert(upOutgoing >= 0)
+    assert(upOutgoing <= size)
     assert(len(probaPlayers) == nPlayers)
     assert(len(probaTarget) == nPlayers)
     assert(len(maximumTarget) == nPlayers)
@@ -84,7 +90,7 @@ def random_game(size, lowOutgoing, upOutgoing, probaCycle, maxWeight, nPlayers, 
 
     playersList = np.arange(1, nPlayers+1)
 
-    for i in xrange(size+1):
+    for i in xrange(size):
         # On donne le noeud a un joueur
         player = np.random.choice(playersList, p=probaPlayers)
         node = Vertex(i, player)
@@ -92,19 +98,22 @@ def random_game(size, lowOutgoing, upOutgoing, probaCycle, maxWeight, nPlayers, 
         vertex.append(node)
 
         # Le noeud peut etre un goal
-        for p in xrange(len(probaTarget)):
+        for p in xrange(nPlayers):
             if random.random() <= probaTarget[p]:
                 # Si l'aleatoire fait que c'est possible de declarer node comme goal pour le joueur p
                 if len(target[p]) < maximumTarget[p]:
                     # Si on n'a pas encore depasse la limite
                     target[p].append(node)
+                    if not shareTarget:
+                        # Si on ne peut pas partager le goal, on s'arrete
+                        break
 
         # On cree les arcs sortants
         outgoing = []
         e = random.randint(lowOutgoing, upOutgoing)
         while e > 0:
             weight = random_weight(maxWeight)
-            edge = (random.randint(0, size), weight)
+            edge = (random.randint(0, size-1), weight)
 
             # Si on n'essaye pas de creer un cycle
             # OU (si on essaye de creer un cycle et) si l'aleatoire permet de creer un cycle
@@ -135,7 +144,18 @@ def random_game(size, lowOutgoing, upOutgoing, probaCycle, maxWeight, nPlayers, 
     # Si un joueur n'a pas de target, on lui en donne un
     for i in xrange(nPlayers):
         if len(target[i]) == 0:
-            target[i].append(random.choice(vertex))
+            t = random.choice(vertex)
+            if shareTarget:
+                # On autorise le partage, donc on prend d'office
+                target[i].append(t)
+            else:
+                # On interdit le partage, donc on doit verifier si le noeud est deja une cible
+                used = False
+                for j in xrange(nPlayers):
+                    if t in target[j]:
+                        used = True
+                if not used:
+                    target[i].append(t)
 
     graph = Graph(vertex, None, [], succ)
 
@@ -150,17 +170,18 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Randomly generate reachability game", epilog="Warning: if the number of vertices and/or the bounds for the out-degree range and/or the probability to create a cycle are too low, the program may not stop")
     parser.add_argument("size", type=int, help="Size of the graph")
     parser.add_argument("lowOutgoing", type=int, help="Lower bound for the out-degree range. If it's possible to have 0 successors for a node v, an edge from v to v is added (because we need infinite pathes)")
-    parser.add_argument("upOutgoing", type=int, help="Upper bound for the out-degree range")
+    parser.add_argument("upOutgoing", type=int, help="Upper bound for the out-degree range. It must be <= size")
     parser.add_argument("probaCycle", type=float, help="If a cycle can be created, gives the probability the cycle is effectively created. Since we need to be able to create infinite pathes, the cycles of length 1 are always created. 0 is not recommended")
     parser.add_argument("maxWeight", type=int, help="Maximum absolute weight")
     parser.add_argument("nPlayers", type=int, help="The number of players")
-    parser.add_argument("--probaPlayers", type=float, nargs="*", help="For each player, the probability a node belongs to the player. The sum of the values must be 1")
-    parser.add_argument("--probaTarget", type=float, nargs="*", help="For each player, the probability a node is a target for the player. The sum of the values doesn't have to be 1")
-    parser.add_argument("--maximumTarget", type=int, nargs="*", help="For each player, the maximum number of targets the player can have")
-    parser.add_argument("--file", type=argparse.FileType("w"), nargs="?", default=sys.stdout, help="The output DOT file. If not set, the DOT file is not generated")
+    parser.add_argument("--probaPlayers", type=float, nargs="*", help="For each player, the probability a node belongs to the player. The sum of the values must be 1. By default, every player has the same probability (1/nPlayers)")
+    parser.add_argument("--probaTarget", type=float, nargs="*", help="For each player, the probability a node is a target for the player. The sum of the values doesn't have to be 1. By default, it's 0.1 for each player")
+    parser.add_argument("--maximumTarget", type=int, nargs="*", help="For each player, the maximum number of targets the player can have. By default, there are no limits")
+    parser.add_argument("-s", "--share-targets", action="store_true", help="If set, multiple players can share a same target. If not set, the target sets are disjoint")
+    parser.add_argument("--file", type=argparse.FileType("w"), nargs="?", default=sys.stdout, help="The output DOT file")
 
     args = parser.parse_args()
 
-    game = random_game(args.size, args.lowOutgoing, args.upOutgoing, args.probaCycle, args.maxWeight, args.nPlayers, args.probaPlayers, args.probaTarget, args.maximumTarget)
+    game = random_game(args.size, args.lowOutgoing, args.upOutgoing, args.probaCycle, args.maxWeight, args.share_targets, args.nPlayers, args.probaPlayers, args.probaTarget, args.maximumTarget)
 
     random_graph_to_dot(game, args.file)

@@ -26,10 +26,11 @@ Admettons qu'on veuille générer un jeu avec les paramètres suivants :
   - pour 2 joueurs
   - la probabilité qu'un noeud appartienne au joueur 1 est de 0.7 et au joueur 2 est de 0.3
   - la probabilité qu'un noeud soit une cible pour le joueur 1 est de 0.1 et pour le joueur 2 est de 0.4
-  - le nombre maximul de cibles pour le joueur 1 est 5 et pour le joueur 2 est 8
+  - le nombre maximal de cibles pour le joueur 1 est 5 et pour le joueur 2 est 8
+  - on permet de partager une cible entre plusieurs joueurs
 
 et stocker le fichier DOT résultant dans sortie.dot
 
 alors, il faut écrire
 
-    python RandomGame.py 20 2 10 0.5 50 2 --probaPlayers 0.7 0.3 --probaTarget 0.1 0.4 --maximumTarget 5 8 --dot sortie.dot
+    python RandomGame.py 20 2 10 0.5 50 2 -s --probaPlayers 0.7 0.3 --probaTarget 0.1 0.4 --maximumTarget 5 8 --dot sortie.dot
