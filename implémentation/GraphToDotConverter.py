@@ -98,38 +98,40 @@ def backward_house_to_dot(game, strategies,file_name):
         file.write("}\n")
         file.close()
 
-def random_graph_to_dot(graph, init, target, file_name):
-    with open(file_name, "w") as file:
-        file.write("digraph G { \n")
-        for v in graph.vertex:
-            output = "v" + str(v.id) + "[label = \"v" + str(v.id) + "\", shape="
-            if v.player == 1:
-                output += "circle"
-            else:
-                output += "square"
-            output += "];\n"
+def random_graph_to_dot(game, file):
+    graph = game.graph
+    init = game.init
+    target = game.goal
+    file.write("digraph G { \n")
+    for v in graph.vertex:
+        output = "v" + str(v.id) + "[label = \"v" + str(v.id) + "\", shape="
+        if v.player == 1:
+            output += "circle"
+        else:
+            output += "square"
+        output += "];\n"
+        file.write(output)
+
+        output = "v" + str(v.id) + "["
+        already = False
+        if v in target[0]:
+            output += "color = red"
+            already = True
+        if v in target[1]:
+            if already:
+                output += ", "
+            output += "style = dotted"
+        output += "] \n"
+        file.write(output)
+
+    for v_list_index in xrange(len(graph.succ)):
+        for s_tuple in graph.succ[v_list_index]:
+            output ="v"+str(v_list_index)+" ->  v"+str(s_tuple[0])+" [label = \""+str(s_tuple[1])+"\" ]\n"
             file.write(output)
 
-            output = "v" + str(v.id) + "["
-            already = False
-            if v in target[0]:
-                output += "color = red"
-                already = True
-            if v in target[1]:
-                if already:
-                    output += ", "
-                output += "style = dotted"
-            output += "] \n"
-            file.write(output)
 
-        for v_list_index in xrange(len(graph.succ)):
-            for s_tuple in graph.succ[v_list_index]:
-                output ="v"+str(v_list_index)+" ->  v"+str(s_tuple[0])+" [label = \""+str(s_tuple[1])+"\" ]\n"
-                file.write(output)
-
-
-        file.write("}\n")
-        file.close()
+    file.write("}\n")
+    file.close()
 
 
 if __name__ == '__main__':
