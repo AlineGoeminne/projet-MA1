@@ -26,7 +26,7 @@ def random_weight(maxWeight):
         weigth = -weigth
     return weigth
 
-def random_game(size, lowOutgoing, upOutgoing, probaCycle, maxWeight, nPlayers, probaPlayers, probaTarget, maximumTarget):
+def random_game(size, lowOutgoing, upOutgoing, probaCycle, maxWeight, nPlayers, probaPlayers, probaTarget, maximumTarget=None):
     """
     Construit aleatoirement un jeu d'atteignabilite. Le graphe sous-jacent est bien construit et permet de creer des chemins infinis.
 
@@ -48,17 +48,24 @@ def random_game(size, lowOutgoing, upOutgoing, probaCycle, maxWeight, nPlayers, 
     :param nPlayers: le nombre de joueurs
     :type nPlayers: integer
 
-    :param probaPlayers: pour chaque joueur, la probabilite qu'un noeud lui appartienne. La somme du tableau doit valoir 1.
-    :type probaPlayers: tableau de float de taille nPlayers
+    :param probaPlayers: pour chaque joueur, la probabilite qu'un noeud lui appartienne. La somme du tableau doit valoir 1. Si None est donne, les probabilites sont les memes pour chaque joueur (1/nPlayers)
+    :type probaPlayers: tableau de float de taille nPlayers ou None
 
-    :param probaTarget: pour chaque joueur, la probabilite qu'un noeud soit un goal pour lui
-    :type probaTarget: tableau de float de taille nPlayers
+    :param probaTarget: pour chaque joueur, la probabilite qu'un noeud soit un goal pour lui. Si None est donne, chaque joueur a une probabilite de 0.1
+    :type probaTarget: tableau de float de taille nPlayers ou None
 
-    :param maximumTarget: pour chaque joueur, le nombre maximum de goals qu'il peut avoir
-    :type probaTarget: tableau de integers de taille nPlayers
+    :param maximumTarget: pour chaque joueur, le nombre maximum de goals qu'il peut avoir. Si None est donne, il n'y a pas de contrainte
+    :type probaTarget: tableau de integers de taille nPlayers ou None
 
     :return un ReachabilityGame construit aleatoirement
     """
+    if maximumTarget is None:
+        maximumTarget = [float("inf")] * nPlayers
+    if probaPlayers is None:
+        probaPlayers = [1./nPlayers] * nPlayers
+    if probaTarget is None:
+        probaTarget = [0.1] * nPlayers
+
     assert(len(probaPlayers) == nPlayers)
     assert(len(probaTarget) == nPlayers)
     assert(len(maximumTarget) == nPlayers)
