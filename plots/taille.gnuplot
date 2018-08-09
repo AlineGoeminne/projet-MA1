@@ -7,7 +7,7 @@ set xtics nomirror
 set logscale y
 
 set xlabel "taille"
-set ylabel "temps (médianne; échelle logarithmique)"
+set ylabel "temps (échelle logarithmique)"
 
 set style data linespoints
 

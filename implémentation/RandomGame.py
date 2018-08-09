@@ -117,7 +117,7 @@ def random_game(size, lowOutgoing, upOutgoing, probaCycle, negativeWeight, maxWe
     assert(len(probaPlayers) == nPlayers)
     assert(len(probaTarget) == nPlayers)
     assert(len(maximumTarget) == nPlayers)
-    assert(np.sum(probaPlayers) == 1)
+    assert(abs(np.sum(probaPlayers) - 1) <= 1E-10)
 
     # Creation des variables utilisees
     vertex = []
