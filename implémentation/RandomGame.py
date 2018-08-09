@@ -3,6 +3,8 @@ import random
 import numpy as np
 from copy import deepcopy
 
+maximumUsedWeight = None
+
 def has_path_to(succ, start, goal, visited):
     """
     Determine s'il existe un chemin entre start et goal
@@ -26,7 +28,41 @@ def random_weight(maxWeight, negativeWeight):
         weigth = -weigth
     return weigth
 
-def random_game(size, lowOutgoing, upOutgoing, probaCycle, negativeWeight, maxWeight, shareTarget, nPlayers, probaPlayers=None, probaTarget=None, maximumTarget=None):
+def player_node(i, playersList, probaPlayers, partition):
+    player = np.random.choice(playersList, p=probaPlayers)
+    node = Vertex(i, player)
+    partition[player-1].append(node)
+    return node
+
+def target_node(nPlayers, node, probaTarget, target, maximumTarget, shareTarget):
+    for p in xrange(nPlayers):
+        if random.random() <= probaTarget[p]:
+            # Si l'aleatoire fait que c'est possible de declarer node comme goal pour le joueur p
+            if len(target[p]) < maximumTarget[p]:
+                # Si on n'a pas encore depasse la limite
+                target[p].add(node.id)
+                if not shareTarget:
+                    # Si on ne peut pas partager le goal, on s'arrete
+                    return
+
+def generate_weight(tupleWeights, maxWeight, nPlayers, negativeWeight):
+    global maximumUsedWeight
+    if tupleWeights:
+        # On genere un poids different par joueur
+        weights = []
+        for k in xrange(nPlayers):
+            weight = random_weight(maxWeight, negativeWeight)
+            maximumUsedWeight[k] = max(abs(weight), maximumUsedWeight[k])
+            weights.append(weight)
+        return weights
+    else:
+        # On genere un seul poids
+        weight = random_weight(maxWeight, negativeWeight)
+        maximumUsedWeight = max(abs(weight), maximumUsedWeight)
+        return weight
+        
+
+def random_game(size, lowOutgoing, upOutgoing, probaCycle, negativeWeight, maxWeight, tupleWeight, shareTarget, nPlayers, probaPlayers=None, probaTarget=None, maximumTarget=None):
     """
     Construit aleatoirement un jeu d'atteignabilite. Le graphe sous-jacent est bien construit et permet de creer des chemins infinis.
 
@@ -47,6 +83,9 @@ def random_game(size, lowOutgoing, upOutgoing, probaCycle, negativeWeight, maxWe
 
     :param maxWeight: le poids maximal
     :type maxWeight: integer
+
+    :param tupleWeight: si les poids sur les arcs sont des tuples (une valeur par joueur) ou non
+    :type tupleWeight: boolean
 
     :param shareTarget: si plusieurs joueurs peuvent partager la meme cible ou non
     :type shareTarget: boolean
@@ -83,45 +122,34 @@ def random_game(size, lowOutgoing, upOutgoing, probaCycle, negativeWeight, maxWe
     # Creation des variables utilisees
     vertex = []
     succ = []
-    maximumUsedWeight = [0] * nPlayers
+    global maximumUsedWeight
+    if tupleWeight:
+        maximumUsedWeight = [0] * nPlayers
+    else:
+        tupleWeight = 0
 
     target = []
     partition = []
 
     for i in xrange(nPlayers):
         partition.append([])
-        target.append([])
+        target.append(set())
 
     playersList = np.arange(1, nPlayers+1)
 
     for i in xrange(size):
         # On donne le noeud a un joueur
-        player = np.random.choice(playersList, p=probaPlayers)
-        node = Vertex(i, player)
-        partition[player-1].append(node)
+        node = player_node(i, playersList, probaPlayers, partition)
         vertex.append(node)
 
         # Le noeud peut etre un goal
-        for p in xrange(nPlayers):
-            if random.random() <= probaTarget[p]:
-                # Si l'aleatoire fait que c'est possible de declarer node comme goal pour le joueur p
-                if len(target[p]) < maximumTarget[p]:
-                    # Si on n'a pas encore depasse la limite
-                    target[p].append(node.id)
-                    if not shareTarget:
-                        # Si on ne peut pas partager le goal, on s'arrete
-                        break
+        target_node(nPlayers, node, probaTarget, target, maximumTarget, shareTarget)
 
         # On cree les arcs sortants
         outgoing = []
         e = random.randint(lowOutgoing, upOutgoing)
         while e > 0:
-            # On genere un poids different par joueur
-            weights = []
-            for k in xrange(nPlayers):
-                weight = random_weight(maxWeight, negativeWeight)
-                maximumUsedWeight[k] = max(abs(weight), maximumUsedWeight[k])
-                weights.append(weight)
+            weights = generate_weight(tupleWeight, maxWeight, nPlayers, negativeWeight)
             edge = (random.randint(0, size-1), weights)
 
             # Si on n'essaye pas de creer un cycle
@@ -143,11 +171,7 @@ def random_game(size, lowOutgoing, upOutgoing, probaCycle, negativeWeight, maxWe
 
         # Si le noeud n'a aucun successeur, on ajoute une boucle sur elle-meme
         if len(outgoing) == 0:
-            weights = []
-            for k in xrange(nPlayers):
-                weight = random_weight(maxWeight, negativeWeight)
-                maximumUsedWeight[k] = max(abs(weight), maximumUsedWeight[k])
-                weights.append(weight)
+            weights = generate_weight(tupleWeight, maxWeight, nPlayers, negativeWeight)
             outgoing.append((random.randint(0, size-1), weights))
 
         succ.append(outgoing)
@@ -160,7 +184,7 @@ def random_game(size, lowOutgoing, upOutgoing, probaCycle, negativeWeight, maxWe
             t = random.choice(vertex)
             if shareTarget:
                 # On autorise le partage, donc on prend d'office
-                target[i].append(t.id)
+                target[i].add(t.id)
             else:
                 # On interdit le partage, donc on doit verifier si le noeud est deja une cible
                 used = False
@@ -168,10 +192,10 @@ def random_game(size, lowOutgoing, upOutgoing, probaCycle, negativeWeight, maxWe
                     if t.id in target[j]:
                         used = True
                 if not used:
-                    target[i].append(t.id)
+                    target[i].add(t.id)
 
     graph = Graph(vertex, None, [], succ)
-    graph.mat = Graph.list_succ_to_mat(graph.succ, tuple=True, nb_player=2)
+    graph.mat = Graph.list_succ_to_mat(graph.succ, tuple=tupleWeight, nb_player=nPlayers)
     graph.pred = Graph.matrix_to_list_pred(graph.mat)
     graph.max_weight = maximumUsedWeight
 
@@ -194,11 +218,12 @@ if __name__ == "__main__":
     parser.add_argument("--probaTarget", type=float, nargs="*", help="For each player, the probability a node is a target for the player. The sum of the values doesn't have to be 1. By default, it's 0.1 for each player")
     parser.add_argument("--maximumTarget", type=int, nargs="*", help="For each player, the maximum number of targets the player can have. By default, there are no limits")
     parser.add_argument("-s", "--share-targets", action="store_true", help="If set, multiple players can share a same target. If not set, the target sets are disjoint")
-    parser.add_argument("-n", "--negative-weights", action="store_true", help="If set, negative weights are allowed")
+    parser.add_argument("-n", "--negative-weights", action="store_true", help="If set, negative weights are allowed (probability: 0.5)")
+    parser.add_argument("-t", "--tuple-weights", action="store_true", help="If set, weights are tuples")
     parser.add_argument("--file", type=argparse.FileType("w"), nargs="?", default=sys.stdout, help="The output DOT file")
 
     args = parser.parse_args()
 
-    game = random_game(args.size, args.lowOutgoing, args.upOutgoing, args.probaCycle, args.negative_weights, args.maxWeight, args.share_targets, args.nPlayers, args.probaPlayers, args.probaTarget, args.maximumTarget)
+    game = random_game(args.size, args.lowOutgoing, args.upOutgoing, args.probaCycle, args.negative_weights, args.maxWeight, args.tuple_weights, args.share_targets, args.nPlayers, args.probaPlayers, args.probaTarget, args.maximumTarget)
 
     random_graph_to_dot(game, args.file)
