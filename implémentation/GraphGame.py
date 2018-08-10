@@ -833,8 +833,7 @@ class ReachabilityGame(object):
             iter+=1
 
             if len(frontier) == 0:
-                #raise BestFirstSearchError(" Plus d'elements dans la frontiere")
-                return
+                raise BestFirstSearchError(" Plus d'elements dans la frontiere")
 
             #file.write("frontiere "+ str(frontier)+"\n")
             candidate_node = heapq.heappop(frontier)
@@ -898,6 +897,10 @@ class ReachabilityGame(object):
                                 #value = float("infinity")
                                 #new_node = Node(new_path, candidate_node, epsilon, candidate_node.cost, value)
                                 #heapq.heappush(frontier, new_node)
+                        else:
+                            value = heuristic(self, candidate_node.cost,epsilon, len(new_path), succ_vertex, all_dijk)
+                            new_node = Node(new_path, candidate_node, epsilon, candidate_node.cost, value)
+                            heapq.heappush(frontier, new_node)
 
                     else:
                         value = heuristic(self, candidate_node.cost,epsilon, len(new_path), succ_vertex, all_dijk)
@@ -2038,6 +2041,31 @@ def numpy_test():
     print res2
 
 
+def test_frontiere_vide():
+    v0 = Vertex(0, 2)
+    v1 = Vertex(1, 1)
+
+    all_vertices = [v0, v1]
+
+    succ0 = [(0, 16)]
+    succ1 = [(0, 7), (1, 6)]
+
+    succ = [succ0, succ1]
+
+    mat = Graph.list_succ_to_mat(succ)
+    pred = Graph.matrix_to_list_pred(mat)
+
+    W = 16
+    graph = Graph(all_vertices, mat, pred, succ, W)
+
+    goals = [{0}, {1}]
+    
+    init = v0
+
+    game = ReachabilityGame(2, graph, init, goals, None)
+
+    game.best_first_search(ReachabilityGame.a_star_positive)
+
 
 if __name__ == '__main__':
 
@@ -2057,4 +2085,6 @@ if __name__ == '__main__':
     #test()
 
     #find_loop_test()
-    numpy_test()
+    #numpy_test()
+
+    test_frontiere_vide()

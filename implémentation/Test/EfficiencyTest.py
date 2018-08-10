@@ -27,14 +27,19 @@ if __name__ == "__main__":
     shareTarget = True
     nPlayers = 2
 
-    print "Number of players", "Mean", "Median"
+    print "Size", "Mean", "Median"
     for size in xrange(2, 51):
         allTimes = [0] * nTests
         game_setup = ""
         for i in xrange(nTests):
             game = random_game(size, lowOutgoing, upOutgoing, probaCycle, negativeWeight, maxWeight, tupleWeight, shareTarget, nPlayers)
             t = time.clock()
-            game.best_first_search(heuristic=ReachabilityGame.a_star_positive, tuple_=False, negative_weight=False, allowed_time=10)
+            try:
+                game.best_first_search(heuristic=ReachabilityGame.a_star_positive, tuple_=False, negative_weight=False, allowed_time=10)
+            except:
+                print game.init
+                random_graph_to_dot(game, sys.stdout)
+                exit()
             allTimes[i] = time.clock() - t
         print size, np.mean(allTimes), np.median(allTimes)
 
