@@ -479,7 +479,7 @@ if __name__ == '__main__':
     #test_best_first_search_2()
     #test_best_first_search3()
 
-    general_test()
-    #test_slide()
+    #general_test()
+    test_slide()
 
     #echec_init()

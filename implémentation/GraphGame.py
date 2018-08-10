@@ -788,8 +788,8 @@ class ReachabilityGame(object):
 
     def best_first_search(self, heuristic, frontier = None, allowed_time = float("infinity"), tuple_ = False, negative_weight = False, coalitions = None, short_path = None):
 
-        #file = open("stat_a_star.txt", "w")
-        #file.write("------ \n")
+        file = open("frontiere_qui_foire.txt", "w")
+        file.write("------ \n")
 
         if heuristic is ReachabilityGame.a_star_positive:
             all_dijk = self.compute_all_dijkstra()
@@ -828,16 +828,23 @@ class ReachabilityGame(object):
             initial_node.value = value
             frontier = []
             heapq.heappush(frontier, initial_node)
+            file.write("initialisation : ")
+            file.write(str(frontier))
+            file.write(" \n")
+
         while time.time() - start < allowed_time:
 
             iter+=1
 
+            file.write("iteration "+ str(iter) + " : " + str(frontier) + " \n")
+
             if len(frontier) == 0:
-                #raise BestFirstSearchError(" Plus d'elements dans la frontiere")
+                raise BestFirstSearchError(" Plus d'elements dans la frontiere")
                 return
 
             #file.write("frontiere "+ str(frontier)+"\n")
             candidate_node = heapq.heappop(frontier)
+            file.write("noeud candidat : " + str(candidate_node) + "\n")
 
             candidate_path = candidate_node.current
             #file.write("Candidat : " + str(candidate_path)+"\n\n")
@@ -863,9 +870,11 @@ class ReachabilityGame(object):
                 succ_last_vertex = self.graph.succ[last_vertex.id]
                 random.shuffle(succ_last_vertex)
 
+
                 for i in range(0, len(succ_last_vertex)):
 
                     (succ, w) = succ_last_vertex[i]
+                    file.write ("j'utilise le successeur " + str(succ) + "\n")
 
                     epsilon = ReachabilityGame.sum_two_vector_of_weight(candidate_node.eps,w,set()) if tuple_ else candidate_node.eps +w
                     new_path = []
@@ -873,8 +882,11 @@ class ReachabilityGame(object):
 
                     succ_vertex = self.graph.vertex[succ]
                     new_path.append(succ_vertex)
+                    file.write("new_path devient" + str(new_path) + "\n")
+
 
                     (goal, player) = self.is_a_goal(succ_vertex)
+                    file.write("c'est un goal ? "+ str(goal) + " pour : "+ str(player) + "\n")
 
                     if goal:
                         new_reach = player - set(candidate_node.cost.keys())
@@ -898,6 +910,10 @@ class ReachabilityGame(object):
                                 #value = float("infinity")
                                 #new_node = Node(new_path, candidate_node, epsilon, candidate_node.cost, value)
                                 #heapq.heappush(frontier, new_node)
+                        else:
+                            value = heuristic(self, candidate_node.cost, epsilon, len(new_path), succ_vertex, all_dijk)
+                            new_node = Node(new_path, candidate_node, epsilon, candidate_node.cost, value)
+                            heapq.heappush(frontier, new_node)
 
                     else:
                         value = heuristic(self, candidate_node.cost,epsilon, len(new_path), succ_vertex, all_dijk)
@@ -908,7 +924,7 @@ class ReachabilityGame(object):
 
 
 
-        #file.close()
+        file.close()
         return
 
 
@@ -2037,6 +2053,28 @@ def numpy_test():
     print res
     print res2
 
+def test_qui_foire():
+
+    v0 = Vertex(0,1)
+    v1 = Vertex(1,2)
+
+    vertex = [v0,v1]
+
+    succ0 = [(0,16)]
+    succ1 = [(1,6),(0,7)]
+
+    list_succ = [succ0, succ1]
+    mat = Graph.list_succ_to_mat(list_succ)
+    list_pred = Graph.matrix_to_list_pred(mat)
+
+    graph = Graph(vertex, mat, list_pred, list_succ, 16)
+
+    goal = [{0}, {1}]
+
+    game = ReachabilityGame(2, graph, v0, goal, None)
+
+    res = game.best_first_search(game.a_star_positive, None, np.inf)
+    print res
 
 
 if __name__ == '__main__':
@@ -2057,4 +2095,6 @@ if __name__ == '__main__':
     #test()
 
     #find_loop_test()
-    numpy_test()
+    #numpy_test()
+
+    test_qui_foire()
