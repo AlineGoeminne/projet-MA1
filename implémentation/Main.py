@@ -389,7 +389,7 @@ def restart_test(times):
 if __name__ == '__main__':
     #compute_stat(30)
     #restart_test(10)
-    compute_stat_all_method("zut.txt",30)
+    compute_stat_all_method("stat_all_method.txt",30)
 
 
 

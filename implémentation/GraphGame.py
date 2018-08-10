@@ -2117,13 +2117,7 @@ if __name__ == '__main__':
 
     #generate_vertex_uniform()
 
-    #test()
+    test()
 
     #find_loop_test()
     #numpy_test()
-
-<<<<<<< HEAD
-    test_qui_foire()
-=======
-    test_frontiere_vide()
->>>>>>> 493c456b940de1077b9834abb4ccebf2254a00d5
