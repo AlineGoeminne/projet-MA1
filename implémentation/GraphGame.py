@@ -407,11 +407,6 @@ class ReachabilityGame(object):
         self.graph = graph     # graphe represantant le jeu
         self.init = init       # noeud initial du jeu
         self.goal = goal       # tab avec pour chaque joueur ensemble des noeuds objectifs
-        self.part = partition  # tab avec pour chaque joueur ensemble des noeuds lui appartenant
-
-    def get_vertex_player(self, id_player):
-
-        return self.part[id_player-1]
 
     def get_goal_player(self, id_player):
         return self.goal[id_player-1]
@@ -935,7 +930,7 @@ class ReachabilityGame(object):
         """
         result = {}
         union_goal = set([])
-        for i in range(0, len(self.goal)):
+        for i in range(0, self.player):
             union_goal = union_goal.union(self.goal[i])
 
         for g in union_goal:
@@ -1793,13 +1788,6 @@ class ReachabilityGame(object):
     # *******
     # afficheurs d'informations
     # *******
-    def print_partition(self):
-
-        partition = self.part
-
-        for i in range(0,len(partition)):
-            print "Noeud(s) du joueur ", i+1,": ", partition[i]
-
     def print_goal(self):
 
         goal = self.goal
@@ -2053,29 +2041,6 @@ def numpy_test():
     print res
     print res2
 
-def test_qui_foire():
-
-    v0 = Vertex(0,1)
-    v1 = Vertex(1,2)
-
-    vertex = [v0,v1]
-
-    succ0 = [(0,16)]
-    succ1 = [(1,6),(0,7)]
-
-    list_succ = [succ0, succ1]
-    mat = Graph.list_succ_to_mat(list_succ)
-    list_pred = Graph.matrix_to_list_pred(mat)
-
-    graph = Graph(vertex, mat, list_pred, list_succ, 16)
-
-    goal = [{0}, {1}]
-
-    game = ReachabilityGame(2, graph, v0, goal, None)
-
-    res = game.best_first_search(game.a_star_positive, None, np.inf)
-    print res
-
 def test_frontiere_vide():
     v0 = Vertex(0, 2)
     v1 = Vertex(1, 1)
@@ -2117,7 +2082,46 @@ if __name__ == '__main__':
 
     #generate_vertex_uniform()
 
-    test()
+    #test()
 
     #find_loop_test()
     #numpy_test()
+
+    #test_frontiere_vide()
+
+    v0 = Vertex(0, 1)
+    v1 = Vertex(1, 2)
+    v2 = Vertex(2, 2)
+    v3 = Vertex(3, 1)
+    v4 = Vertex(4, 2)
+    v5 = Vertex(5, 1)
+    v6 = Vertex(6, 1)
+
+    all_vertices = [v0, v1, v2, v3, v4, v5, v6]
+
+    succ0 = [(0, 10)]
+    succ1 = [(0, 5), (4, 1)]
+    succ2 = [(0, 10), (4, 1)]
+    succ3 = [(0, 1), (6, 1)]
+    succ4 = [(0, 20), (2, 17), (3, 0), (5, 3)]
+    succ5 = [(4, 50)]
+    succ6 = [(3, 1), (5, 4)]
+
+    succ = [succ0, succ1, succ2, succ3, succ4, succ5, succ6]
+
+    mat = Graph.list_succ_to_mat(succ)
+    pred = Graph.matrix_to_list_pred(mat)
+
+    graph = Graph(all_vertices, mat, pred, succ, 1)
+
+    goals = [{0}, {}]
+    
+    init = v0
+
+    game = ReachabilityGame(2, graph, init, goals, None)
+
+    minmax = ReachabilityGame.graph_transformer(graph, 0)
+    
+    result_dijk_min_max = dijkstraMinMax(minmax, {0})
+    values_player = get_all_values(result_dijk_min_max)
+    print values_player

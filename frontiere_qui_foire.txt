@@ -1,0 +1,29 @@
+------ 
+initialisation : [[v0] ; 97] 
+iteration 1 : [[v0] ; 97] 
+noeud candidat : [v0] ; 97
+j'utilise le successeur 0
+new_path devient[v0, v0]
+c'est un goal ? True pour : set([1])
+iteration 2 : [[v0, v0] ; 113] 
+noeud candidat : [v0, v0] ; 113
+j'utilise le successeur 0
+new_path devient[v0, v0, v0]
+c'est un goal ? True pour : set([1])
+iteration 3 : [[v0, v0, v0] ; 129] 
+noeud candidat : [v0, v0, v0] ; 129
+j'utilise le successeur 0
+new_path devient[v0, v0, v0, v0]
+c'est un goal ? True pour : set([1])
+iteration 4 : [[v0, v0, v0, v0] ; 145] 
+noeud candidat : [v0, v0, v0, v0] ; 145
+j'utilise le successeur 0
+new_path devient[v0, v0, v0, v0, v0]
+c'est un goal ? True pour : set([1])
+iteration 5 : [[v0, v0, v0, v0, v0] ; 161] 
+noeud candidat : [v0, v0, v0, v0, v0] ; 161
+j'utilise le successeur 0
+new_path devient[v0, v0, v0, v0, v0, v0]
+c'est un goal ? True pour : set([1])
+iteration 6 : [[v0, v0, v0, v0, v0, v0] ; 177] 
+noeud candidat : [v0, v0, v0, v0, v0, v0] ; 177

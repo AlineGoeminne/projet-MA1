@@ -440,4 +440,3 @@ def max_succ_value(succ, tab_value, tuple=False, compo=0):
             arg_max = p[0]
     return (max , arg_max)
 
-

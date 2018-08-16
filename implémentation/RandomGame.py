@@ -60,7 +60,7 @@ def generate_weight(tupleWeights, maxWeight, nPlayers, negativeWeight):
         weight = random_weight(maxWeight, negativeWeight)
         maximumUsedWeight = max(abs(weight), maximumUsedWeight)
         return weight
-        
+
 
 def random_game(size, lowOutgoing, upOutgoing, probaCycle, negativeWeight, maxWeight, tupleWeight, shareTarget, nPlayers, probaPlayers=None, probaTarget=None, maximumTarget=None):
     """
@@ -154,7 +154,7 @@ def random_game(size, lowOutgoing, upOutgoing, probaCycle, negativeWeight, maxWe
 
             # Si on n'essaye pas de creer un cycle
             # OU (si on essaye de creer un cycle et) si l'aleatoire permet de creer un cycle
-            if not has_path_to(succ, edge[0], i, []) or random.random() <= probaCycle:
+            if random.random() <= probaCycle or not has_path_to(succ, edge[0], i, []):
                 # Si on n'a pas encore d'arcs en sortie, alors on ajoute systematiquement
                 if len(outgoing) == 0:
                     outgoing.append(edge)
